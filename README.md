@@ -1,5 +1,7 @@
 # phoenix
 
+[![Subterranwars](https://circleci.com/gh/subterranwars/phoenix.svg?style=shield)](https://circleci.com/gh/subterranwars/phoenix)
+
 ## Background
 phoenix erhebt SubTerranWars aus der Asche der gestorbenen Projekte. 
 
