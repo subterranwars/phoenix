@@ -25,8 +25,8 @@ public class GameLoop {
 
     public void loop() throws InterruptedException {
         for (int i = 0; i < 10000; i++) {
-            final Tick tick = clock.nextTick();
             printState();
+            final Tick tick = clock.nextTick();
             for (Player eachPlayer : players) {
                 for (ResourceCount eachResource : eachPlayer.getResources()) {
                     final float ratePerMillisecond = eachResource.getResource().getRatePerHour() / 60 / 1000;
