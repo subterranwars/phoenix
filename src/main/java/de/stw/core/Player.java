@@ -2,6 +2,8 @@ package de.stw.core;
 
 import com.google.common.base.Preconditions;
 
+import de.stw.core.resources.ResourceStorage;
+
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
@@ -9,9 +11,9 @@ import java.util.Objects;
 public class Player {
     private final int id;
     private final String name;
-    private final List<ResourceCount> resources;
+    private final List<ResourceStorage> resources;
 
-    public Player(int id, String name, List<ResourceCount> resources) {
+    public Player(int id, String name, List<ResourceStorage> resources) {
         Preconditions.checkArgument(id > 0, "id must be > 0");
         this.id = id;
         this.name = Objects.requireNonNull(name);
@@ -22,11 +24,11 @@ public class Player {
         return id;
     }
 
-    public List<ResourceCount> getResources() {
-        return resources;
-    }
-
     public String getName() {
         return name;
     }
+
+    public List<ResourceStorage> getResources() {
+		return resources;
+	}
 }

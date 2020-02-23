@@ -1,20 +1,22 @@
-package de.stw.core;
+package de.stw.core.resources;
 
 import com.google.common.base.Preconditions;
 
 import java.util.Objects;
 
+/**
+ *  Represents a single in-game resource e.g iron or stone 
+ * 
+ * @author mvr, cjs
+ */
 public class Resource {
     private int id;
     private String name;
-    private float ratePerHour;
 
-    public Resource(int id, String name, float ratePerHour) {
+    public Resource(int id, String name) {
         Preconditions.checkArgument(id > 0);
-        Preconditions.checkArgument(ratePerHour > 0);
         this.id = id;
         this.name = Objects.requireNonNull(name);
-        this.ratePerHour = ratePerHour;
     }
 
     public int getId() {
@@ -23,9 +25,5 @@ public class Resource {
 
     public String getName() {
         return name;
-    }
-
-    public float getRatePerHour() {
-        return ratePerHour;
     }
 }
