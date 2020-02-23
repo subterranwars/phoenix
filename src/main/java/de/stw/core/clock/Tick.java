@@ -1,5 +1,7 @@
 package de.stw.core.clock;
 
+import com.google.common.base.MoreObjects;
+
 import java.util.Objects;
 
 public class Tick {
@@ -39,10 +41,9 @@ public class Tick {
 
     @Override
     public String toString() {
-        return "de.stw.core.clock.Tick{" +
-                "startTime=" + startTime +
-                ", endTime=" + endTime +
-                ", delta=" + getDelta() +
-                '}';
+        return MoreObjects.toStringHelper(this)
+                .add("startTime", startTime)
+                .add("endTime", endTime)
+                .toString();
     }
 }
