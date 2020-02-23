@@ -1,0 +1,28 @@
+version: 2.1
+jobs:
+  build:
+    working_directory: ~/project
+    docker:
+      - image: circleci/openjdk:8-jdk-stretch
+    steps:
+      - checkout
+
+      - restore_cache:
+          key: mvn-cache-{{ checksum "pom.xml" }}
+
+      - run: mvn dependency:go-offline
+
+      - run: mvn compile -DskipTests
+      - run: mvn verify -DskipITs
+      - run: mvn package -DskipTests -DskipITs
+
+      - save_cache:
+        paths:
+          - ~/.m2
+        key: mvn-cache-{{ checksum "pom.xml" }}
+
+      - store_test_results:
+          path: target/surefire-reports
+
+      - store_artifacts:
+          path: target/phoenix-0.1-SNAPSHOT.jar
