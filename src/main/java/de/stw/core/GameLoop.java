@@ -18,7 +18,7 @@ public class GameLoop {
 
     private final Clock clock;
     private final List<Player> players;
-	private final List<ResourceProduction> processes;
+    private final List<ResourceProduction> processes;
 
     public GameLoop() {
         this.clock = new ArtificialClock(10, TimeUnit.SECONDS);
@@ -35,10 +35,10 @@ public class GameLoop {
     public void loop() throws InterruptedException {
         for (int i = 0; i < 10000; i++) {
             printState();
-            final Tick tick = clock.nextTick();
+			      final Tick tick = clock.nextTick();
             for (ResourceProduction production : processes) {
             	production.update(tick);
-			}
+			      }
             Thread.sleep(tick.getDelta());
         }
     }
@@ -47,8 +47,8 @@ public class GameLoop {
         System.out.println("Tick: " + clock.getCurrentTick());
         for (Player eachPlayer : players) {
             System.out.println("Player " + eachPlayer.getName());
-            for (ResourceStorage resource : eachPlayer.getResources()) {
-                System.out.println(" " + resource.getResource().getName() + ": " + resource.getAmount());
+            for (ResourceStorage resourceStorage : eachPlayer.getResources()) {
+                System.out.println(" " + resourceStorage.getResource().getName() + ": " + resourceStorage.getAmount());
             }
         }
     }

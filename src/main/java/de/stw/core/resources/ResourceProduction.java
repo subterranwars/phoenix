@@ -11,7 +11,6 @@ public class ResourceProduction {
 	private final double productionPerHour;
 
 	public ResourceProduction(final ResourceStorage storage, double productionPerHour) {
-		Objects.requireNonNull(storage);
 		Preconditions.checkArgument(productionPerHour >= 0);
 
 		this.storage = Objects.requireNonNull(storage);
@@ -23,6 +22,7 @@ public class ResourceProduction {
 		double amountToProduceInTick = productionPerHour / TimeConstants.MILLISECONDS_PER_HOUR * ms;
 		storage.store(amountToProduceInTick);
 	}
+
 	public ResourceStorage getStorage() {
 		return storage;
 	}
