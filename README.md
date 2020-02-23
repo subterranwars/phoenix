@@ -4,7 +4,7 @@
 phoenix erhebt SubTerranWars aus der Asche der gestorbenen Projekte. 
 
 ## Working Mode 
-phoenix wird im "lean" Ansatz entwickelt um der Featuritis früherer Projekte begegnen zu können.
+phoenix wird im "lean" Ansatz entwickelt um der Featuritis frÃ¼herer Projekte begegnen zu kÃ¶nnen.
 
 ## Architecture
 
@@ -22,19 +22,19 @@ eher nicht in Frage kommen:
 #### Backend
 
 ##### Database (DB)
-Postgres wäre geeignet, aber zunächst kann auch auf H2 oder SQLite zurückgegriffen werden; Einsatz von JPA gibt Flexibilität bei Datenbankwahl
+Postgres wÃ¤re geeignet, aber zunÃ¤chst kann auch auf H2 oder SQLite zurÃ¼ckgegriffen werden; Einsatz von JPA gibt FlexibilitÃ¤t bei Datenbankwahl
 
 ##### Servers
 - Trennung von Spielmechanikberechnungen und User-Interface in zwei getrennten Servern: Game-Server & UI-Server 
-- Daten in DB in "Parameter" und "Zustände" trennen
-- Um Kollisionen der Server an der DB zu vermeiden: gegenseitiges "Read-only": UI-Server liest nur Zustände, Game-Server liest nur Parameter
-- Alternativ: UI-Server liest nur Zustände, und ordnet "Prozesse" an, Game-Server berechnet Prozesse und aktualisiert Zustände
+- Daten in DB in "Parameter" und "ZustÃ¤nde" trennen
+- Um Kollisionen der Server an der DB zu vermeiden: gegenseitiges "Read-only": UI-Server liest nur ZustÃ¤nde, Game-Server liest nur Parameter
+- Alternativ: UI-Server liest nur ZustÃ¤nde, und ordnet "Prozesse" an, Game-Server berechnet Prozesse und aktualisiert ZustÃ¤nde
 - Optional parallelisierte Game- / UI-Server bei hohem aufkommen
 
 ### Game Loop
-- keine "Nachberechnung" der Spielzustände mehr
-- dauerhafte Server-loop die regelmäßig Ticks durchrechnet und nach jedem Tick den Spielzustand aktualisiert
-- Tick-intervall in Echtzeit sollte nur wenige Sekunden betragen für ein gutes Spielgefühl
+- keine "Nachberechnung" der SpielzustÃ¤nde mehr
+- dauerhafte Server-loop die regelmÃ¤ÃŸig Ticks durchrechnet und nach jedem Tick den Spielzustand aktualisiert
+- Tick-intervall in Echtzeit sollte nur wenige Sekunden betragen fÃ¼r ein gutes SpielgefÃ¼hl
 - keine Zustandsaktualisierung zwischen Ticks
 - Trennung von Echtzeit (walltime) und in-game-time
  
