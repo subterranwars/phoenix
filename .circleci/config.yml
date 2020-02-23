@@ -17,9 +17,9 @@ jobs:
       - run: mvn package -DskipTests -DskipITs
 
       - save_cache:
-        paths:
-          - ~/.m2
-        key: mvn-cache-{{ checksum "pom.xml" }}
+          paths:
+            - ~/.m2
+          key: mvn-cache-{{ checksum "pom.xml" }}
 
       - store_test_results:
           path: target/surefire-reports
