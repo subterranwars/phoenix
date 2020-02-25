@@ -10,16 +10,15 @@ phoenix wird im "lean" Ansatz entwickelt um der Featuritis früherer Projekte be
 
 ## Architecture
 
-
 ### Stack
 
 #### Frontend
 Browserbasiert , z. B. mittels 
-- angular oder react mit boostrap
-- oder unity
+- angular oder react mit boostrap + gameigen ui-elementen
 
 eher nicht in Frage kommen:
 - Vaadin
+- unity
 
 #### Backend
 
@@ -40,3 +39,19 @@ Postgres wäre geeignet, aber zunächst kann auch auf H2 oder SQLite zurückgegr
 - keine Zustandsaktualisierung zwischen Ticks
 - Trennung von Echtzeit (walltime) und in-game-time
  
+## Features
+- Multiplayer
+- 
+
+
+## Was macht am Spielen Spaß?
+- Räsel lösen (Schach, Go, Sokoban)
+- Strategien entwerfen / Pläne schmieden (Go, Squad)
+- komplexe (Spiel-)Mechaniken verstehen (Go, Squad, Stellaris, Kerbal)
+- mit anderen im Wettbewerb stehen (z. B. Schach, Fußball, Squad)
+- Spielfähigkeiten freischalten "ab jetzt kann ich ... tun" (z. B. Erfahrungspunkte sammeln in jedem RPG / Techtrees a la Civ / ), Beispiele
+	- den ganz großen Panzer bauen
+	- Feuerbälle zaubern
+- eigene Fähigkeiten verbessern (Schach, Klettern, Bogenschießen, Geschicklichkeitsspiele, Kerbal)
+- Simulation beobachten (Factorio, Siedler, Kerbal)
+- Geschichten verfolgen & Immersion (RPGs, z. B. )
