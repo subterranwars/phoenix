@@ -55,3 +55,46 @@ Postgres wäre geeignet, aber zunächst kann auch auf H2 oder SQLite zurückgegr
 - eigene Fähigkeiten verbessern (Schach, Klettern, Bogenschießen, Geschicklichkeitsspiele, Kerbal)
 - Simulation beobachten (Factorio, Siedler, Kerbal)
 - Geschichten verfolgen & Immersion (RPGs, z. B. )
+
+
+## Game Elements
+### Resource Management
+Resource management is taken care of in the resource module of the bunker. The resource management is divided in two parts: "finding resource deposits" and "Extracting resources from deposits".
+#### Literature research of resource games
+Examples of games that include resource finding:
+- Mass Effect 2: https://www.youtube.com/watch?v=G3AMdbkfDdM
+- Excavate: http://www.crazygames.com/game/excavate
+- Glean: http://www.crazygames.com/game/glean
+Popular game elements for resource finding games:
+- train user dexterity
+	- cf. Gears of War: reload timing mechanics
+	- cf. Final Fantasy X: Combo mode timing mechanics
+- rewards
+- upgrades of equipment (and or training skills) to improve gaming efficiency
+- highscores
+- use planning of strategic elements
+- locate resources via triangulation
+	- e.g. Excavate allows finding resources with a "Minesweeper-like" mechanic
+	- Mass effect gives hints of "Signal strength" according to scanning position
+#### Finding resources
+##### Simple version
+The user can click on "Scan for X", where X represents any of the available resources. If the scan is completed and successfull, a new resource deposit will be available for extracting resources.
+##### Ideas for an advanced version
+- Locate resources manually at the beginning
+- Use "Scans" to get hints where resources might be positioned
+- Triangulate resource positions and find deposits
+- later in the game, deposits can be located automatically - which takes just more time compared to the user doing it herself
+#### Extracting resources
+A resource deposit has three characteristics:
+- amount: defines how many resources can be extracted in total from this deposit 
+- purity: defines how fast resources can be extracted - higher purity higher hourly yields
+- depth: defines how much energy the extraction will cost - the deeper the more energy is required
+##### Simple version
+The user can click on a resource deposit and order mining drones to extract resources. The drones will extract a certain amount of resources based on the purity of the deposit and consume energy according to the depth of the deposit.
+##### Ideas for an advances version
+- Drones fetch resources
+- Player can use her "dexterity" or use tactical skills to support mining drones, e.g.
+	- to avoid enemys
+	- to avoid stones / explosives / other materials in the payload
+- once a mini-mission is complete, the user is rewarded with a small amount of extra resources
+- extra resources do not scale - become irrelevant in the mid-game
