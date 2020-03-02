@@ -6,6 +6,8 @@ import de.stw.core.clock.Clock;
 import de.stw.core.clock.Tick;
 import de.stw.core.resources.ResourceProduction;
 import de.stw.core.resources.ResourceStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -15,6 +17,8 @@ import static de.stw.core.resources.Resources.IRON;
 import static de.stw.core.resources.Resources.MAX_STORAGE_CAPACITY;
 
 public class GameLoop {
+
+    private static final Logger LOG = LoggerFactory.getLogger(GameLoop.class);
 
     private final Clock clock;
     private final List<Player> players;
@@ -32,28 +36,20 @@ public class GameLoop {
 				.collect(Collectors.toList());
     }
 
-    public void loop() throws InterruptedException {
-        for (int i = 0; i < 10000; i++) {
-            printState();
-            final Tick tick = clock.nextTick();
-            for (ResourceProduction production : processes) {
-            	production.update(tick);
-			}
-            Thread.sleep(tick.getDelta());
+    public void loop() {
+        printState();
+        final Tick tick = clock.nextTick();
+        for (ResourceProduction production : processes) {
+            production.update(tick);
         }
     }
 
     private void printState() {
-        System.out.println("Tick: " + clock.getCurrentTick());
+        LOG.debug("Tick: {}", clock.getCurrentTick());
         for (Player eachPlayer : players) {
-            System.out.println("Player " + eachPlayer.getName());
             for (ResourceStorage resource : eachPlayer.getResources()) {
-                System.out.println(" " + resource.getResource().getName() + ": " + resource.getAmount());
+                LOG.debug("{} {}: {}", eachPlayer.getName(), resource.getResource().getName(), resource.getAmount());
             }
         }
-    }
-
-    public static void main(String[] args) throws InterruptedException {
-        new GameLoop().loop();
     }
 }
