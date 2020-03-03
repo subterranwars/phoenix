@@ -9,6 +9,7 @@ import de.stw.core.resources.ResourceStorage;
 import de.stw.rest.GameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
@@ -23,13 +24,14 @@ public class GameLoop {
 
     private static final Logger LOG = LoggerFactory.getLogger(GameLoop.class);
 
-    private final Clock clock;
+    @Autowired
+    private Clock clock;
+
     private final List<Player> players;
 	private final List<ResourceProduction> processes;
     private GameState state;
 
     public GameLoop() {
-        this.clock = new ArtificialClock(10, TimeUnit.SECONDS);
         this.players = Lists.newArrayList(
                 new Player(1, "marskuh", createInitialStorages()),
                 new Player(2, "fafner", createInitialStorages())
