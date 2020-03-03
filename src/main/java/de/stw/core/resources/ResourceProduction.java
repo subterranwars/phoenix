@@ -5,6 +5,7 @@ import de.stw.core.clock.Tick;
 import de.stw.core.clock.TimeConstants;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 public class ResourceProduction {
 	private final ResourceStorage storage;
@@ -25,5 +26,15 @@ public class ResourceProduction {
 	}
 	public ResourceStorage getStorage() {
 		return storage;
+	}
+
+	public ResourceProduction convert(TimeUnit timeUnit) {
+		long units = timeUnit.convert(1, TimeUnit.HOURS);
+		double productionPerTimeUnit = productionPerHour / units;
+		return new ResourceProduction(new ResourceStorage(storage), productionPerTimeUnit);
+	}
+
+	public double getProductionValue() {
+		return productionPerHour;
 	}
 }

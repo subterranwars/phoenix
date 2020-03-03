@@ -14,6 +14,10 @@ public class ResourceStorage {
 	private double maxStorageCapacity;
 	private double amount;
 
+	public ResourceStorage(final ResourceStorage input) {
+		this(Objects.requireNonNull(input).getResource(), input.getAmount(), input.getCapacity());
+	}
+
 	public ResourceStorage(Resource resource, double amount, double maxStorageCapacity) {
 		Preconditions.checkArgument(amount >= 0, "Amount must not be negative");
 		Preconditions.checkArgument(maxStorageCapacity >= 0, "maxStorageCapacity must not be negative");
@@ -28,6 +32,10 @@ public class ResourceStorage {
 
 	public double getAmount() {
 		return amount;
+	}
+
+	public double getCapacity() {
+		return maxStorageCapacity;
 	}
 
 	/**
