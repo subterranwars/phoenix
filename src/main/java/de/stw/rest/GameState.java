@@ -1,6 +1,6 @@
 package de.stw.rest;
 
-import de.stw.core.Player;
+import de.stw.core.user.User;
 import de.stw.core.clock.Tick;
 
 import java.util.List;
@@ -11,9 +11,9 @@ public class GameState {
     private final List<PlayerState> playerStates;
     private final Tick tick = new Tick(0, 1000);
 
-    public GameState(final List<Player> playerList) {
-        Objects.requireNonNull(playerList);
-        playerStates = playerList.stream().map(PlayerState::new).collect(Collectors.toList());
+    public GameState(final List<User> userList) {
+        Objects.requireNonNull(userList);
+        playerStates = userList.stream().map(PlayerState::new).collect(Collectors.toList());
     }
 
     public Tick getTick() {

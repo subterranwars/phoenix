@@ -1,23 +1,20 @@
 package de.stw.core;
 
-import com.google.common.collect.Lists;
-import de.stw.core.clock.ArtificialClock;
 import de.stw.core.clock.Clock;
 import de.stw.core.clock.Tick;
 import de.stw.core.resources.ResourceProduction;
 import de.stw.core.resources.ResourceStorage;
+import de.stw.core.user.User;
+import de.stw.core.user.UserService;
 import de.stw.rest.GameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Service;
 
+import javax.annotation.PostConstruct;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
-
-import static de.stw.core.resources.Resources.*;
 
 @Service
 public class GameLoop {
@@ -27,28 +24,20 @@ public class GameLoop {
     @Autowired
     private Clock clock;
 
-    private final List<Player> players;
-	private final List<ResourceProduction> processes;
+    @Autowired
+    private UserService userService;
+
     private GameState state;
 
-    public GameLoop() {
-        this.players = Lists.newArrayList(
-                new Player(1, "marskuh", createInitialStorages()),
-                new Player(2, "fafner", createInitialStorages())
-        );
-        this.players.get(0).getResources().forEach(rp -> {
-            rp.store(1000);
-        });
-        this.processes = players.stream()
-				.flatMap(p -> p.getResources().stream())
-				.map(storage -> new ResourceProduction(storage, 60))
-				.collect(Collectors.toList());
+    @PostConstruct
+    public void init() {
         updateState();
     }
 
     public void loop() {
         printState();
         final Tick tick = clock.nextTick();
+        final List<ResourceProduction> processes = userService.getUsers().stream().flatMap(p -> p.getResourceProduction().stream()).collect(Collectors.toList());
         for (ResourceProduction production : processes) {
             production.update(tick);
         }
@@ -57,24 +46,24 @@ public class GameLoop {
 
     private void printState() {
         LOG.debug("Tick: {}", clock.getCurrentTick());
-        for (Player eachPlayer : players) {
-            for (ResourceStorage resource : eachPlayer.getResources()) {
-                LOG.debug("{} {}: {}", eachPlayer.getName(), resource.getResource().getName(), resource.getAmount());
+        for (User eachUser : userService.getUsers()) {
+            // 1. calculate resources
+            for (ResourceStorage resource : eachUser.getResources()) {
+                LOG.debug("{} {}: {}", eachUser.getName(), resource.getResource().getName(), resource.getAmount());
             }
+
+            // 2. calculated modifier (e.g. energy niveau critical)
+
+            // 3. finish buildings
+//            buildingManager.getBuildings(clock.getCurrentTick()).forEach(event -> {
+//
+//            });
+
         }
     }
 
-    private static List<ResourceStorage> createInitialStorages() {
-        return Lists.newArrayList(
-                new ResourceStorage(Iron, 0, MAX_STORAGE_CAPACITY),
-                new ResourceStorage(Stone, 0, MAX_STORAGE_CAPACITY),
-                new ResourceStorage(Food, 0, MAX_STORAGE_CAPACITY),
-                new ResourceStorage(Oil, 0, MAX_STORAGE_CAPACITY)
-            );
-    }
-
     public synchronized void updateState() {
-        this.state = new GameState(this.players);
+        this.state = new GameState(userService.getUsers());
     }
 
     public synchronized  GameState getState() {
