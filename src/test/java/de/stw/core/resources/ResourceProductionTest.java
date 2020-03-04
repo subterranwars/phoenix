@@ -1,12 +1,12 @@
 package de.stw.core.resources;
 
 import de.stw.core.clock.Tick;
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
 
 public class ResourceProductionTest {
 

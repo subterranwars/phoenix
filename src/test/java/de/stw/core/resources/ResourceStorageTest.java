@@ -1,9 +1,10 @@
 package de.stw.core.resources;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertThat;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class ResourceStorageTest {
 
@@ -39,14 +40,14 @@ public class ResourceStorageTest {
         assertThat(storage.getAmount(), is(0d));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void verifyConstructorAmountNotNegative() {
-        new ResourceStorage(Resources.Iron, -500, 1000);
+        assertThrows(IllegalArgumentException.class, () -> new ResourceStorage(Resources.Iron, -500, 1000));
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void verifyConstructorMaxStorageNotNegative() {
-        new ResourceStorage(Resources.Iron, 0, -1000);
+        assertThrows(IllegalArgumentException.class, () -> new ResourceStorage(Resources.Iron, 0, -1000));
     }
 
 }
