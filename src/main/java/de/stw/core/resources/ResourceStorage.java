@@ -56,6 +56,7 @@ public class ResourceStorage {
 	 * @return If this storage does not contain the requested amount, the remaining amount is returned; otherwise requested amount
 	 */
 	public double retrieve(double requestedAmount) {
+		// TODO MVR should throw exception in case not "affordable"
 		double nextStorageAmount = Math.max(0, amount - requestedAmount);
 		double amountToRetrieve = amount - nextStorageAmount;
 		this.amount = nextStorageAmount;

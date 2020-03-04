@@ -1,5 +1,6 @@
 package de.stw.core.resources;
 
+import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Preconditions;
 
 import java.util.Objects;
@@ -11,6 +12,8 @@ import java.util.Objects;
  */
 public class Resource {
     private int id;
+
+    @JsonValue
     private String name;
 
     public Resource(int id, String name) {

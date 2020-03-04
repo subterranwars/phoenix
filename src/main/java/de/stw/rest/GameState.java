@@ -23,4 +23,8 @@ public class GameState {
     public List<PlayerState> getPlayerStates() {
         return playerStates;
     }
+
+    public PlayerState getPlayerState(String userName) {
+        return playerStates.stream().filter(state -> state.getName().equals(userName)).findAny().get();
+    }
 }

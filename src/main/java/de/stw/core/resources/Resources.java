@@ -1,7 +1,8 @@
 package de.stw.core.resources;
 
 public interface Resources {
-    int MAX_STORAGE_CAPACITY = 20000;
+    int MAX_STORAGE_CAPACITY = 100000;
+    int DEFAULT_AMOUNT = 100000;
 
     Resource Iron = new Resource(1, "iron");
     Resource Stone = new Resource(2, "stone");

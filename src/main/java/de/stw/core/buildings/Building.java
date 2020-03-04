@@ -8,17 +8,22 @@ import de.stw.core.resources.Resources;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 public final class Building {
     private final int id;
     private final String name;
+    private final String label;
+    private final String description;
     private final Map<Resource, Integer> costs;
 
     private Building(final Builder builder) {
         Objects.requireNonNull(builder);
         this.id = builder.id;
         this.name = builder.name;
+        this.label = builder.label;
+        this.description = builder.description;
         this.costs = Collections.unmodifiableMap(builder.costs);
     }
 
@@ -30,11 +35,19 @@ public final class Building {
         return name;
     }
 
+    public String getLabel() {
+        return label;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
     public Map<Resource, Integer> getCosts() {
         return costs;
     }
 
-    public Map<Resource, Integer> calculateCosts(int level) {
+    protected Map<Resource, Integer> calculateCosts(int level) {
         Preconditions.checkArgument(level > 0);
         if (level == 1) {
             return getCosts();
@@ -56,6 +69,8 @@ public final class Building {
     public static final class Builder {
 
         private String name;
+        private String label;
+        private String description;
         private int id;
         private Map<Resource, Integer> costs = Maps.newHashMap();
 
@@ -84,6 +99,26 @@ public final class Building {
 
         public Builder costsStone(int amount) {
             return costsResource(Resources.Stone, amount);
+        }
+
+        public Builder label(String label) {
+            this.label = Objects.requireNonNull(label);
+            return this;
+        }
+
+        public Builder description(String description) {
+            this.description = Objects.requireNonNull(description);
+            return this;
+        }
+
+        public Builder energyConsumption(int consumption) {
+            // TODO MVR not implemented yet
+            return this;
+        }
+
+        public Builder buildTime(float duration, TimeUnit timeUnit) {
+            // TODO MVR not yet implemented
+            return this;
         }
 
         public Building build() {

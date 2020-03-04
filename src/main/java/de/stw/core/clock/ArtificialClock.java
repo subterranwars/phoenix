@@ -2,6 +2,7 @@ package de.stw.core.clock;
 
 import java.util.concurrent.TimeUnit;
 
+// TODO MVR Make threadsafe.... when invoking getTick(int, TimeUnit) the next tick may be invoked and therefore it is not threadsafe
 public class ArtificialClock implements Clock {
 
     private Tick tick;
@@ -23,5 +24,15 @@ public class ArtificialClock implements Clock {
     @Override
     public Tick getCurrentTick() {
         return tick;
+    }
+
+    @Override
+    public Tick getTick(int duration, TimeUnit timeUnit) {
+        final Tick currentTick = getCurrentTick();
+        final long durationInMs = TimeUnit.MILLISECONDS.convert(duration, timeUnit);
+        final long tickLengthInMs = TimeUnit.MILLISECONDS.convert(tickLength, tickUnit);
+        final int numberOfTicks = (int) Math.ceil(durationInMs / (float) tickLengthInMs);
+        final long endTick = tickLengthInMs * numberOfTicks + currentTick.getEnd();
+        return new Tick(endTick - tickLengthInMs, endTick);
     }
 }

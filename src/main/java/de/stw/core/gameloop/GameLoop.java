@@ -1,4 +1,4 @@
-package de.stw.core;
+package de.stw.core.gameloop;
 
 import de.stw.core.clock.Clock;
 import de.stw.core.clock.Tick;
@@ -47,18 +47,9 @@ public class GameLoop {
     private void printState() {
         LOG.debug("Tick: {}", clock.getCurrentTick());
         for (User eachUser : userService.getUsers()) {
-            // 1. calculate resources
             for (ResourceStorage resource : eachUser.getResources()) {
                 LOG.debug("{} {}: {}", eachUser.getName(), resource.getResource().getName(), resource.getAmount());
             }
-
-            // 2. calculated modifier (e.g. energy niveau critical)
-
-            // 3. finish buildings
-//            buildingManager.getBuildings(clock.getCurrentTick()).forEach(event -> {
-//
-//            });
-
         }
     }
 
