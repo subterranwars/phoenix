@@ -1,17 +1,17 @@
 package de.stw.rest.dto;
 
-import de.stw.core.buildings.BuildingLevel;
 import de.stw.core.buildings.BuildingRef;
+import de.stw.core.buildings.ConstructionInfo;
 
 public class ConstructionEventDTO extends GameEventDTO {
 
     private BuildingRef building;
     private int level;
 
-    public ConstructionEventDTO(long completedInSeconds, BuildingLevel buildingLevel) {
+    public ConstructionEventDTO(long completedInSeconds, ConstructionInfo constructionInfo) {
         super(GameEventTypes.Construction, completedInSeconds);
-        this.building = buildingLevel.getBuilding();
-        this.level = buildingLevel.getLevel();
+        this.building = constructionInfo.getBuilding();
+        this.level = constructionInfo.getLevelToBuild();
     }
 
     public BuildingRef getBuilding() {

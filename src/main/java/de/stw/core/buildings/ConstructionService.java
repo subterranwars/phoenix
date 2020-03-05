@@ -3,39 +3,39 @@ package de.stw.core.buildings;
 import de.stw.core.clock.Clock;
 import de.stw.core.clock.Tick;
 import de.stw.core.user.User;
-import de.stw.core.user.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.NoSuchElementException;
-import java.util.Optional;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import java.util.stream.Collectors;
 
 @Service
 public class ConstructionService {
 
     @Autowired
-    private UserService userService;
-
-    @Autowired
     private Clock clock;
 
-    public void build(int userId, int buildingId) {
-        final Optional<User> userOptional = userService.find(userId);
-        if (!userOptional.isPresent()) {
-            throw new NoSuchElementException(String.format("No user with id '%s' found", userId));
-        }
-        final Optional<Building> buildingOptional = find(buildingId);
-        if (!buildingOptional.isPresent()) {
-            throw new NoSuchElementException(String.format("No building with id '%s' found", buildingId));
-        }
-        final User user = userOptional.get();
+    public List<ConstructionInfo> listBuildings(final User user) {
+        Objects.requireNonNull(user);
+        final BuildingLevel hqBuilding = user.getBuilding(Buildings.Headquarter);
+        return Buildings.ALL.stream()
+                .map(user::getBuilding)
+                .map(BuildingLevel::next)
+                .map(bl -> new ConstructionInfo(bl, hqBuilding))
+                .collect(Collectors.toList());
+    }
+
+    public void build(final User user, final Building building) {
+        Objects.requireNonNull(user);
+        Objects.requireNonNull(building);
         if (user.getConstructionEvent() == null) {
-            final Building building = buildingOptional.get();
             final BuildingLevel userLevel = user.getBuilding(building);
-            if (user.canAfford(userLevel.getCosts())) {
-                enqueue(user, userLevel);
-                user.removeResources(userLevel.getCosts());
+            final ConstructionInfo ci = new ConstructionInfo(userLevel.next(), user.getBuilding(Buildings.Headquarter));
+            if (user.canAfford(ci.getCosts())) {
+                enqueue(user, ci);
+                user.removeResources(ci.getCosts());
             } else {
                 // TODO MVR throw exception? Cannot afford?
             }
@@ -44,14 +44,9 @@ public class ConstructionService {
         }
     }
 
-    private void enqueue(User user, BuildingLevel buildingLevel) {
-        final int constructionTime = 60000; // ms
-        final Tick futureTick = clock.getTick(constructionTime, TimeUnit.MILLISECONDS);
-        final ConstructionEvent constructionEvent = new ConstructionEvent(user, buildingLevel.next(), futureTick);
+    private void enqueue(User user, ConstructionInfo constructionInfo) {
+        final Tick futureTick = clock.getTick(constructionInfo.getBuildTimeInSeconds(), TimeUnit.SECONDS);
+        final ConstructionEvent constructionEvent = new ConstructionEvent(user, constructionInfo, futureTick);
         user.addConstruction(constructionEvent);
-    }
-
-    private Optional<Building> find(int buildingId) {
-        return Buildings.ALL.stream().filter(b -> b.getId() == buildingId).findAny();
     }
 }

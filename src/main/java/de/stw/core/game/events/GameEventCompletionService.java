@@ -1,8 +1,7 @@
 package de.stw.core.game.events;
 
 import com.google.common.collect.Maps;
-import de.stw.core.buildings.ConstructionEvent;
-import de.stw.core.buildings.GameEvent;
+import de.stw.core.buildings.*;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
@@ -25,8 +24,10 @@ public class GameEventCompletionService {
     @PostConstruct
     public void init() {
         handlers.put(ConstructionEvent.class, (GameEventCompletionHandler<ConstructionEvent>) gameEvent -> {
-            LoggerFactory.getLogger(getClass()).info("Completing construction event. User: {}, Building: {}, Level: {}", gameEvent.getUser().getName(), gameEvent.getBuildingLevel().getBuilding().getLabel(), gameEvent.getBuildingLevel().getLevel());
-            gameEvent.getUser().setBuilding(gameEvent.getBuildingLevel());
+            ConstructionInfo constructionInfo = gameEvent.getConstructionInfo();
+            LoggerFactory.getLogger(getClass()).info("Completing construction event. User: {}, Building: {}, Level: {}", gameEvent.getUser().getName(), gameEvent.getConstructionInfo().getBuilding().getLabel(), gameEvent.getConstructionInfo().getLevelToBuild());
+            final BuildingLevel newLevel = new BuildingLevel(Buildings.findByRef(constructionInfo.getBuilding()), constructionInfo.getLevelToBuild());
+            gameEvent.getUser().setBuilding(newLevel);
         });
     }
 

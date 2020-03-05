@@ -10,12 +10,12 @@ import java.util.Objects;
 public class ConstructionEvent implements GameEvent {
     @JsonIgnore
     private final User user;
-    private final BuildingLevel buildingLevel;
+    private final ConstructionInfo constructionInfo;
     private final Tick completionTick;
 
-    public ConstructionEvent(User user, BuildingLevel buildingLevel, Tick tickCompleted) {
+    public ConstructionEvent(User user, ConstructionInfo constructionInfo, Tick tickCompleted) {
         this.user = Objects.requireNonNull(user);
-        this.buildingLevel = Objects.requireNonNull(buildingLevel);
+        this.constructionInfo = Objects.requireNonNull(constructionInfo);
         this.completionTick = Objects.requireNonNull(tickCompleted);
     }
 
@@ -23,8 +23,8 @@ public class ConstructionEvent implements GameEvent {
         return user;
     }
 
-    public BuildingLevel getBuildingLevel() {
-        return buildingLevel;
+    public ConstructionInfo getConstructionInfo() {
+        return constructionInfo;
     }
 
     @Override

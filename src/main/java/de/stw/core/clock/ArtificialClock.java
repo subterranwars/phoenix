@@ -27,11 +27,11 @@ public class ArtificialClock implements Clock {
     }
 
     @Override
-    public Tick getTick(int duration, TimeUnit timeUnit) {
+    public Tick getTick(long duration, TimeUnit timeUnit) {
         final Tick currentTick = getCurrentTick();
         final long durationInMs = TimeUnit.MILLISECONDS.convert(duration, timeUnit);
         final long tickLengthInMs = TimeUnit.MILLISECONDS.convert(tickLength, tickUnit);
-        final int numberOfTicks = (int) Math.ceil(durationInMs / (float) tickLengthInMs);
+        final long numberOfTicks = (long) Math.ceil(durationInMs / (float) tickLengthInMs);
         final long endTick = tickLengthInMs * numberOfTicks + currentTick.getEnd();
         return new Tick(endTick - tickLengthInMs, endTick);
     }

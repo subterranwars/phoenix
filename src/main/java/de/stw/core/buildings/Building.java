@@ -9,7 +9,6 @@ import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 public final class Building implements BuildingRef {
     private final int id;
@@ -17,6 +16,7 @@ public final class Building implements BuildingRef {
     private final String label;
     private final String description;
     private final Map<Resource, Integer> costs;
+    private final long buildTimeInSeconds;
 
     private Building(final Builder builder) {
         Objects.requireNonNull(builder);
@@ -24,6 +24,7 @@ public final class Building implements BuildingRef {
         this.name = builder.name;
         this.label = builder.label;
         this.description = builder.description;
+        this.buildTimeInSeconds = builder.buildTime;
         this.costs = Collections.unmodifiableMap(builder.costs);
     }
 
@@ -47,21 +48,8 @@ public final class Building implements BuildingRef {
         return costs;
     }
 
-    // TODO MVR this is probably better moved to BuildingLevel instead
-    // TODO MVR should probably moved somewhere else
-    protected Map<Resource, Integer> calculateCosts(int level) {
-        Preconditions.checkArgument(level > 0);
-        if (level == 1) {
-            return getCosts();
-        }
-        int actualLevel = level - 1;
-        final Map<Resource, Integer> calculatedCosts = getCosts().entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> {
-            int baseCost = e.getValue();
-            double costs = baseCost * Math.pow(2, Math.pow(actualLevel, 0.5));
-            // Make values a bit nicer
-            return Double.valueOf(costs - (costs % 10)).intValue();
-        }));
-        return calculatedCosts;
+    public long getBuildTimeInSeconds() {
+        return buildTimeInSeconds;
     }
 
     public static Builder builder(int id, String name) {
@@ -74,6 +62,7 @@ public final class Building implements BuildingRef {
         private String label;
         private String description;
         private int id;
+        private long buildTime;
         private Map<Resource, Integer> costs = Maps.newHashMap();
 
         public Builder id(int id) {
@@ -118,8 +107,8 @@ public final class Building implements BuildingRef {
             return this;
         }
 
-        public Builder buildTime(float duration, TimeUnit timeUnit) {
-            // TODO MVR not yet implemented
+        public Builder buildTime(long duration, TimeUnit timeUnit) {
+            this.buildTime = TimeUnit.SECONDS.convert(duration, timeUnit);
             return this;
         }
 

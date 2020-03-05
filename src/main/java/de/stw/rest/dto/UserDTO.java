@@ -33,7 +33,7 @@ public class UserDTO {
 
     private static GameEventDTO convert(final GameEvent e, final Tick currentTick) {
         if (e instanceof ConstructionEvent) {
-            return new ConstructionEventDTO(e.getCompletionTick().getDiff(currentTick, TimeUnit.SECONDS), ((ConstructionEvent) e).getBuildingLevel());
+            return new ConstructionEventDTO(e.getCompletionTick().getDiff(currentTick, TimeUnit.SECONDS), ((ConstructionEvent) e).getConstructionInfo());
         }
         throw new IllegalStateException("Cannot convert GameEvent of type " + e.getClass().getSimpleName());
     }
