@@ -1,9 +1,10 @@
 package de.stw.rest;
 
 import com.google.common.collect.Maps;
-import de.stw.core.gameloop.GameLoop;
+import de.stw.core.clock.Clock;
 import de.stw.core.user.User;
 import de.stw.core.user.UserService;
+import de.stw.rest.dto.UserDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,13 +21,14 @@ public class UserRestController {
     private UserService userService;
 
     @Autowired
-    private GameLoop loop;
+    private Clock clock;
 
     @GetMapping
     @RequestMapping("state")
-    public PlayerState getPlayerState(Principal principal) {
+    public UserDTO getPlayerState(Principal principal) {
         final String userName = principal.getName();
-        return loop.getState().getPlayerState(userName);
+        final Optional<User> user = userService.find(userName);
+        return new UserDTO(user.get(), clock.getCurrentTick());
     }
 
     @PostMapping

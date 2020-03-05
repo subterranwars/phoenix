@@ -9,7 +9,6 @@ import de.stw.core.resources.ResourceProduction;
 import de.stw.core.resources.ResourceStorage;
 import de.stw.core.user.User;
 import de.stw.core.user.UserService;
-import de.stw.rest.GameState;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -65,9 +64,5 @@ public class GameLoop {
                 LOG.debug("{} {}: {}", eachUser.getName(), buildingLevel.getBuilding().getLabel(), buildingLevel.getLevel());
             }
         }
-    }
-
-    public GameState getState() {
-        return new GameState(userService.getUsers());
     }
 }

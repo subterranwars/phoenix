@@ -1,7 +1,9 @@
-package de.stw.rest;
+package de.stw.rest.dto;
 
 import de.stw.core.buildings.BuildingLevel;
+import de.stw.core.buildings.ConstructionEvent;
 import de.stw.core.buildings.GameEvent;
+import de.stw.core.clock.Tick;
 import de.stw.core.resources.ResourceProduction;
 import de.stw.core.user.User;
 
@@ -11,22 +13,29 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public class PlayerState {
+public class UserDTO {
     private int id;
     private String name;
     private List<ResourceProduction> resourceProductions;
     private List<BuildingLevel> buildings;
-    private List<GameEvent> events;
+    private List<GameEventDTO> events;
 
-    public PlayerState(User user) {
+    public UserDTO(final User user, final Tick currentTick) {
         Objects.requireNonNull(user);
         this.resourceProductions = user.getResourceProduction().stream()
                 .map(production -> production.convert(TimeUnit.MINUTES))
                 .collect(Collectors.toList());
         this.buildings = Collections.unmodifiableList(user.getBuildings());
-        this.events = Collections.unmodifiableList(user.getEvents());
+        this.events = user.getEvents().stream().map(e -> convert(e, currentTick)).collect(Collectors.toList());
         this.id = user.getId();
         this.name = user.getName();
+    }
+
+    private static GameEventDTO convert(final GameEvent e, final Tick currentTick) {
+        if (e instanceof ConstructionEvent) {
+            return new ConstructionEventDTO(e.getCompletionTick().getDiff(currentTick, TimeUnit.SECONDS), ((ConstructionEvent) e).getBuildingLevel());
+        }
+        throw new IllegalStateException("Cannot convert GameEvent of type " + e.getClass().getSimpleName());
     }
 
     public int getId() {
@@ -45,7 +54,7 @@ public class PlayerState {
         return buildings;
     }
 
-    public List<GameEvent> getEvents() {
+    public List<GameEventDTO> getEvents() {
         return events;
     }
 }

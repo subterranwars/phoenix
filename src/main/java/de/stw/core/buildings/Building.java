@@ -11,7 +11,7 @@ import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
-public final class Building {
+public final class Building implements BuildingRef {
     private final int id;
     private final String name;
     private final String label;
@@ -47,6 +47,8 @@ public final class Building {
         return costs;
     }
 
+    // TODO MVR this is probably better moved to BuildingLevel instead
+    // TODO MVR should probably moved somewhere else
     protected Map<Resource, Integer> calculateCosts(int level) {
         Preconditions.checkArgument(level > 0);
         if (level == 1) {

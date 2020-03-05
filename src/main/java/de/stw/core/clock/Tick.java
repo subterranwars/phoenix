@@ -3,6 +3,7 @@ package de.stw.core.clock;
 import com.google.common.base.MoreObjects;
 
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 
 // TODO MVr rework tick concept, only use for gameloop diff and clock
 public class Tick {
@@ -28,6 +29,14 @@ public class Tick {
 
     public boolean isGreaterOrEqual(Tick completionTick) {
         return this.endTime >= completionTick.getEnd();
+    }
+
+    public long getDiff(Tick tickToCompare, TimeUnit timeUnit) {
+        if (tickToCompare.isGreaterOrEqual(this)) {
+            throw new IllegalArgumentException("tickToCompare must be AFTER this tick");
+        }
+        long diff = this.endTime - tickToCompare.endTime;
+        return timeUnit.convert(diff, TimeUnit.MILLISECONDS);
     }
 
     @Override
