@@ -1,11 +1,14 @@
 package de.stw.core.buildings;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.stw.core.clock.Tick;
 import de.stw.core.user.User;
 
 import java.util.Objects;
 
+// TODO MVR how to serialize?
 public class ConstructionEvent implements GameEvent {
+    @JsonIgnore
     private final User user;
     private final BuildingLevel buildingLevel;
     private final Tick completionTick;
@@ -27,10 +30,5 @@ public class ConstructionEvent implements GameEvent {
     @Override
     public Tick getCompletionTick() {
         return completionTick;
-    }
-
-    @Override
-    public boolean isComplete(Tick currentTick) {
-        return false;
     }
 }

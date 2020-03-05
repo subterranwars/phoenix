@@ -3,6 +3,7 @@ package de.stw.core.user;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 import de.stw.core.buildings.*;
+import de.stw.core.clock.Tick;
 import de.stw.core.resources.Resource;
 import de.stw.core.resources.ResourceProduction;
 import de.stw.core.resources.ResourceStorage;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 
 import static de.stw.core.resources.Resources.*;
 
+// TODO MVR do we need this to be immutable?
 public final class User {
     private final int id;
     private final String name;
@@ -26,7 +28,7 @@ public final class User {
         this.name = builder.name;
         this.password = builder.password;
         this.resources = Collections.unmodifiableList(builder.resources);
-        this.buildings = Collections.unmodifiableList(builder.buildings);
+        this.buildings = builder.buildings;
     }
 
     public int getId() {
@@ -67,6 +69,14 @@ public final class User {
         return any.orElse(new BuildingLevel(building, 0));
     }
 
+    public void setBuilding(BuildingLevel buildingLevel) {
+        Optional<BuildingLevel> any = buildings.stream().filter(bl -> bl.getBuilding().getId() == buildingLevel.getBuilding().getId()).findAny();
+        if (any.isPresent()) {
+            buildings.remove(any.get());
+        }
+        buildings.add(buildingLevel);
+    }
+
     public boolean canAfford(Map<Resource, Integer> costs) {
         for (Map.Entry<Resource, Integer> entry : costs.entrySet()) {
             final Resource resource = entry.getKey();
@@ -103,6 +113,16 @@ public final class User {
         return (ConstructionEvent) getEvents().stream()
                 .filter(e -> e.getClass().isAssignableFrom(ConstructionEvent.class))
                 .findAny().orElse(null);
+    }
+
+    public List<GameEvent> getEvents(final Tick tick) {
+        Objects.requireNonNull(tick);
+        return events.stream().filter(e -> e.isComplete(tick)).collect(Collectors.toList());
+    }
+
+    public void removeEvent(GameEvent event) {
+        Objects.requireNonNull(event);
+        events.remove(event);
     }
 
     public static final class Builder {

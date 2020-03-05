@@ -5,5 +5,8 @@ import de.stw.core.clock.Tick;
 public interface GameEvent {
     Tick getCompletionTick();
 
-    boolean isComplete(Tick currentTick);
+    // TODO MVR maybe should be provided somewhere else
+    default boolean isComplete(Tick currentTick) {
+        return currentTick.isGreaterOrEqual(getCompletionTick());
+    }
 }

@@ -1,7 +1,10 @@
 package de.stw.core.gameloop;
 
+import de.stw.core.buildings.BuildingLevel;
+import de.stw.core.buildings.GameEvent;
 import de.stw.core.clock.Clock;
 import de.stw.core.clock.Tick;
+import de.stw.core.game.events.GameEventCompletionService;
 import de.stw.core.resources.ResourceProduction;
 import de.stw.core.resources.ResourceStorage;
 import de.stw.core.user.User;
@@ -12,7 +15,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -27,21 +29,30 @@ public class GameLoop {
     @Autowired
     private UserService userService;
 
-    private GameState state;
-
-    @PostConstruct
-    public void init() {
-        updateState();
-    }
+    @Autowired
+    private GameEventCompletionService completionService;
 
     public void loop() {
         printState();
         final Tick tick = clock.nextTick();
+
+        // Produce resources
         final List<ResourceProduction> processes = userService.getUsers().stream().flatMap(p -> p.getResourceProduction().stream()).collect(Collectors.toList());
         for (ResourceProduction production : processes) {
             production.update(tick);
         }
-        updateState();
+
+        // Finish buildings
+        final List<GameEvent> events = userService.getUsers().stream()
+            .flatMap(u -> u.getEvents(tick).stream())
+            .collect(Collectors.toList());
+        for (GameEvent eachEvent : events) {
+            completionService.complete(eachEvent);
+        }
+        // TODO MVR try not iterating over the same list twice
+        userService.getUsers()
+            .forEach(user -> user.getEvents(tick)
+                .forEach(user::removeEvent));
     }
 
     private void printState() {
@@ -50,14 +61,13 @@ public class GameLoop {
             for (ResourceStorage resource : eachUser.getResources()) {
                 LOG.debug("{} {}: {}", eachUser.getName(), resource.getResource().getName(), resource.getAmount());
             }
+            for (BuildingLevel buildingLevel : eachUser.getBuildings()) {
+                LOG.debug("{} {}: {}", eachUser.getName(), buildingLevel.getBuilding().getLabel(), buildingLevel.getLevel());
+            }
         }
     }
 
-    public synchronized void updateState() {
-        this.state = new GameState(userService.getUsers());
-    }
-
-    public synchronized  GameState getState() {
-        return state;
+    public GameState getState() {
+        return new GameState(userService.getUsers());
     }
 }

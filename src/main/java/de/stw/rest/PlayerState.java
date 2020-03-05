@@ -44,4 +44,8 @@ public class PlayerState {
     public List<BuildingLevel> getBuildings() {
         return buildings;
     }
+
+    public List<GameEvent> getEvents() {
+        return events;
+    }
 }
