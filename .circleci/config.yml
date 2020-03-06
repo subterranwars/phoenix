@@ -28,5 +28,6 @@ jobs:
           path: target/phoenix-0.1-SNAPSHOT.jar
 
       - run: mvn dockerfile:build
-      - run: mvn dockerfile:push
+      - run: docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
+      - run: docker push subterranwars/phoenix:bleeding
       - run: ssh $SSH_USER@$SSH_HOST "deploy_bleeding.sh"
