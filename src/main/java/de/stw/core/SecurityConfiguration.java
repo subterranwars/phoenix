@@ -33,7 +33,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                     .addFilterAfter(preAuthenticationFilter(), RequestHeaderAuthenticationFilter.class)
                     .authorizeRequests()
-                        .antMatchers("/users/register", "/users/authenticate").permitAll()
+                        .antMatchers("/health", "/users/register", "/users/authenticate").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
@@ -44,19 +44,6 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                     .formLogin().disable()
                     .httpBasic().disable()
                     .logout().disable(); // TODO MVR really disable?
-//        http.sessionManagement()
-//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .authenticationProvider(provider)
-//                .addFilterBefore(authenticationFilter(), AuthenticationFilter.class)
-//                .authorizeRequests()
-//                .antMatchers("/users/register", "/users/authenticate").permitAll()
-//                .anyRequest().authenticated()
-//                .and()
-//                .csrf().disable()
-//                .formLogin().disable()
-//                .httpBasic().disable()
-//                .logout().disable();
     }
 
     @Bean

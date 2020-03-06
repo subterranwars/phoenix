@@ -16,14 +16,26 @@
 	<java.version>8</java.version>
 	<maven.compiler.source>${java.version}</maven.compiler.source>
 	<maven.compiler.target>${java.version}</maven.compiler.target>
-	<junit.version>4.12</junit.version> <!-- TODO MVR should we use Junit 5 instead? -->
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <docker.tag>bleeding</docker.tag>
   </properties>
   <build>
     <plugins>
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>com.spotify</groupId>
+        <artifactId>dockerfile-maven-plugin</artifactId>
+        <version>1.4.13</version>
+        <configuration>
+          <repository>subterranwars/phoenix</repository>
+          <tag>${docker.tag}</tag>
+          <buildArgs>
+            <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>
+          </buildArgs>
+        </configuration>
       </plugin>
     </plugins>
   </build>
