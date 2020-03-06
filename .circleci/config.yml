@@ -5,9 +5,7 @@ jobs:
     docker:
       - image: circleci/openjdk:8-jdk-stretch
     steps:
-      - add_ssh_keys:
-          - fingerprints:
-              - "7b:74:b7:c1:4c:33:f7:a0:0b:71:8d:ad:71:82:62:48"
+      - add_ssh_keys
 
       - checkout
 
