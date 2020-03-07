@@ -1,15 +1,14 @@
 package de.stw.phoenix.game.engine.modules.construction;
 
-import de.stw.phoenix.game.data.resources.Resources;
-import de.stw.phoenix.game.player.api.BuildingLevel;
-import org.junit.jupiter.api.Disabled;
-import org.junit.jupiter.api.Test;
-
 import static de.stw.phoenix.game.data.buildings.Buildings.Headquarter;
 import static de.stw.phoenix.game.data.buildings.Buildings.Powerplant;
+import de.stw.phoenix.game.data.resources.Resources;
+import de.stw.phoenix.game.player.api.BuildingLevel;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasEntry;
 import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Disabled;
+import org.junit.jupiter.api.Test;
 
 public class ConstructionInfoTest {
 

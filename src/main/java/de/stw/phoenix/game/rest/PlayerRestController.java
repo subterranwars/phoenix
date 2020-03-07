@@ -1,8 +1,8 @@
 package de.stw.phoenix.game.rest;
 
 import de.stw.phoenix.game.clock.Clock;
-import de.stw.phoenix.game.engine.modules.resources.ResourceProduction;
 import de.stw.phoenix.game.engine.modules.resources.ResourceModule;
+import de.stw.phoenix.game.engine.modules.resources.ResourceProduction;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;

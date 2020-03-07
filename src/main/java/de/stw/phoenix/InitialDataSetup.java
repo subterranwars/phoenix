@@ -2,9 +2,9 @@ package de.stw.phoenix;
 
 import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.impl.ImmutablePlayerImpl;
+import de.stw.phoenix.user.api.User;
 import de.stw.phoenix.user.api.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import de.stw.phoenix.user.api.User;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;

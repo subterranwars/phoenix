@@ -1,8 +1,8 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
+import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
 import org.springframework.stereotype.Service;
 

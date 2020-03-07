@@ -6,16 +6,24 @@ import de.stw.phoenix.game.clock.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.data.resources.Resource;
+import static de.stw.phoenix.game.data.resources.Resources.DEFAULT_AMOUNT;
+import static de.stw.phoenix.game.data.resources.Resources.Food;
+import static de.stw.phoenix.game.data.resources.Resources.Iron;
+import static de.stw.phoenix.game.data.resources.Resources.MAX_STORAGE_CAPACITY;
+import static de.stw.phoenix.game.data.resources.Resources.Oil;
+import static de.stw.phoenix.game.data.resources.Resources.Stone;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
-
-import static de.stw.phoenix.game.data.resources.Resources.*;
 
 // TODO MVR do we need this to be immutable?
 public final class ImmutablePlayerImpl implements ImmutablePlayer {

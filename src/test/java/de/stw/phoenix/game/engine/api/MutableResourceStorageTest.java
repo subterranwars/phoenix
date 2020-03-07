@@ -2,11 +2,10 @@ package de.stw.phoenix.game.engine.api;
 
 import de.stw.phoenix.game.data.resources.Resources;
 import de.stw.phoenix.game.player.api.MutableResourceStorage;
-import org.junit.jupiter.api.Test;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import org.junit.jupiter.api.Test;
 
 class MutableResourceStorageTest {
 

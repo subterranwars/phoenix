@@ -4,15 +4,19 @@ import com.google.common.collect.Lists;
 import de.stw.phoenix.game.clock.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.resources.Resource;
-import de.stw.phoenix.game.player.api.MutablePlayer;
-import de.stw.phoenix.game.player.api.MutableResourceStorage;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
+import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.player.api.MutableResourceStorage;
 
-import java.util.*;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class MutablePlayerImpl implements MutablePlayer {

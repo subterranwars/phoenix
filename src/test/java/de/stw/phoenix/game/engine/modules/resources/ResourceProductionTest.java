@@ -3,12 +3,11 @@ package de.stw.phoenix.game.engine.modules.resources;
 import de.stw.phoenix.game.data.resources.Resources;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.impl.DefaultPlayerRef;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 public class ResourceProductionTest {
 

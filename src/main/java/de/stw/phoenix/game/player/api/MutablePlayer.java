@@ -3,8 +3,6 @@ package de.stw.phoenix.game.player.api;
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
 import de.stw.phoenix.game.events.GameEvent;
-import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
 
 import java.util.List;
 import java.util.Map;

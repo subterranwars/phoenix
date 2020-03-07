@@ -3,12 +3,11 @@ package de.stw.phoenix.game.events;
 import de.stw.phoenix.game.clock.ArtificialClock;
 import de.stw.phoenix.game.clock.Clock;
 import de.stw.phoenix.game.clock.Tick;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Test;
 
 import java.util.concurrent.TimeUnit;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
 
 class GameEventTest {
 

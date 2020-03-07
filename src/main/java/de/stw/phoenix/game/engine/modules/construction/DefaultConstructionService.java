@@ -4,9 +4,9 @@ import de.stw.phoenix.game.clock.Clock;
 import de.stw.phoenix.game.clock.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.buildings.Buildings;
-import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
+import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
