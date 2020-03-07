@@ -33,12 +33,12 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
                 .and()
                     .addFilterAfter(preAuthenticationFilter(), RequestHeaderAuthenticationFilter.class)
                     .authorizeRequests()
-                        .antMatchers("/health", "/users/register", "/users/authenticate").permitAll()
+                        .antMatchers("/health", "/users/register", "/authenticate").permitAll()
                     .anyRequest().authenticated()
                 .and()
                     .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
                 .and()
-                    .cors()
+                    .cors() // TODO MVr can we define this properly?
                 .and()
                     .csrf().disable() // TODO MVR really disable?
                     .formLogin().disable()

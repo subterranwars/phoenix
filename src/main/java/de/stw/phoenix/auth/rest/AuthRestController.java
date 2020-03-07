@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/authenticate")
+@CrossOrigin(origins = "*", allowedHeaders = "*") /* TODO MVR this is bad */
 public class AuthRestController {
 
     @Autowired

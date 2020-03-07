@@ -25,8 +25,8 @@ public class ConstructionRestController {
     private PlayerService playerService;
 
     @GetMapping
-    public List<ConstructionInfo> listBuildings(Principal principal) {
-        final ImmutablePlayer player = playerService.find(principal.getName()).orElseThrow(() -> new NoSuchElementException("User with name '" + principal.getName() + "' not found"));
+    public List<ConstructionInfo> listConstructions(Principal principal) {
+        final ImmutablePlayer player = playerService.find(principal.getName()).orElseThrow(() -> new NoSuchElementException("Player with name '" + principal.getName() + "' not found"));
         return constructionService.listConstructions(player);
     }
 

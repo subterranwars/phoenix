@@ -21,7 +21,7 @@ public class DefaultAuthService implements AuthService {
 
     private final UserRepository userRepository;
     private final Map<String, Token> userTokenMap = Maps.newConcurrentMap();
-    private final Map<Token, String> tokenUserMap = Maps.newConcurrentMap();
+    private final Map<String, String> tokenUserMap = Maps.newConcurrentMap();
 
     @Autowired
     public DefaultAuthService(UserRepository userRepository) {
@@ -41,7 +41,7 @@ public class DefaultAuthService implements AuthService {
                 // TODO dynamic expiration (maybe make configurable)
                 final Token newToken = new Token(token, Instant.now().plus(Duration.ofDays(1)));
                 userTokenMap.put(username, newToken);
-                tokenUserMap.put(newToken, username);
+                tokenUserMap.put(token, username);
                 return newToken;
             }
         }
@@ -50,6 +50,7 @@ public class DefaultAuthService implements AuthService {
 
     @Override
     public void invalidate(Token token) {
+        tokenUserMap.remove(token.getToken());
         userTokenMap.remove(token);
     }
 
