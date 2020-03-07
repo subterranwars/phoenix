@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.engine.api;
+package de.stw.phoenix.game.player.api;
 
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
@@ -20,4 +20,6 @@ public interface MutablePlayer extends ImmutablePlayer {
 
     void addResources(Resource resource, double amount);
     void removeResources(Map<Resource, Integer> costs);
+
+    ImmutablePlayer asImmutable();
 }

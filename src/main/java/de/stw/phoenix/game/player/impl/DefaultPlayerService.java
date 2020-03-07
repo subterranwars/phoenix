@@ -1,6 +1,7 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.Lists;
+import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
 import org.springframework.stereotype.Service;
@@ -9,38 +10,52 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Consumer;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultPlayerService implements PlayerService {
 
-    private List<ImmutablePlayer> players = Lists.newCopyOnWriteArrayList();
+    private List<MutablePlayer> players = Lists.newCopyOnWriteArrayList();
 
     @Override
     public List<ImmutablePlayer> getPlayers() {
-        return Collections.unmodifiableList(players);
+        final List<ImmutablePlayer> immutablePlayers = players.stream().map(MutablePlayer::asImmutable).collect(Collectors.toList());
+        return Collections.unmodifiableList(immutablePlayers);
     }
 
     @Override
     public Optional<ImmutablePlayer> find(long playerId) {
-        return players.stream().filter(p -> p.getId() == playerId).findAny();
+        return findInternal(playerId).map(MutablePlayer::asImmutable);
     }
 
     @Override
     public Optional<ImmutablePlayer> find(String playerName) {
-        return players.stream().filter(p -> Objects.equals(p.getName(), playerName)).findAny();
+        return findInternal(playerName).map(MutablePlayer::asImmutable);
     }
 
     @Override
     public void save(ImmutablePlayer player) {
         Objects.requireNonNull(player);
-        this.players.add(player);
+        final MutablePlayerImpl mutablePlayer = new MutablePlayerImpl(player);
+        this.players.add(mutablePlayer);
     }
 
     @Override
-    public void update(ImmutablePlayer player) {
-        find(player.getId()).ifPresent(existingPlayer -> {
-            players.remove(existingPlayer);
-            players.add(player);
-        });
+    public void modify(String playerName, Consumer<MutablePlayer> consumer) {
+        Objects.requireNonNull(consumer);
+        Objects.requireNonNull(playerName);
+        final MutablePlayer mutablePlayer = findInternal(playerName).get();
+        synchronized (mutablePlayer) {
+            consumer.accept(mutablePlayer);
+        }
+    }
+
+    private Optional<MutablePlayer> findInternal(long playerId) {
+        return players.stream().filter(p -> p.getId() == playerId).findAny();
+    }
+
+    private Optional<MutablePlayer> findInternal(String playerName) {
+        return players.stream().filter(p -> Objects.equals(p.getName(), playerName)).findAny();
     }
 }

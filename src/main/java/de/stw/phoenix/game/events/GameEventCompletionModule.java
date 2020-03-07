@@ -4,11 +4,11 @@ import com.google.common.collect.Maps;
 import de.stw.phoenix.game.clock.Tick;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.engine.api.GameModule;
-import de.stw.phoenix.game.engine.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionInfo;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
+import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,7 +19,7 @@ import java.util.Map;
 import java.util.Objects;
 
 @Service
-public class GameEventCompletionService implements GameModule {
+public class GameEventCompletionModule implements GameModule {
 
     private static final GameEventCompletionHandler NOOP_HANDLER = new GameEventCompletionHandler() {
         @Override
@@ -39,22 +39,22 @@ public class GameEventCompletionService implements GameModule {
             ConstructionInfo constructionInfo = gameEvent.getConstructionInfo();
             LoggerFactory.getLogger(getClass()).info("Completing construction event. User: {}, Building: {}, Level: {}", gameEvent.getPlayerRef().getName(), gameEvent.getConstructionInfo().getBuilding().getLabel(), gameEvent.getConstructionInfo().getLevelToBuild());
             final BuildingLevel newLevel = new BuildingLevel(Buildings.findByRef(constructionInfo.getBuilding()), constructionInfo.getLevelToBuild());
-            playerAccessor.requestAccess(gameEvent.getPlayerRef(), mutablePlayer -> mutablePlayer.setBuilding(newLevel));
+            playerAccessor.modify(gameEvent.getPlayerRef(), mutablePlayer -> mutablePlayer.setBuilding(newLevel));
         });
     }
 
     @Override
-    public void update(ImmutablePlayer player, Tick tick) {
+    public void update(MutablePlayer player, Tick tick) {
         final List<GameEvent> completedEvents = player.getEvents(tick);
         for (GameEvent eachEvent : completedEvents) {
             complete(eachEvent);
         }
+        player.removeEvents(completedEvents);
     }
 
     @Override
-    public void afterUpdate(ImmutablePlayer player, Tick tick) {
-        List<GameEvent> completedEvents = player.getEvents();
-        playerAccessor.requestAccess(player, mutablePlayer -> mutablePlayer.removeEvents(completedEvents));
+    public void afterUpdate(MutablePlayer player, Tick tick) {
+
     }
 
     private <T extends GameEvent> void complete(T completedEvent) {

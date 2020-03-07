@@ -4,7 +4,7 @@ import de.stw.phoenix.game.clock.Clock;
 import de.stw.phoenix.game.clock.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.buildings.Buildings;
-import de.stw.phoenix.game.engine.api.MutablePlayerAccessor;
+import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,7 +43,7 @@ public class DefaultConstructionService implements ConstructionService {
             final BuildingLevel userLevel = player.getBuilding(building);
             final ConstructionInfo constructionInfo = new ConstructionInfo(userLevel.next(), player.getBuilding(Buildings.Headquarter));
             if (player.canAfford(constructionInfo.getCosts())) {
-                playerAccessor.requestAccess(player, mutablePlayer -> {
+                playerAccessor.modify(player, mutablePlayer -> {
                     // Enqueue
                     final Tick futureTick = clock.getTick(constructionInfo.getBuildTimeInSeconds(), TimeUnit.SECONDS);
                     final ConstructionEvent constructionEvent = new ConstructionEvent(player, constructionInfo, futureTick);

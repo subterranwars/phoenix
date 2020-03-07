@@ -1,17 +1,16 @@
-package de.stw.phoenix.game.engine.impl;
+package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.Lists;
 import de.stw.phoenix.game.clock.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.resources.Resource;
-import de.stw.phoenix.game.engine.api.MutablePlayer;
-import de.stw.phoenix.game.engine.api.MutableResourceStorage;
+import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.player.api.MutableResourceStorage;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
-import de.stw.phoenix.game.player.impl.ImmutablePlayerImpl;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -124,6 +123,7 @@ public class MutablePlayerImpl implements MutablePlayer {
         events.forEach(this::removeEvent);
     }
 
+    @Override
     public ImmutablePlayer asImmutable() {
         return ImmutablePlayerImpl.builder(getId(), getName())
                 .withBuildings(this.buildings)

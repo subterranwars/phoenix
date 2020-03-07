@@ -3,10 +3,8 @@ package de.stw.phoenix.game.engine.impl;
 import de.stw.phoenix.game.clock.Clock;
 import de.stw.phoenix.game.clock.Tick;
 import de.stw.phoenix.game.engine.api.GameEngine;
-import de.stw.phoenix.game.engine.api.MutablePlayer;
-import de.stw.phoenix.game.engine.api.MutablePlayerAccessor;
-import de.stw.phoenix.game.engine.modules.resources.ResourceService;
-import de.stw.phoenix.game.events.GameEventCompletionService;
+import de.stw.phoenix.game.engine.modules.resources.ResourceModule;
+import de.stw.phoenix.game.events.GameEventCompletionModule;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
@@ -16,11 +14,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Objects;
-import java.util.function.Consumer;
-
 @Service
-public class DefaultGameEngine implements MutablePlayerAccessor, GameEngine {
+public class DefaultGameEngine implements GameEngine {
 
     private static final Logger LOG = LoggerFactory.getLogger(DefaultGameEngine.class);
 
@@ -31,26 +26,27 @@ public class DefaultGameEngine implements MutablePlayerAccessor, GameEngine {
     private PlayerService playerService;
 
     @Autowired
-    private GameEventCompletionService completionService;
+    private GameEventCompletionModule completionService;
 
     @Autowired
-    private ResourceService resourceService;
+    private ResourceModule resourceModule;
 
     @Override
     public void loop() {
-        printState();
+        logState();
         final Tick tick = clock.nextTick();
-
         for (ImmutablePlayer eachPlayer : playerService.getPlayers()) {
-            // Produce resources
-            resourceService.update(eachPlayer, tick);
+            playerService.modify(eachPlayer, mutablePlayer -> {
+                // Produce resources
+                resourceModule.update(mutablePlayer, tick);
 
-            // Finish stuff
-            completionService.update(eachPlayer, tick);
+                // Finish stuff
+                completionService.update(mutablePlayer, tick);
+            });
         }
     }
 
-    private void printState() {
+    private void logState() {
         LOG.debug("Tick: {}", clock.getCurrentTick());
         for (ImmutablePlayer eachPlayer : playerService.getPlayers()) {
             for (ImmutableResourceStorage resource : eachPlayer.getResources()) {
@@ -59,18 +55,6 @@ public class DefaultGameEngine implements MutablePlayerAccessor, GameEngine {
             for (BuildingLevel buildingLevel : eachPlayer.getBuildings()) {
                 LOG.debug("{} {}: {}", eachPlayer.getName(), buildingLevel.getBuilding().getLabel(), buildingLevel.getLevel());
             }
-        }
-    }
-
-    @Override
-    public void requestAccess(String playerName, Consumer<MutablePlayer> consumer) {
-        Objects.requireNonNull(consumer);
-        Objects.requireNonNull(playerName);
-        final ImmutablePlayer immutablePlayer = playerService.find(playerName).get();
-        synchronized (immutablePlayer) {
-            final MutablePlayerImpl mutablePlayer = new MutablePlayerImpl(immutablePlayer);
-            consumer.accept(mutablePlayer);
-            playerService.update(mutablePlayer.asImmutable());
         }
     }
 }

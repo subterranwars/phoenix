@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.engine.api;
+package de.stw.phoenix.game.player.api;
 
 import com.google.common.base.Preconditions;
 import de.stw.phoenix.game.data.resources.Resource;
