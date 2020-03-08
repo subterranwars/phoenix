@@ -55,7 +55,7 @@ class DefaultAuthServiceTest {
         assertThat(user.isPresent(), is(true));
 
         // Wait for token to be expired
-        Thread.sleep(10 * 1000);
+        Thread.sleep(12 * 1000);
 
         // Verify lookup now does not work as token is expired
         assertThat(authService.findAuthenticatedUser(token.getToken()).isPresent(), is(false));
