@@ -1,0 +1,11 @@
+package de.stw.phoenix.game.time;
+
+@Deprecated
+public interface TimeConstants {
+	long MINUTES_PER_HOUR = 60;
+	long SECONDS_PER_MINUTE = 60;
+	long MILLISECONDS_PER_SECOND = 1000;
+	
+	long SECONDS_PER_HOUR = SECONDS_PER_MINUTE * MINUTES_PER_HOUR;
+	long MILLISECONDS_PER_HOUR = MILLISECONDS_PER_SECOND * SECONDS_PER_HOUR;
+}
