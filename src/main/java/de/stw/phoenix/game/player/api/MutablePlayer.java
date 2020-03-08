@@ -11,9 +11,7 @@ public interface MutablePlayer extends ImmutablePlayer {
     void setBuilding(BuildingLevel buildingLevel);
 
     void addConstruction(ConstructionEvent constructionEvent);
-
     void removeEvent(GameEvent event);
-
     void removeEvents(List<GameEvent> completedEvents);
 
     void addResources(Resource resource, double amount);

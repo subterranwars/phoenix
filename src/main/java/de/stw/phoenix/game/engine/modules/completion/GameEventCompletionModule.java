@@ -1,6 +1,8 @@
-package de.stw.phoenix.game.events;
+package de.stw.phoenix.game.engine.modules.completion;
 
 import com.google.common.collect.Maps;
+import de.stw.phoenix.game.events.GameEvent;
+import de.stw.phoenix.game.events.GameEventCompletionHandler;
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.engine.api.GameModule;
