@@ -47,7 +47,7 @@ public class AuthorizationUserDetailsService implements AuthenticationUserDetail
         final User user = Optional.ofNullable(token)
                 .map(String::valueOf)
                 .map(t -> t.replaceFirst("Bearer", "").trim())
-                .flatMap(authService::findUser)
+                .flatMap(authService::findAuthenticatedUser)
                 .orElseThrow(() -> new UsernameNotFoundException(String.format("Cannot find user with authentication token = '%s'", token)));
         final org.springframework.security.core.userdetails.User userDetails = new org.springframework.security.core.userdetails.User(
                 user.getUsername(), "password", true, true, true, true,

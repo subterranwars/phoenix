@@ -10,7 +10,7 @@ public interface AuthService {
 
     void invalidate(Token token);
 
-    Optional<User> findUser(String token);
+    Optional<User> findAuthenticatedUser(String token);
 
     default Token authenticate(UserAuthRequest authRequest) {
         Objects.requireNonNull(authRequest);

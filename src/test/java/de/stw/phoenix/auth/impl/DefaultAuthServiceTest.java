@@ -8,6 +8,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.security.authentication.BadCredentialsException;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.Optional;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -26,19 +28,37 @@ class DefaultAuthServiceTest {
         final User user = User.builder().id(1).username("test").password("test").email("test@subterranwars.de").build();
         userRepository = new DefaultUserRepository();
         userRepository.save(user);
-        authService = new DefaultAuthService(userRepository);
+        authService = new DefaultAuthService(userRepository, Duration.ofSeconds(10));
     }
 
     @Test
     public void verifyAuth() {
         final Token token = authService.authenticate("test", "test");
         assertThat(token, notNullValue());
-        assertThat(token.isValid(), is(true));
+        assertThat(token.isValid(Instant.now()), is(true));
         assertThat(token.getToken(), notNullValue());
 
-        final Optional<User> user = authService.findUser(token.getToken());
+        // Verify lookup
+        final Optional<User> user = authService.findAuthenticatedUser(token.getToken());
         assertThat(user.isPresent(), is(true));
         assertThat(user.get().getUsername(), is("test"));
+
+        // Ensure that the token is not valid anymore
+        assertThat(token.isValid(Instant.now().plus(Duration.ofSeconds(10))), is(false));
+    }
+
+    @Test
+    public void verifyLookupInvalidatesProperly() throws InterruptedException {
+        // Authenticate and verify user is actually authenticated
+        final Token token = authService.authenticate("test", "test");
+        final Optional<User> user = authService.findAuthenticatedUser(token.getToken());
+        assertThat(user.isPresent(), is(true));
+
+        // Wait for token to be expired
+        Thread.sleep(10 * 1000);
+
+        // Verify lookup now does not work as token is expired
+        assertThat(authService.findAuthenticatedUser(token.getToken()).isPresent(), is(false));
     }
 
     @Test
@@ -50,7 +70,7 @@ class DefaultAuthServiceTest {
     public void verifyInvalidate() {
         final Token token = authService.authenticate("test", "test");
         authService.invalidate(token);
-        assertThat(authService.findUser(token.getToken()).isPresent(), is(false));
+        assertThat(authService.findAuthenticatedUser(token.getToken()).isPresent(), is(false));
         assertThat(authService.findToken("test").isPresent(), is(false));
     }
 
@@ -63,8 +83,8 @@ class DefaultAuthServiceTest {
         assertThat(token.getToken(), not(is(anotherToken.getToken())));
 
         // Ensure it was invalidated
-        assertThat(authService.findUser(token.getToken()).isPresent(), is(false));
-        assertThat(authService.findUser(anotherToken.getToken()).isPresent(), is(true));
+        assertThat(authService.findAuthenticatedUser(token.getToken()).isPresent(), is(false));
+        assertThat(authService.findAuthenticatedUser(anotherToken.getToken()).isPresent(), is(true));
 
         // Ensure mapping for user updates properly
         assertThat(authService.findToken("test").get(), is(anotherToken));
