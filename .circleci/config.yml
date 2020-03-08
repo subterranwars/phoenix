@@ -34,4 +34,4 @@ jobs:
       - run: docker login --username ${DOCKER_USERNAME} --password ${DOCKER_PASSWORD}
       - run: docker push subterranwars/phoenix:bleeding
       - run: echo "${SSH_HOST} ${SSH_HOST_KEY}" >> ~/.ssh/known_hosts
-      - run: ssh $SSH_USER@$SSH_HOST "~/deploy_bleeding.sh"
+      - run: ssh $SSH_USER@$SSH_HOST "~/deploy_bleeding.sh ${CIRCLE_BRANCH}"
