@@ -20,8 +20,8 @@ public class InitialDataSetup {
 
     @PostConstruct
     public void init() {
-        userRepository.save(User.builder().id(1).username("marskuh").password("password").build());
-        userRepository.save(User.builder().id(2).username("fafner").password("password").build());
+        userRepository.save(User.builder().id(1).username("marskuh").email("marskuh@subterranwars.de").password("password").build());
+        userRepository.save(User.builder().id(2).username("fafner").email("fafner@subterranwars.de").password("password").build());
 
         // Create player for each user
         userRepository.findAll().forEach(user -> playerService.save(ImmutablePlayerImpl.builder(user.getId(), user.getUsername()).withDefaults().build()));
