@@ -26,8 +26,14 @@ public class Tick {
         return endTime;
     }
 
-    public boolean isGreaterOrEqual(Tick completionTick) {
-        return this.endTime >= completionTick.getEnd();
+    @Override
+    public int hashCode() {
+        return Objects.hash(startTime, endTime);
+    }
+
+    // Each tick describes a moment at the endTime
+    public Moment toMoment() {
+        return new Moment(endTime, TimeUnit.MILLISECONDS);
     }
 
     @Override
@@ -37,16 +43,6 @@ public class Tick {
         final Tick tick = (Tick) o;
         return startTime == tick.startTime &&
                 endTime == tick.endTime;
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(startTime, endTime);
-    }
-
-    // Each tick describes a moment at the endTime
-    public Moment toMoment() {
-        return new Moment(endTime, TimeUnit.MILLISECONDS);
     }
 
     @Override
