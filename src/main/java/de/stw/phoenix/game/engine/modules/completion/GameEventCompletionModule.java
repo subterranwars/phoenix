@@ -1,6 +1,8 @@
 package de.stw.phoenix.game.engine.modules.completion;
 
 import com.google.common.collect.Maps;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceSite;
+import de.stw.phoenix.game.engine.modules.resources.impl.ResourceSearchEvent;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.events.GameEventCompletionHandler;
 import de.stw.phoenix.game.time.Tick;
@@ -42,6 +44,15 @@ public class GameEventCompletionModule implements GameModule {
             LoggerFactory.getLogger(getClass()).info("Completing construction event. User: {}, Building: {}, Level: {}", gameEvent.getPlayerRef().getName(), gameEvent.getConstructionInfo().getBuilding().getLabel(), gameEvent.getConstructionInfo().getLevelToBuild());
             final BuildingLevel newLevel = new BuildingLevel(Buildings.findByRef(constructionInfo.getBuilding()), constructionInfo.getLevelToBuild());
             playerAccessor.modify(gameEvent.getPlayerRef(), mutablePlayer -> mutablePlayer.setBuilding(newLevel));
+        });
+
+        handlers.put(ResourceSearchEvent.class, (GameEventCompletionHandler<ResourceSearchEvent> ) gameEvent -> {
+            final long amount = (long) (Math.random() * 100000);
+            LoggerFactory.getLogger(getClass()).info("Completing resource search event. User: {}, Resource: {}, Success: {}, Amount: {}", gameEvent.getPlayerRef().getName(), gameEvent.getInfo().getResource(), gameEvent.getInfo().isSuccess(), amount);
+            if (gameEvent.getInfo().isSuccess()) {
+                final ResourceSite resourceSite = new ResourceSite(gameEvent.getInfo().getResource(), amount);
+                playerAccessor.modify(gameEvent.getPlayerRef(), mutablePlayer -> mutablePlayer.addResourceSite(resourceSite));
+            }
         });
     }
 

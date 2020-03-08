@@ -35,9 +35,10 @@ public class ConstructionRestController {
         return constructionService.listConstructions(player);
     }
 
+    // TODO MVR this allows to create jobs for other players :ups:
     @PostMapping
     public void build(@RequestParam("playerId") int playerId, @RequestParam("buildingId") int buildingId) {
-        final ImmutablePlayer player = playerService.find(playerId).orElseThrow(() -> new NoSuchElementException("Player with id '" + playerId + "' not found"));
+        final ImmutablePlayer player = playerService.get(playerId);
         final Building building = Buildings.findById(buildingId);
         constructionService.build(player, building);
     }

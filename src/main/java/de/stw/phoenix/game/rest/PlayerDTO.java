@@ -2,7 +2,7 @@ package de.stw.phoenix.game.rest;
 
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
-import de.stw.phoenix.game.engine.modules.resources.ResourceProduction;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceProduction;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
@@ -51,7 +51,7 @@ public class PlayerDTO {
     // Converts the given gameEvent updating the time to subtract already passed ticks
     private static GameEventDTO convert(final GameEvent event, final Tick currentTick) {
         if (event instanceof ConstructionEvent) {
-            final long diffSeconds = currentTick.toMoment().getDiff(event.getCompletionMoment());
+            final long diffSeconds = currentTick.toMoment().getDiff(event.getUserCompletionMoment());
             return new ConstructionEventDTO(diffSeconds, ((ConstructionEvent) event).getConstructionInfo());
         }
         throw new IllegalStateException("Cannot convert GameEvent of type " + event.getClass().getSimpleName());

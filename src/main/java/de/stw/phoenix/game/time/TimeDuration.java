@@ -21,6 +21,14 @@ public class TimeDuration {
         return seconds;
     }
 
+    public long getHours() {
+        return seconds / 3600;
+    }
+
+    public long getMinutes() {
+        return seconds / 60;
+    }
+
     public static TimeDuration ofMinutes(int minutes) {
         return new TimeDuration(minutes, TimeUnit.MINUTES);
     }
@@ -32,6 +40,5 @@ public class TimeDuration {
     public static TimeDuration ofSeconds(long seconds) {
         return new TimeDuration(seconds, TimeUnit.SECONDS);
     }
-
 
 }

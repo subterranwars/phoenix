@@ -3,7 +3,7 @@ package de.stw.phoenix.game.engine.impl;
 import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.engine.api.GameEngine;
-import de.stw.phoenix.game.engine.modules.resources.ResourceModule;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceModule;
 import de.stw.phoenix.game.engine.modules.completion.GameEventCompletionModule;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;

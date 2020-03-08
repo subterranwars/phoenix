@@ -11,15 +11,18 @@ import java.util.Objects;
  * @author mvr, cjs
  */
 public class Resource {
-    private int id;
+    private final int id;
 
     @JsonValue
-    private String name;
+    private final String name;
 
-    public Resource(int id, String name) {
-        Preconditions.checkArgument(id > 0);
-        this.id = id;
-        this.name = Objects.requireNonNull(name);
+    private final float occurrence;
+
+    private Resource(Builder builder) {
+        Objects.requireNonNull(builder);
+        this.id = builder.id;
+        this.name = builder.name;
+        this.occurrence = builder.occurrence;
     }
 
     public int getId() {
@@ -28,5 +31,40 @@ public class Resource {
 
     public String getName() {
         return name;
+    }
+
+    public float getOccurrence() {
+        return occurrence;
+    }
+
+    public static Builder builder() {
+        return new Builder();
+    }
+
+    public static final class Builder {
+        private int id;
+        private String name;
+        private float occurrence;
+
+        public Builder id(int id) {
+            Preconditions.checkArgument(id > 0);
+            this.id = id;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = Objects.requireNonNull(name);
+            return this;
+        }
+
+        public Builder occurrence(float occurrence) {
+            Preconditions.checkArgument(occurrence > 0 && occurrence < 1, "occurrence must be > 0 and < 1");
+            this.occurrence = occurrence;
+            return this;
+        }
+
+        public Resource build() {
+            return new Resource(this);
+        }
     }
 }

@@ -1,16 +1,17 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceSite;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.MutableResourceStorage;
+import de.stw.phoenix.game.time.Tick;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +25,7 @@ public class MutablePlayerImpl implements MutablePlayer {
     private final List<BuildingLevel> buildings;
     private final List<GameEvent> events;
     private final List<MutableResourceStorage> resources;
+    private List<ResourceSite> resourceSites;
     private final long id;
     private final String name;
 
@@ -34,6 +36,7 @@ public class MutablePlayerImpl implements MutablePlayer {
         this.buildings = Lists.newArrayList(delegate.getBuildings());
         this.events = Lists.newArrayList(delegate.getEvents());
         this.resources = delegate.getResources().stream().map(s -> new MutableResourceStorage(s.getResource(), s.getAmount(), s.getCapacity())).collect(Collectors.toList());
+        this.resourceSites = Lists.newArrayList(); // TODO MVR move to ImmutablePlayer as well
     }
 
     @Override
@@ -110,9 +113,14 @@ public class MutablePlayerImpl implements MutablePlayer {
     }
 
     @Override
-    public void addConstruction(ConstructionEvent constructionEvent) {
-        Objects.requireNonNull(constructionEvent);
-        this.events.add(constructionEvent);
+    public void addResourceSite(ResourceSite resourceSite) {
+        this.resourceSites.add(resourceSite);
+    }
+
+    @Override
+    public <T extends GameEvent> void addEvent(T event) {
+        Objects.requireNonNull(event);
+        this.events.add(event);
     }
 
     @Override

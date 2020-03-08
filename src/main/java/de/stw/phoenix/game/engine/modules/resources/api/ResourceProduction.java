@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.engine.modules.resources;
+package de.stw.phoenix.game.engine.modules.resources.api;
 
 import com.google.common.base.Preconditions;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;

@@ -1,6 +1,7 @@
 package de.stw.phoenix.game.engine.modules.resources;
 
 import de.stw.phoenix.game.data.resources.Resources;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceProduction;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.impl.DefaultPlayerRef;
 import static org.hamcrest.MatcherAssert.assertThat;

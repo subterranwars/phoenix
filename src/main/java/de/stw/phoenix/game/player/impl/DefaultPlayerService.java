@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -27,6 +28,11 @@ public class DefaultPlayerService implements PlayerService {
     @Override
     public Optional<ImmutablePlayer> find(long playerId) {
         return findInternal(playerId).map(MutablePlayer::asImmutable);
+    }
+
+    @Override
+    public ImmutablePlayer get(long playerId) {
+        return find(playerId).orElseThrow(() -> new NoSuchElementException("Player with id '" + playerId + "' not found"));
     }
 
     @Override

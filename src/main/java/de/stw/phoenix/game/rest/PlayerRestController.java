@@ -1,10 +1,10 @@
 package de.stw.phoenix.game.rest;
 
-import de.stw.phoenix.game.time.Clock;
-import de.stw.phoenix.game.engine.modules.resources.ResourceModule;
-import de.stw.phoenix.game.engine.modules.resources.ResourceProduction;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceProduction;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceService;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
+import de.stw.phoenix.game.time.Clock;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +26,7 @@ public class PlayerRestController {
     private PlayerService playerService;
 
     @Autowired
-    private ResourceModule resourceModule;
+    private ResourceService resourceService;
 
     @Autowired
     private Clock clock;
@@ -36,7 +36,7 @@ public class PlayerRestController {
     public PlayerDTO getPlayerState(Principal principal) {
         final String playerName = principal.getName();
         final Optional<ImmutablePlayer> player = playerService.find(playerName);
-        final List<ResourceProduction> resourceProductions = resourceModule.getResourceProduction(player.get())
+        final List<ResourceProduction> resourceProductions = resourceService.getResourceProduction(player.get())
                 .stream()
                 .map(production -> production.convert(TimeUnit.MINUTES))
                 .collect(Collectors.toList());

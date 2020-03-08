@@ -2,21 +2,15 @@ package de.stw.phoenix.game.player.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.data.resources.Resource;
-import static de.stw.phoenix.game.data.resources.Resources.DEFAULT_AMOUNT;
-import static de.stw.phoenix.game.data.resources.Resources.Food;
-import static de.stw.phoenix.game.data.resources.Resources.Iron;
-import static de.stw.phoenix.game.data.resources.Resources.MAX_STORAGE_CAPACITY;
-import static de.stw.phoenix.game.data.resources.Resources.Oil;
-import static de.stw.phoenix.game.data.resources.Resources.Stone;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
+import de.stw.phoenix.game.time.Tick;
 
 import java.util.Collections;
 import java.util.List;
@@ -24,6 +18,12 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static de.stw.phoenix.game.data.resources.Resources.DEFAULT_AMOUNT;
+import static de.stw.phoenix.game.data.resources.Resources.Iron;
+import static de.stw.phoenix.game.data.resources.Resources.MAX_STORAGE_CAPACITY;
+import static de.stw.phoenix.game.data.resources.Resources.Oil;
+import static de.stw.phoenix.game.data.resources.Resources.Stone;
 
 // TODO MVR do we need this to be immutable?
 public final class ImmutablePlayerImpl implements ImmutablePlayer {
@@ -165,7 +165,6 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         public Builder withDefaultResourceStorage() {
             withResource(Iron, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
             withResource(Stone, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
-            withResource(Food, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
             withResource(Oil, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
             return this;
         }
