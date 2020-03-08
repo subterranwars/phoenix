@@ -1,5 +1,6 @@
 package de.stw.phoenix.auth.impl;
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.common.collect.Maps;
 import de.stw.phoenix.auth.api.AuthService;
 import de.stw.phoenix.auth.api.Token;
@@ -50,8 +51,8 @@ public class DefaultAuthService implements AuthService {
 
     @Override
     public void invalidate(Token token) {
-        tokenUserMap.remove(token.getToken());
-        userTokenMap.remove(token);
+        final String user = tokenUserMap.remove(token.getToken());
+        userTokenMap.remove(user);
     }
 
     @Override
@@ -61,7 +62,8 @@ public class DefaultAuthService implements AuthService {
         return user;
     }
 
-    private Optional<Token> findToken(String username) {
+    @VisibleForTesting
+    protected Optional<Token> findToken(String username) {
         return Optional.ofNullable(userTokenMap.get(username));
     }
 
