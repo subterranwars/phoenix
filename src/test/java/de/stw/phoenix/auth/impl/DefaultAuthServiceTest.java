@@ -26,7 +26,7 @@ class DefaultAuthServiceTest {
     @BeforeEach
     public void before() {
         final User user = User.builder().id(1).username("test").password("test").email("test@subterranwars.de").build();
-        userRepository = new DefaultUserRepository();
+        userRepository = new DefaultUserRepository(new BCryptPasswordEncoder(10));
         userRepository.save(user);
         authService = new DefaultAuthService(userRepository, Duration.ofSeconds(10));
     }

@@ -42,22 +42,20 @@ public class DefaultAuthService implements AuthService {
         this.tokenExpiration = Objects.requireNonNull(tokenExpiration);
     }
 
-    // TODO MVR implement properly
     @Override
     public Token authenticate(String username, String password) {
-        final Optional<User> userOptional = userRepository.find(username);
+        final Optional<User> userOptional = userRepository.lookup(username, password);
         if (userOptional.isPresent()) {
+            // Ensure already existing tokens are invalidated
             findToken(userOptional.get().getUsername())
                     .ifPresent(token -> invalidate(token));
-            // TODO MVR hash password
-            if (password.equals(userOptional.get().getPassword())) {
-                final String token = UUID.randomUUID().toString();
-                // TODO dynamic expiration (maybe make configurable)
-                final Token newToken = new Token(token, Instant.now(), tokenExpiration);
-                userTokenMap.put(username, newToken);
-                tokenUserMap.put(token, username);
-                return newToken;
-            }
+
+            // Create new token
+            final String token = UUID.randomUUID().toString();
+            final Token newToken = new Token(token, Instant.now(), tokenExpiration);
+            userTokenMap.put(username, newToken);
+            tokenUserMap.put(token, username);
+            return newToken;
         }
         throw new BadCredentialsException("Username or password incorrect");
     }
