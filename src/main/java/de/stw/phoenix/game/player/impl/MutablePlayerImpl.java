@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.clock.Tick;
+import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;

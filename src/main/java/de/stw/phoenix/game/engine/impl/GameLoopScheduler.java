@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.engine.impl;
 
 import de.stw.phoenix.PhoenixApplication;
-import de.stw.phoenix.game.clock.Clock;
+import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.engine.api.GameEngine;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

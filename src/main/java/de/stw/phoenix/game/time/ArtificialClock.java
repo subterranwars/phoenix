@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.clock;
+package de.stw.phoenix.game.time;
 
 import java.util.concurrent.TimeUnit;
 
@@ -27,12 +27,12 @@ public class ArtificialClock implements Clock {
     }
 
     @Override
-    public Tick getTick(long duration, TimeUnit timeUnit) {
+    public Moment getMoment(long duration, TimeUnit timeUnit) {
         final Tick currentTick = getCurrentTick();
         final long durationInMs = TimeUnit.MILLISECONDS.convert(duration, timeUnit);
         final long tickLengthInMs = TimeUnit.MILLISECONDS.convert(tickLength, tickUnit);
         final long numberOfTicks = (long) Math.ceil(durationInMs / (float) tickLengthInMs);
         final long endTick = tickLengthInMs * numberOfTicks + currentTick.getEnd();
-        return new Tick(endTick - tickLengthInMs, endTick);
+        return new Moment(endTick, TimeUnit.MILLISECONDS);
     }
 }

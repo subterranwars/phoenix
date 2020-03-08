@@ -5,18 +5,20 @@ import com.google.common.collect.Maps;
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.data.resources.Resources;
 
+import de.stw.phoenix.game.time.XDuration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+// TODO MVR maybe rename to BuildingData and the Building itself is BuildingData + Level?
 public final class Building implements BuildingRef {
     private final int id;
     private final String name;
     private final String label;
     private final String description;
     private final Map<Resource, Integer> costs;
-    private final long buildTimeInSeconds;
+    private final XDuration buildTime;
 
     private Building(final Builder builder) {
         Objects.requireNonNull(builder);
@@ -24,7 +26,7 @@ public final class Building implements BuildingRef {
         this.name = builder.name;
         this.label = builder.label;
         this.description = builder.description;
-        this.buildTimeInSeconds = builder.buildTime;
+        this.buildTime = XDuration.ofSeconds(builder.buildTime);
         this.costs = Collections.unmodifiableMap(builder.costs);
     }
 
@@ -48,8 +50,8 @@ public final class Building implements BuildingRef {
         return costs;
     }
 
-    public long getBuildTimeInSeconds() {
-        return buildTimeInSeconds;
+    public XDuration getBuildTime() {
+        return buildTime;
     }
 
     public static Builder builder(int id, String name) {

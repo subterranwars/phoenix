@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.engine.modules.resources;
 
-import de.stw.phoenix.game.clock.Tick;
-import de.stw.phoenix.game.clock.TimeConstants;
+import de.stw.phoenix.game.time.Tick;
+import de.stw.phoenix.game.time.TimeConstants;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayer;
 import org.springframework.stereotype.Service;

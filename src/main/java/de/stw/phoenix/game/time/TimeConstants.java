@@ -1,5 +1,6 @@
-package de.stw.phoenix.game.clock;
+package de.stw.phoenix.game.time;
 
+@Deprecated
 public interface TimeConstants {
 	long MINUTES_PER_HOUR = 60;
 	long SECONDS_PER_MINUTE = 60;

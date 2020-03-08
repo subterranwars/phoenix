@@ -10,6 +10,8 @@ import static org.hamcrest.Matchers.is;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
+import java.time.Duration;
+
 public class ConstructionInfoTest {
 
     @Test
@@ -37,20 +39,20 @@ public class ConstructionInfoTest {
     @Test
     @Disabled("Enable until build times are fixed/known") // TODO MVR enable me
     public void verifyBuildTime() {
-        assertThat(new ConstructionInfo(Powerplant, 1, 1).getBuildTimeInSeconds(), is(60L));
-        assertThat(new ConstructionInfo(Powerplant, 2, 1).getBuildTimeInSeconds(), is(190L));
-        assertThat(new ConstructionInfo(Powerplant, 3, 1).getBuildTimeInSeconds(), is(620L));
+        assertThat(new ConstructionInfo(Powerplant, 1, 1).getBuildTime(), is(Duration.ofSeconds(60)));
+        assertThat(new ConstructionInfo(Powerplant, 2, 1).getBuildTime(), is(Duration.ofSeconds(190)));
+        assertThat(new ConstructionInfo(Powerplant, 3, 1).getBuildTime(), is(Duration.ofSeconds(620)));
 
-        assertThat(new ConstructionInfo(Powerplant, 1, 2).getBuildTimeInSeconds(), is(60L));
-        assertThat(new ConstructionInfo(Powerplant, 2, 2).getBuildTimeInSeconds(), is(100L));
-        assertThat(new ConstructionInfo(Powerplant, 3, 2).getBuildTimeInSeconds(), is(190L));
+        assertThat(new ConstructionInfo(Powerplant, 1, 2).getBuildTime(), is(Duration.ofSeconds(60)));
+        assertThat(new ConstructionInfo(Powerplant, 2, 2).getBuildTime(), is(Duration.ofSeconds(100L)));
+        assertThat(new ConstructionInfo(Powerplant, 3, 2).getBuildTime(), is(Duration.ofSeconds(190L)));
 
-        assertThat(new ConstructionInfo(Powerplant, 1, 3).getBuildTimeInSeconds(), is(60L));
-        assertThat(new ConstructionInfo(Powerplant, 2, 3).getBuildTimeInSeconds(), is(60L));
-        assertThat(new ConstructionInfo(Powerplant, 3, 3).getBuildTimeInSeconds(), is(100L));
-        assertThat(new ConstructionInfo(Powerplant, 4, 3).getBuildTimeInSeconds(), is(190L));
-        assertThat(new ConstructionInfo(Powerplant, 5, 3).getBuildTimeInSeconds(), is(190L));
-        assertThat(new ConstructionInfo(Powerplant, 6, 3).getBuildTimeInSeconds(), is(340L));
+        assertThat(new ConstructionInfo(Powerplant, 1, 3).getBuildTime(), is(Duration.ofSeconds(60L)));
+        assertThat(new ConstructionInfo(Powerplant, 2, 3).getBuildTime(), is(Duration.ofSeconds(60L)));
+        assertThat(new ConstructionInfo(Powerplant, 3, 3).getBuildTime(), is(Duration.ofSeconds(100L)));
+        assertThat(new ConstructionInfo(Powerplant, 4, 3).getBuildTime(), is(Duration.ofSeconds(190L)));
+        assertThat(new ConstructionInfo(Powerplant, 5, 3).getBuildTime(), is(Duration.ofSeconds(190L)));
+        assertThat(new ConstructionInfo(Powerplant, 6, 3).getBuildTime(), is(Duration.ofSeconds(340L)));
     }
 
 }

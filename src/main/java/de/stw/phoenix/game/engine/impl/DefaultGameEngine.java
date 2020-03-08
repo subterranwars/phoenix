@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.engine.impl;
 
-import de.stw.phoenix.game.clock.Clock;
-import de.stw.phoenix.game.clock.Tick;
+import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.engine.api.GameEngine;
 import de.stw.phoenix.game.engine.modules.resources.ResourceModule;
 import de.stw.phoenix.game.events.GameEventCompletionModule;

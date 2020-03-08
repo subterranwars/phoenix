@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.engine.modules.construction;
 
-import de.stw.phoenix.game.clock.Clock;
-import de.stw.phoenix.game.clock.Tick;
+import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.time.Moment;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.player.api.BuildingLevel;
@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
 
 @Service
@@ -45,8 +44,8 @@ public class DefaultConstructionService implements ConstructionService {
             if (player.canAfford(constructionInfo.getCosts())) {
                 playerAccessor.modify(player, mutablePlayer -> {
                     // Enqueue
-                    final Tick futureTick = clock.getTick(constructionInfo.getBuildTimeInSeconds(), TimeUnit.SECONDS);
-                    final ConstructionEvent constructionEvent = new ConstructionEvent(player, constructionInfo, futureTick);
+                    final Moment futureMoment = clock.getMoment(constructionInfo.getBuildTime());
+                    final ConstructionEvent constructionEvent = new ConstructionEvent(player, constructionInfo, futureMoment);
                     mutablePlayer.addConstruction(constructionEvent);
 
                     // Subtract resources

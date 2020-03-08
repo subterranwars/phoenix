@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.events;
 
 import com.google.common.collect.Maps;
-import de.stw.phoenix.game.clock.Tick;
+import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.engine.api.GameModule;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;

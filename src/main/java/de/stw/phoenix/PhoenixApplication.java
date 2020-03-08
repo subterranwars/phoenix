@@ -1,7 +1,7 @@
 package de.stw.phoenix;
 
-import de.stw.phoenix.game.clock.ArtificialClock;
-import de.stw.phoenix.game.clock.Clock;
+import de.stw.phoenix.game.time.ArtificialClock;
+import de.stw.phoenix.game.time.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;

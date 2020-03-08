@@ -2,7 +2,7 @@ package de.stw.phoenix.game.player.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.clock.Tick;
+import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.data.resources.Resource;
