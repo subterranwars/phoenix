@@ -1,6 +1,8 @@
 package de.stw.phoenix.user.api;
 
 import com.google.common.base.Preconditions;
+import de.stw.phoenix.user.api.password.Password;
+import de.stw.phoenix.user.api.password.UnsecurePassword;
 
 import java.util.Objects;
 
@@ -8,14 +10,21 @@ public class User {
     private long id;
     private String username;
     private String email;
-    private String password;
+    private Password password;
 
     private User(Builder builder) {
         Objects.requireNonNull(builder);
         this.id = builder.id;
-        this.username = builder.username;
-        this.email = builder.email;
-        this.password = builder.password;
+        this.username = Objects.requireNonNull(builder.username);
+        this.email = Objects.requireNonNull(builder.email);
+        this.password = Objects.requireNonNull(builder.password);
+    }
+
+    public static Builder builder(final User user) {
+        return builder()
+                .id(user.id)
+                .username(user.username)
+                .email(user.email).password(user.password);
     }
 
     public long getId() {
@@ -30,7 +39,7 @@ public class User {
         return email;
     }
 
-    public String getPassword() {
+    public Password getPassword() {
         return password;
     }
 
@@ -42,7 +51,7 @@ public class User {
         private long id;
         private String username;
         private String email;
-        private String password;
+        private Password password;
 
 
         public Builder id(long id) {
@@ -64,6 +73,10 @@ public class User {
         }
 
         public Builder password(String password) {
+            return password(new UnsecurePassword(password));
+        }
+
+        public Builder password(Password password) {
             Objects.requireNonNull(password);
             this.password = password;
             return this;
