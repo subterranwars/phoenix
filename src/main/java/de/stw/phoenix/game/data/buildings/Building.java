@@ -5,7 +5,7 @@ import com.google.common.collect.Maps;
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.data.resources.Resources;
 
-import de.stw.phoenix.game.time.XDuration;
+import de.stw.phoenix.game.time.TimeDuration;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Objects;
@@ -18,7 +18,7 @@ public final class Building implements BuildingRef {
     private final String label;
     private final String description;
     private final Map<Resource, Integer> costs;
-    private final XDuration buildTime;
+    private final TimeDuration buildTime;
 
     private Building(final Builder builder) {
         Objects.requireNonNull(builder);
@@ -26,7 +26,7 @@ public final class Building implements BuildingRef {
         this.name = builder.name;
         this.label = builder.label;
         this.description = builder.description;
-        this.buildTime = XDuration.ofSeconds(builder.buildTime);
+        this.buildTime = TimeDuration.ofSeconds(builder.buildTime);
         this.costs = Collections.unmodifiableMap(builder.costs);
     }
 
@@ -50,7 +50,7 @@ public final class Building implements BuildingRef {
         return costs;
     }
 
-    public XDuration getBuildTime() {
+    public TimeDuration getBuildTime() {
         return buildTime;
     }
 

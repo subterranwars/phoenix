@@ -7,7 +7,7 @@ public interface Clock {
     Tick getCurrentTick();
     Moment getMoment(long duration, TimeUnit timeUnit);
 
-    default Moment getMoment(XDuration duration) {
+    default Moment getMoment(TimeDuration duration) {
         return getMoment(duration.getSeconds(), TimeUnit.SECONDS);
     }
 }

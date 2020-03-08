@@ -22,14 +22,14 @@ public class ArtificialClockTest {
 
         // If the duration is smaller than the tick length, complete it on the next tick
         assertThat(clock.getMoment(1, TimeUnit.SECONDS).asSeconds(), is(5L));
-        assertThat(clock.getMoment(XDuration.ofSeconds(1)).asSeconds(), is(5L));
+        assertThat(clock.getMoment(TimeDuration.ofSeconds(1)).asSeconds(), is(5L));
 
         assertThat(clock.getMoment(10, TimeUnit.SECONDS).asSeconds(), is(10L));
-        assertThat(clock.getMoment(XDuration.ofSeconds(10)).asSeconds(), is(10L));
+        assertThat(clock.getMoment(TimeDuration.ofSeconds(10)).asSeconds(), is(10L));
 
         clock.nextTick(); // 0 -> 5000
         assertThat(clock.getMoment(1, TimeUnit.HOURS).asSeconds(), is(60*60 + 5L));
-        assertThat(clock.getMoment(XDuration.ofHours(1)).asSeconds(), is(60*60 + 5L));
+        assertThat(clock.getMoment(TimeDuration.ofHours(1)).asSeconds(), is(60*60 + 5L));
     }
 
 }

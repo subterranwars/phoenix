@@ -7,7 +7,7 @@ import de.stw.phoenix.game.data.buildings.BuildingRef;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.time.XDuration;
+import de.stw.phoenix.game.time.TimeDuration;
 
 import java.util.Map;
 import java.util.Objects;
@@ -22,7 +22,7 @@ public class ConstructionInfo {
 
     // Build time to build the level
     @JsonUnwrapped
-    private final XDuration buildTime;
+    private final TimeDuration buildTime;
 
     //Costs for the level to build
     private final Map<Resource, Integer> costs;
@@ -44,7 +44,7 @@ public class ConstructionInfo {
         this.levelToBuild = levelToBuild;
         this.costs = calculateCosts(building, levelToBuild);
         final long buildTimeInSeconds = calculateBuildTimeInSeconds(building, levelToBuild, currentHqLevel);
-        this.buildTime = XDuration.ofSeconds(buildTimeInSeconds);
+        this.buildTime = TimeDuration.ofSeconds(buildTimeInSeconds);
     }
 
     public BuildingRef getBuilding() {
@@ -55,7 +55,7 @@ public class ConstructionInfo {
         return levelToBuild;
     }
 
-    public XDuration getBuildTime() {
+    public TimeDuration getBuildTime() {
         return buildTime;
     }
 
