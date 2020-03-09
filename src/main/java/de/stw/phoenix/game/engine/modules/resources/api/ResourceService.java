@@ -8,4 +8,8 @@ public interface ResourceService {
     List<ResourceProduction> getResourceProduction(ImmutablePlayer player);
 
     void search(ResourceSearchRequest resourceSearchRequest);
+
+    void deleteResourceSite(ImmutablePlayer player, long resourceSiteId);
+
+    void updateDroneCount(ImmutablePlayer player, long resourceSiteId, int droneCount);
 }

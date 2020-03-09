@@ -35,10 +35,9 @@ public class ConstructionRestController {
         return constructionService.listConstructions(player);
     }
 
-    // TODO MVR this allows to create jobs for other players :ups:
     @PostMapping
-    public void build(@RequestParam("playerId") int playerId, @RequestParam("buildingId") int buildingId) {
-        final ImmutablePlayer player = playerService.get(playerId);
+    public void build(Principal principal, @RequestParam("buildingId") int buildingId) {
+        final ImmutablePlayer player = playerService.get(principal.getName());
         final Building building = Buildings.findById(buildingId);
         constructionService.build(player, building);
     }

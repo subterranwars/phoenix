@@ -25,7 +25,7 @@ public class MutablePlayerImpl implements MutablePlayer {
     private final List<BuildingLevel> buildings;
     private final List<GameEvent> events;
     private final List<MutableResourceStorage> resources;
-    private List<ResourceSite> resourceSites;
+    private List<MutableResourceSite> resourceSites;
     private final long id;
     private final String name;
 
@@ -36,13 +36,19 @@ public class MutablePlayerImpl implements MutablePlayer {
         this.buildings = Lists.newArrayList(delegate.getBuildings());
         this.events = Lists.newArrayList(delegate.getEvents());
         this.resources = delegate.getResources().stream().map(s -> new MutableResourceStorage(s.getResource(), s.getAmount(), s.getCapacity())).collect(Collectors.toList());
-        this.resourceSites = Lists.newArrayList(); // TODO MVR move to ImmutablePlayer as well
+        this.resourceSites = delegate.getResourceSites().stream().map(site -> new MutableResourceSite(site)).collect(Collectors.toList());
     }
 
     @Override
     public List<ImmutableResourceStorage> getResources() {
         final List<ImmutableResourceStorage> resources = this.resources.stream().map(MutableResourceStorage::asImmutable).collect(Collectors.toList());
         return Collections.unmodifiableList(resources);
+    }
+
+    @Override
+    public List<ResourceSite> getResourceSites() {
+        List<ResourceSite> sites = resourceSites.stream().map(MutableResourceSite::asImmutable).collect(Collectors.toList());
+        return Collections.unmodifiableList(sites);
     }
 
     @Override
@@ -114,7 +120,17 @@ public class MutablePlayerImpl implements MutablePlayer {
 
     @Override
     public void addResourceSite(ResourceSite resourceSite) {
-        this.resourceSites.add(resourceSite);
+        this.resourceSites.add(new MutableResourceSite(resourceSite));
+    }
+
+    @Override
+    public void removeResourceSite(MutableResourceSite resourceSite) {
+        this.resourceSites.remove(resourceSite);
+    }
+
+    @Override
+    public Optional<MutableResourceSite> getResourceSite(long resourceSiteId) {
+        return this.resourceSites.stream().filter(site -> Objects.equals(site.getId(), resourceSiteId)).findAny();
     }
 
     @Override
@@ -140,6 +156,7 @@ public class MutablePlayerImpl implements MutablePlayer {
         return ImmutablePlayerImpl.builder(getId(), getName())
                 .withBuildings(this.buildings)
                 .withResources(this.resources.stream().map(MutableResourceStorage::asImmutable).collect(Collectors.toList()))
+                .withResourceSites(this.resourceSites.stream().map(MutableResourceSite::asImmutable).collect(Collectors.toList()))
                 .withEvents(this.events)
                 .build();
     }

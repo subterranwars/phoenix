@@ -1,5 +1,6 @@
 package de.stw.phoenix;
 
+import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.impl.ImmutablePlayerImpl;
 import de.stw.phoenix.user.api.User;
@@ -24,6 +25,10 @@ public class InitialDataSetup {
         userRepository.save(User.builder().id(2).username("fafner").email("fafner@subterranwars.de").password("password").build());
 
         // Create player for each user
-        userRepository.findAll().forEach(user -> playerService.save(ImmutablePlayerImpl.builder(user.getId(), user.getUsername()).withDefaults().build()));
+        userRepository.findAll().forEach(user -> playerService.save(
+                ImmutablePlayerImpl.builder(user.getId(), user.getUsername())
+                        .withDefaults()
+                        .withBuilding(Buildings.Resourcefacility, 1)
+                        .build()));
     }
 }

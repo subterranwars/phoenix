@@ -4,4 +4,5 @@ public interface GameEventTypes {
 
     String Construction = "construction";
 
+    String ResourceSearch = "resource-search";
 }

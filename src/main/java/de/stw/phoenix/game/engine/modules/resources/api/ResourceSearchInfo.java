@@ -7,14 +7,14 @@ import de.stw.phoenix.game.time.TimeDuration;
 
 import java.util.Objects;
 
-public class ResearchSearchInfo {
+public class ResourceSearchInfo {
     private final TimeDuration duration;
     private final Resource resource;
 
     @JsonIgnore
     private final Moment successMoment;
 
-    public ResearchSearchInfo(Resource resource, TimeDuration duration, Moment successMoment) {
+    public ResourceSearchInfo(Resource resource, TimeDuration duration, Moment successMoment) {
         this.resource = Objects.requireNonNull(resource);
         this.duration = Objects.requireNonNull(duration);
         this.successMoment = successMoment;

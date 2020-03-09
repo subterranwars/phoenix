@@ -58,7 +58,7 @@ public class Resource {
         }
 
         public Builder occurrence(float occurrence) {
-            Preconditions.checkArgument(occurrence > 0 && occurrence < 1, "occurrence must be > 0 and < 1");
+            Preconditions.checkArgument(occurrence > 0 && occurrence <= 1, "occurrence must be > 0 and <= 1");
             this.occurrence = occurrence;
             return this;
         }

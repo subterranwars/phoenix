@@ -1,24 +1,31 @@
 package de.stw.phoenix.game.engine.modules.resources.api;
 
-import de.stw.phoenix.game.data.resources.Resource;
+import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 
 import java.util.Objects;
 
+// TODO MVR provide builder?
 public class ResourceSite {
 
-    private final Resource resource;
-    private final Long amount;
+    private final long id;
+    private final ImmutableResourceStorage storage;
+    private final int droneCount;
 
-    public ResourceSite(Resource resource, long amount) {
-        this.resource = Objects.requireNonNull(resource);
-        this.amount = Objects.requireNonNull(amount);
+    public ResourceSite(final long id, final ImmutableResourceStorage storage, final int droneCount) {
+        this.id = id;
+        this.storage = Objects.requireNonNull(storage);
+        this.droneCount = droneCount;
     }
 
-    public Resource getResource() {
-        return resource;
+    public long getId() {
+        return id;
     }
 
-    public Long getAmount() {
-        return amount;
+    public ImmutableResourceStorage getStorage() {
+        return storage;
+    }
+
+    public int getDroneCount() {
+        return droneCount;
     }
 }

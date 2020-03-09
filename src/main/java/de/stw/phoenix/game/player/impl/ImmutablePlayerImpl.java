@@ -6,6 +6,7 @@ import de.stw.phoenix.game.data.buildings.Building;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceSite;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
@@ -20,6 +21,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static de.stw.phoenix.game.data.resources.Resources.DEFAULT_AMOUNT;
+import static de.stw.phoenix.game.data.resources.Resources.Food;
 import static de.stw.phoenix.game.data.resources.Resources.Iron;
 import static de.stw.phoenix.game.data.resources.Resources.MAX_STORAGE_CAPACITY;
 import static de.stw.phoenix.game.data.resources.Resources.Oil;
@@ -33,6 +35,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     private final List<ImmutableResourceStorage> resources;
     private final List<BuildingLevel> buildings;
     private final List<GameEvent> events;
+    private final List<ResourceSite> resourceSites;
 
     private ImmutablePlayerImpl(Builder builder) {
         Objects.requireNonNull(builder);
@@ -41,6 +44,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         this.resources = Collections.unmodifiableList(builder.resources);
         this.buildings = Collections.unmodifiableList(builder.buildings);
         this.events = Collections.unmodifiableList(builder.events);
+        this.resourceSites = Collections.unmodifiableList(builder.resourceSites);
     }
 
     @Override
@@ -58,7 +62,12 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
 		return resources;
 	}
 
-	@Override
+    @Override
+    public List<ResourceSite> getResourceSites() {
+        return resourceSites;
+    }
+
+    @Override
     public ImmutableResourceStorage getStorage(Resource resource) {
         Objects.requireNonNull(resource);
         return resources.stream().filter(r -> r.getResource().getId() == resource.getId()).findAny().orElse(null);
@@ -117,6 +126,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         private List<ImmutableResourceStorage> resources = Lists.newArrayList();
         private List<BuildingLevel> buildings = Lists.newArrayList();
         private List<GameEvent> events = Lists.newArrayList();
+        private List<ResourceSite> resourceSites = Lists.newArrayList();
 
         public Builder id(long id) {
             Preconditions.checkArgument(id > 0, "id must be > 0");
@@ -162,10 +172,16 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
             return this;
         }
 
+        public Builder withResourceSites(List<ResourceSite> sites) {
+            this.resourceSites.addAll(sites);
+            return this;
+        }
+
         public Builder withDefaultResourceStorage() {
             withResource(Iron, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
-            withResource(Stone, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
+            withResource(Stone, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);;
             withResource(Oil, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
+            withResource(Food, 0, MAX_STORAGE_CAPACITY);
             return this;
         }
 

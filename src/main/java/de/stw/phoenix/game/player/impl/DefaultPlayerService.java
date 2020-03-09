@@ -36,6 +36,11 @@ public class DefaultPlayerService implements PlayerService {
     }
 
     @Override
+    public ImmutablePlayer get(String name) {
+        return find(name).orElseThrow(() -> new NoSuchElementException("Player with name '" + name + "' not found"));
+    }
+
+    @Override
     public Optional<ImmutablePlayer> find(String playerName) {
         return findInternal(playerName).map(MutablePlayer::asImmutable);
     }

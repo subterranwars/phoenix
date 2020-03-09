@@ -28,7 +28,7 @@ public class MutableResourceStorage {
      * @param amountToStore
      */
     public void store(double amountToStore) {
-        Preconditions.checkArgument(amountToStore > 0);
+        Preconditions.checkArgument(amountToStore >= 0);
         this.amount = Math.min(maxStorageCapacity, amount + amountToStore);
     }
 

@@ -8,6 +8,8 @@ import java.util.NoSuchElementException;
 public interface Resources {
     int MAX_STORAGE_CAPACITY = 100000;
     int DEFAULT_AMOUNT = 100000;
+    int HQ_PRODUCTION_PER_HOUR = 60;
+    int SITE_PRODUCTION_PER_HOUR = 75;
 
     Resource Iron = Resource.builder().id(1)
             .name("iron")
@@ -20,14 +22,22 @@ public interface Resources {
             .occurrence(0.9f)
             .build();
 
+    Resource Food = Resource.builder()
+            .id(3)
+            .name("food")
+            .occurrence(1)
+            .build();
+
     Resource Oil = Resource
             .builder()
-            .id(3)
-            .name("oi")
+            .id(4)
+            .name("oil")
             .occurrence(0.7f)
             .build();
 
-    List<Resource> ALL = Lists.newArrayList(Iron, Stone, Oil);
+    List<Resource> ALL = Lists.newArrayList(Iron, Stone, Food, Oil);
+
+    List<Resource> BASICS = Lists.newArrayList(Iron, Stone, Food);
 
     static Resource findById(int resourceId) {
         return ALL.stream()

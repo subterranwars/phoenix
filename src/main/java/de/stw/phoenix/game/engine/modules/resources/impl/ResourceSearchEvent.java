@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.engine.modules.resources.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import de.stw.phoenix.game.engine.modules.resources.api.ResearchSearchInfo;
+import de.stw.phoenix.game.engine.modules.resources.api.ResourceSearchInfo;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.time.Moment;
@@ -12,10 +12,10 @@ public class ResourceSearchEvent implements GameEvent {
 
     @JsonIgnore
     private final PlayerRef playerRef;
-    private final ResearchSearchInfo info;
+    private final ResourceSearchInfo info;
     private final Moment completionMoment;
 
-    public ResourceSearchEvent(PlayerRef playerRef, ResearchSearchInfo info, Moment completionMoment) {
+    public ResourceSearchEvent(PlayerRef playerRef, ResourceSearchInfo info, Moment completionMoment) {
         this.playerRef = Objects.requireNonNull(playerRef);
         this.info = Objects.requireNonNull(info);
         this.completionMoment = Objects.requireNonNull(completionMoment);
@@ -35,7 +35,7 @@ public class ResourceSearchEvent implements GameEvent {
         return playerRef;
     }
 
-    public ResearchSearchInfo getInfo() {
+    public ResourceSearchInfo getInfo() {
         return info;
     }
 }

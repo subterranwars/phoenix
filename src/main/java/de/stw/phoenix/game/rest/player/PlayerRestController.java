@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.rest;
+package de.stw.phoenix.game.rest.player;
 
 import de.stw.phoenix.game.engine.modules.resources.api.ResourceProduction;
 import de.stw.phoenix.game.engine.modules.resources.api.ResourceService;
@@ -14,8 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import java.security.Principal;
 import java.util.List;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(path="/players")
@@ -36,10 +34,7 @@ public class PlayerRestController {
     public PlayerDTO getPlayerState(Principal principal) {
         final String playerName = principal.getName();
         final Optional<ImmutablePlayer> player = playerService.find(playerName);
-        final List<ResourceProduction> resourceProductions = resourceService.getResourceProduction(player.get())
-                .stream()
-                .map(production -> production.convert(TimeUnit.MINUTES))
-                .collect(Collectors.toList());
+        final List<ResourceProduction> resourceProductions = resourceService.getResourceProduction(player.get());
         return new PlayerDTO(player.get(), resourceProductions, clock.getCurrentTick());
     }
 

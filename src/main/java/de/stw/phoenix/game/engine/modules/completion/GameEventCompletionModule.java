@@ -5,6 +5,7 @@ import de.stw.phoenix.game.engine.modules.resources.api.ResourceSite;
 import de.stw.phoenix.game.engine.modules.resources.impl.ResourceSearchEvent;
 import de.stw.phoenix.game.events.GameEvent;
 import de.stw.phoenix.game.events.GameEventCompletionHandler;
+import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.engine.api.GameModule;
@@ -21,9 +22,13 @@ import javax.annotation.PostConstruct;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Service
 public class GameEventCompletionModule implements GameModule {
+
+    // TODO MVR do it differently
+    private AtomicInteger idGenerator = new AtomicInteger(1);
 
     private static final GameEventCompletionHandler NOOP_HANDLER = new GameEventCompletionHandler() {
         @Override
@@ -50,7 +55,9 @@ public class GameEventCompletionModule implements GameModule {
             final long amount = (long) (Math.random() * 100000);
             LoggerFactory.getLogger(getClass()).info("Completing resource search event. User: {}, Resource: {}, Success: {}, Amount: {}", gameEvent.getPlayerRef().getName(), gameEvent.getInfo().getResource(), gameEvent.getInfo().isSuccess(), amount);
             if (gameEvent.getInfo().isSuccess()) {
-                final ResourceSite resourceSite = new ResourceSite(gameEvent.getInfo().getResource(), amount);
+                final ResourceSite resourceSite = new ResourceSite(
+                        idGenerator.getAndIncrement(),
+                        new ImmutableResourceStorage(gameEvent.getInfo().getResource(), amount, amount), 0);
                 playerAccessor.modify(gameEvent.getPlayerRef(), mutablePlayer -> mutablePlayer.addResourceSite(resourceSite));
             }
         });
