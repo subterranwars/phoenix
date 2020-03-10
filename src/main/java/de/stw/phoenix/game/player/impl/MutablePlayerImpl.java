@@ -128,6 +128,17 @@ public class MutablePlayerImpl implements MutablePlayer {
     }
 
     @Override
+    public void updateResourceStorage(long maxStorage) {
+        if (getResources().get(0).getCapacity() != maxStorage) {
+            final List<MutableResourceStorage> newStorages = this.resources.stream()
+                    .map(storage -> new MutableResourceStorage(storage.getResource(), storage.getAmount(), maxStorage))
+                    .collect(Collectors.toList());
+            resources.clear();
+            resources.addAll(newStorages);
+        }
+    }
+
+    @Override
     public <T extends GameEvent> void addEvent(T event) {
         Objects.requireNonNull(event);
         this.events.add(event);

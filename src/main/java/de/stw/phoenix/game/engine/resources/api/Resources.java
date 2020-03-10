@@ -11,6 +11,8 @@ import java.util.NoSuchElementException;
 
 public interface Resources {
     int MAX_STORAGE_CAPACITY = 100000;
+    int STORAGE_CAPACITY_GAIN = 15000;
+
     int DEFAULT_AMOUNT = 100000;
     int HQ_PRODUCTION_PER_HOUR = 60;
     int SITE_PRODUCTION_PER_HOUR = 75;

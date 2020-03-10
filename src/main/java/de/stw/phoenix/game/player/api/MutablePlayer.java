@@ -21,6 +21,8 @@ public interface MutablePlayer extends ImmutablePlayer {
     void removeResourceSite(MutableResourceSite resourceSite);
     Optional<MutableResourceSite> getResourceSite(long resourceSiteId);
 
+    void updateResourceStorage(long maxStorage);
+
     void addResources(Resource resource, double amount);
     void removeResources(Map<Resource, Integer> costs);
 
