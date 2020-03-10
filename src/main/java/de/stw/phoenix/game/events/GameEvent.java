@@ -1,9 +1,10 @@
 package de.stw.phoenix.game.events;
 
+import de.stw.phoenix.game.engine.api.PlayerUpdate;
 import de.stw.phoenix.game.time.Moment;
 import de.stw.phoenix.game.time.Tick;
 
-public interface GameEvent {
+public interface GameEvent extends PlayerUpdate {
 
     /**
      * The moment this event is completed
@@ -24,7 +25,7 @@ public interface GameEvent {
     }
 
     // TODO MVR maybe should be provided somewhere else
-    default boolean isComplete(Tick currentTick) {
+    default boolean isCompleted(Tick currentTick) {
         return currentTick.toMoment().isGreaterOrEqual(getCompletionMoment());
     }
 }

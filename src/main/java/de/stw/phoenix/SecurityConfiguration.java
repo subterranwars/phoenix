@@ -29,21 +29,21 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
     public void configure(HttpSecurity http) throws Exception {
-            http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                .and()
-                    .addFilterAfter(preAuthenticationFilter(), RequestHeaderAuthenticationFilter.class)
-                    .authorizeRequests()
-                        .antMatchers("/health", "/users/register", "/authenticate").permitAll()
-                    .anyRequest().authenticated()
-                .and()
-                    .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
-                .and()
-                    .cors() // TODO MVr can we define this properly?
-                .and()
-                    .csrf().disable() // TODO MVR really disable?
-                    .formLogin().disable()
-                    .httpBasic().disable()
-                    .logout().disable(); // TODO MVR really disable?
+        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+            .and()
+                .addFilterAfter(preAuthenticationFilter(), RequestHeaderAuthenticationFilter.class)
+                .authorizeRequests()
+                    .antMatchers("/health", "/users/register", "/authenticate").permitAll()
+                .anyRequest().authenticated()
+            .and()
+                .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())
+            .and()
+                .cors() // TODO MVR can we define this properly?
+            .and()
+                .csrf().disable() // TODO MVR really disable?
+                .formLogin().disable()
+                .httpBasic().disable()
+                .logout().disable(); // TODO MVR really disable?
     }
 
     @Bean

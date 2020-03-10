@@ -23,6 +23,10 @@ public class MutableResourceSite {
         this.droneCount = droneCount;
     }
 
+    public MutableResourceStorage getStorage() {
+        return storage;
+    }
+
     public ResourceSite asImmutable() {
         return new ResourceSite(id, storage.asImmutable(), droneCount);
     }

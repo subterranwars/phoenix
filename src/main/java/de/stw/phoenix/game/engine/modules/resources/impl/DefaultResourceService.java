@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import de.stw.phoenix.game.data.buildings.Buildings;
 import de.stw.phoenix.game.data.resources.Resource;
 import de.stw.phoenix.game.data.resources.Resources;
+import de.stw.phoenix.game.engine.api.GameBehaviour;
 import de.stw.phoenix.game.engine.modules.resources.api.ResourceProduction;
 import de.stw.phoenix.game.engine.modules.resources.api.ResourceSearchInfo;
 import de.stw.phoenix.game.engine.modules.resources.api.ResourceSearchRequest;
@@ -11,10 +12,13 @@ import de.stw.phoenix.game.engine.modules.resources.api.ResourceService;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
+import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.time.Moment;
+import de.stw.phoenix.game.time.Tick;
+import de.stw.phoenix.game.time.TimeConstants;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,8 +45,8 @@ public class DefaultResourceService implements ResourceService {
     @Override
     public List<ResourceProduction> getResourceProduction(final ImmutablePlayer player) {
         // Base production provided by HQ
-        final BuildingLevel hq = player.getBuilding(Buildings.Headquarter);
-        final double productionPerHour = Resources.HQ_PRODUCTION_PER_HOUR * hq.getLevel();
+        int hqLevel = player.getBuilding(Buildings.Headquarter).getLevel();
+        int productionPerHour = Resources.HQ_PRODUCTION_PER_HOUR * hqLevel;
         final Map<Resource, ResourceProduction> resourceProductionMap = Resources.BASICS.stream()
                 .map(resource -> player.getStorage(resource))
                 .map(storage -> new ResourceProduction(player, storage, productionPerHour))
@@ -64,6 +68,38 @@ public class DefaultResourceService implements ResourceService {
         return Collections.unmodifiableList(Lists.newArrayList(resourceProductionMap.values()));
     }
 
+    @Override
+    public List<GameBehaviour> getResourceProductions(final ImmutablePlayer player) {
+        // Base production provided by HQ
+        final List<GameBehaviour> baseProductions = Resources.BASICS.stream()
+                .map(resource -> (GameBehaviour) (mutablePlayer, tick) -> {
+                    final BuildingLevel hq = player.getBuilding(Buildings.Headquarter);
+                    final double productionPerHour = Resources.HQ_PRODUCTION_PER_HOUR * hq.getLevel();
+                    double amountToProduceInTick = productionPerHour / TimeConstants.MILLISECONDS_PER_HOUR * tick.getDelta();
+                    mutablePlayer.addResources(resource, amountToProduceInTick);
+                })
+                .collect(Collectors.toList());
+        final List<GameBehaviour> siteProductions = player.getResourceSites()
+                .stream()
+                .filter(site -> site.getDroneCount() > 0)
+                .map(site -> {
+                    return new GameBehaviour() {
+                        @Override
+                        public void update(MutablePlayer player, Tick tick) {
+                            final double siteProductionPerHour = site.getDroneCount() * Resources.SITE_PRODUCTION_PER_HOUR;
+                            double amountToProduceInTick = siteProductionPerHour / TimeConstants.MILLISECONDS_PER_HOUR * tick.getDelta();
+                            double availableAmount = Math.min(site.getStorage().getAmount(), amountToProduceInTick);
+                            player.addResources(site.getStorage().getResource(), availableAmount);
+                            player.getResourceSite(site.getId()).get().getStorage().retrieve(availableAmount);
+                        }
+                    };
+                }).collect(Collectors.toList());
+        final List<GameBehaviour> allProductions = Lists.newArrayList();
+        allProductions.addAll(baseProductions);
+        allProductions.addAll(siteProductions);
+        return allProductions;
+    }
+
     // TODO MVR implement limit of things we can search
     @Override
     public void search(ResourceSearchRequest resourceSearchRequest) {
@@ -71,13 +107,13 @@ public class DefaultResourceService implements ResourceService {
         final PlayerRef playerRef = resourceSearchRequest.getPlayerRef();
         final Moment userCompletionMoment = clock.getMoment(resourceSearchRequest.getDuration());
         final Moment internalMoment = calculateFinishMoment(resourceSearchRequest);
-        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(playerRef, new ResourceSearchInfo(resourceSearchRequest.getResource(), resourceSearchRequest.getDuration(), internalMoment), userCompletionMoment);
+        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(new ResourceSearchInfo(resourceSearchRequest.getResource(), resourceSearchRequest.getDuration(), internalMoment), userCompletionMoment);
         playerAccessor.modify(playerRef, mutablePlayer -> {
             mutablePlayer.addEvent(resourceSearchEvent);
         });
         if (LOG.isDebugEnabled()) {
             LOG.debug("{} searching for {} for {} hours which is successful {} and completes at moment {}",
-                    resourceSearchEvent.getPlayerRef().getName(),
+                    playerRef.getName(),
                     resourceSearchEvent.getInfo().getResource().getName(),
                     resourceSearchEvent.getInfo().getDuration().getHours(),
                     resourceSearchEvent.getInfo().isSuccess(),

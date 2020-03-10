@@ -113,7 +113,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     @Override
     public List<GameEvent> getEvents(final Tick tick) {
         Objects.requireNonNull(tick);
-        return events.stream().filter(e -> e.isComplete(tick)).collect(Collectors.toList());
+        return events.stream().filter(e -> e.isCompleted(tick)).collect(Collectors.toList());
     }
 
     public static Builder builder(long id, String name) {
@@ -180,7 +180,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         public Builder withDefaultResourceStorage() {
             withResource(Iron, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
             withResource(Stone, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);;
-            withResource(Oil, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
+            withResource(Oil, 0, MAX_STORAGE_CAPACITY);
             withResource(Food, 0, MAX_STORAGE_CAPACITY);
             return this;
         }
