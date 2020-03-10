@@ -1,9 +1,17 @@
 package de.stw.phoenix.game.engine.api;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.time.Tick;
 
 public interface PlayerUpdate {
 
-    @JsonIgnore
-    GameBehaviour getBehaviour();
+    default void preUpdate(MutablePlayer player, Tick tick) {
+
+    }
+
+    void update(MutablePlayer player, Tick tick);
+
+    default void postUpdate(MutablePlayer player, Tick tick) {
+
+    }
 }

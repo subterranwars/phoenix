@@ -1,8 +1,8 @@
 package de.stw.phoenix.game.player.api;
 
-import de.stw.phoenix.game.data.resources.Resource;
-import de.stw.phoenix.game.engine.modules.resources.api.ResourceSite;
-import de.stw.phoenix.game.events.GameEvent;
+import de.stw.phoenix.game.engine.resources.api.Resource;
+import de.stw.phoenix.game.engine.resources.api.ResourceSite;
+import de.stw.phoenix.game.engine.api.GameEvent;
 import de.stw.phoenix.game.player.impl.MutableResourceSite;
 
 import java.util.List;

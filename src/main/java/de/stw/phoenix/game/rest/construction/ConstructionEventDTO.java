@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.rest.construction;
 
-import de.stw.phoenix.game.data.buildings.BuildingRef;
-import de.stw.phoenix.game.engine.modules.construction.ConstructionInfo;
+import de.stw.phoenix.game.engine.buildings.BuildingRef;
+import de.stw.phoenix.game.engine.construction.api.ConstructionInfo;
 import de.stw.phoenix.game.rest.GameEventDTO;
 import de.stw.phoenix.game.rest.GameEventTypes;
 

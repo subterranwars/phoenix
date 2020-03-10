@@ -1,9 +1,9 @@
 package de.stw.phoenix.game.rest.resources;
 
-import de.stw.phoenix.game.data.resources.Resources;
-import de.stw.phoenix.game.engine.modules.resources.api.ResourceSearchRequest;
-import de.stw.phoenix.game.engine.modules.resources.api.ResourceService;
-import de.stw.phoenix.game.engine.modules.resources.api.ResourceSite;
+import de.stw.phoenix.game.engine.resources.api.Resources;
+import de.stw.phoenix.game.engine.resources.api.ResourceSearchRequest;
+import de.stw.phoenix.game.engine.resources.api.ResourceService;
+import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.time.TimeDuration;

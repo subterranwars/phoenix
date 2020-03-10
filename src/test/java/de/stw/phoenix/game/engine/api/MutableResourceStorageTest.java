@@ -1,6 +1,6 @@
 package de.stw.phoenix.game.engine.api;
 
-import de.stw.phoenix.game.data.resources.Resources;
+import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.player.api.MutableResourceStorage;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

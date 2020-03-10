@@ -1,9 +1,9 @@
 package de.stw.phoenix.game.rest.construction;
 
-import de.stw.phoenix.game.data.buildings.Building;
-import de.stw.phoenix.game.data.buildings.Buildings;
-import de.stw.phoenix.game.engine.modules.construction.ConstructionInfo;
-import de.stw.phoenix.game.engine.modules.construction.ConstructionService;
+import de.stw.phoenix.game.engine.buildings.Building;
+import de.stw.phoenix.game.engine.buildings.Buildings;
+import de.stw.phoenix.game.engine.construction.api.ConstructionInfo;
+import de.stw.phoenix.game.engine.construction.api.ConstructionService;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;

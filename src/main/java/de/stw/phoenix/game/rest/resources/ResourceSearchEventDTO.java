@@ -1,8 +1,8 @@
 package de.stw.phoenix.game.rest.resources;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import de.stw.phoenix.game.data.resources.Resource;
-import de.stw.phoenix.game.engine.modules.resources.api.ResourceSearchInfo;
+import de.stw.phoenix.game.engine.resources.api.Resource;
+import de.stw.phoenix.game.engine.resources.api.ResourceSearchInfo;
 import de.stw.phoenix.game.rest.GameEventDTO;
 import de.stw.phoenix.game.rest.GameEventTypes;
 

@@ -1,6 +1,6 @@
 package de.stw.phoenix;
 
-import de.stw.phoenix.game.data.buildings.Buildings;
+import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.impl.ImmutablePlayerImpl;
 import de.stw.phoenix.user.api.User;

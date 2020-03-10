@@ -1,10 +1,10 @@
 package de.stw.phoenix.game.rest.player;
 
-import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
-import de.stw.phoenix.game.engine.modules.resources.api.ResourceProduction;
-import de.stw.phoenix.game.engine.modules.resources.api.ResourceSite;
-import de.stw.phoenix.game.engine.modules.resources.impl.ResourceSearchEvent;
-import de.stw.phoenix.game.events.GameEvent;
+import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
+import de.stw.phoenix.game.engine.resources.api.ResourceProduction;
+import de.stw.phoenix.game.engine.resources.api.ResourceSite;
+import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
+import de.stw.phoenix.game.engine.api.GameEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.rest.GameEventDTO;

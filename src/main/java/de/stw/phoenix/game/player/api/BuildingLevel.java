@@ -1,6 +1,6 @@
 package de.stw.phoenix.game.player.api;
 
-import de.stw.phoenix.game.data.buildings.Building;
+import de.stw.phoenix.game.engine.buildings.Building;
 
 import java.util.Objects;
 

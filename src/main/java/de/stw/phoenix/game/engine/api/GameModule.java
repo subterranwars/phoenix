@@ -1,11 +1,10 @@
 package de.stw.phoenix.game.engine.api;
 
+import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.time.Tick;
-import de.stw.phoenix.game.player.api.MutablePlayer;
+
+import java.util.List;
 
 public interface GameModule {
-
-    void update(MutablePlayer player, Tick tick);
-
-    void afterUpdate(MutablePlayer player, Tick tick);
+    List<PlayerUpdate> getPlayerUpdates(ImmutablePlayer player, Tick currentTick);
 }

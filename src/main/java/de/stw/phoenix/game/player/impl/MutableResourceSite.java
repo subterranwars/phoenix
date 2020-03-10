@@ -1,6 +1,6 @@
 package de.stw.phoenix.game.player.impl;
 
-import de.stw.phoenix.game.engine.modules.resources.api.ResourceSite;
+import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.player.api.MutableResourceStorage;
 
 public class MutableResourceSite {
