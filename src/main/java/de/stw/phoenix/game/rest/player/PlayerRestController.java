@@ -1,6 +1,6 @@
 package de.stw.phoenix.game.rest.player;
 
-import de.stw.phoenix.game.engine.resources.api.ResourceProduction;
+import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
@@ -34,8 +34,8 @@ public class PlayerRestController {
     public PlayerDTO getPlayerState(Principal principal) {
         final String playerName = principal.getName();
         final Optional<ImmutablePlayer> player = playerService.find(playerName);
-        final List<ResourceProduction> resourceProductions = resourceService.getResourceProduction(player.get());
-        return new PlayerDTO(player.get(), resourceProductions, clock.getCurrentTick());
+        final List<ResourceOverview> resourceOverviews = resourceService.getResourceProduction(player.get());
+        return new PlayerDTO(player.get(), resourceOverviews, clock.getCurrentTick());
     }
 
 }

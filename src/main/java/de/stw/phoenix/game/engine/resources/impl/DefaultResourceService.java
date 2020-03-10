@@ -1,9 +1,9 @@
 package de.stw.phoenix.game.engine.resources.impl;
 
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.engine.buildings.Buildings;
+import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.Resource;
-import de.stw.phoenix.game.engine.resources.api.ResourceProduction;
+import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchInfo;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchRequest;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,29 +39,28 @@ public class DefaultResourceService implements ResourceService {
     private MutablePlayerAccessor playerAccessor;
 
     @Override
-    public List<ResourceProduction> getResourceProduction(final ImmutablePlayer player) {
+    public List<ResourceOverview> getResourceProduction(final ImmutablePlayer player) {
         // Base production provided by HQ
-        int hqLevel = player.getBuilding(Buildings.Headquarter).getLevel();
-        int productionPerHour = Resources.HQ_PRODUCTION_PER_HOUR * hqLevel;
-        final Map<Resource, ResourceProduction> resourceProductionMap = Resources.BASICS.stream()
+        final Map<Resource, ResourceOverview> resourceOverviewMap = Resources.BASICS.stream()
                 .map(resource -> player.getStorage(resource))
-                .map(storage -> new ResourceProduction(player, storage, productionPerHour))
-                .collect(Collectors.toMap(production -> production.getStorage().getResource(), Function.identity()));
+                .map(storage -> new ResourceOverview(storage, Resources.Productions.create(player, storage.getResource())))
+                .collect(Collectors.toMap(resourceOverview -> resourceOverview.getResource(), Function.identity()));
 
         // Production provided by resource sites
         player.getResourceSites().forEach(site -> {
             // TODO MVR ensure that resource storage actually exists
-            final double siteProductionPerHour = site.getDroneCount() * Resources.SITE_PRODUCTION_PER_HOUR;
+            final ProductionValue siteProductionValue = Resources.Productions.create(site);
             final ImmutableResourceStorage siteStorage = site.getStorage();
-            if (resourceProductionMap.containsKey(siteStorage.getResource())) {
-                ResourceProduction oldProduction = resourceProductionMap.get(siteStorage.getResource());
-                resourceProductionMap.put(siteStorage.getResource(),
-                        new ResourceProduction(player, oldProduction.getStorage(), oldProduction.getProductionValue() + siteProductionPerHour));
+            if (resourceOverviewMap.containsKey(siteStorage.getResource())) {
+                ResourceOverview oldOverview = resourceOverviewMap.get(siteStorage.getResource());
+                final ProductionValue oldProduction = oldOverview.getResourceProduction();
+                double newProductionPerHour = oldProduction.getProductionPerTimeUnit() + siteProductionValue.getProductionPerTimeUnit();
+                resourceOverviewMap.put(siteStorage.getResource(), new ResourceOverview(oldOverview.getStorage(), new ProductionValue(newProductionPerHour, TimeUnit.HOURS)));
             } else {
-                resourceProductionMap.put(siteStorage.getResource(), new ResourceProduction(player, player.getStorage(siteStorage.getResource()), siteProductionPerHour));
+                resourceOverviewMap.put(siteStorage.getResource(), new ResourceOverview(player.getStorage(siteStorage.getResource()), siteProductionValue));
             }
         });
-        return Collections.unmodifiableList(Lists.newArrayList(resourceProductionMap.values()));
+        return Collections.unmodifiableList(Lists.newArrayList(resourceOverviewMap.values()));
     }
 
     // TODO MVR implement limit of things we can search

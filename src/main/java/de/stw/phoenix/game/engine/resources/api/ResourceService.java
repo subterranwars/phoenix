@@ -5,7 +5,7 @@ import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import java.util.List;
 
 public interface ResourceService {
-    List<ResourceProduction> getResourceProduction(ImmutablePlayer player);
+    List<ResourceOverview> getResourceProduction(ImmutablePlayer player);
 
     void search(ResourceSearchRequest resourceSearchRequest);
 
