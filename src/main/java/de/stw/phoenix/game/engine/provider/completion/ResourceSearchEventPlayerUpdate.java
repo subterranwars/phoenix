@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.engine.modules.completion;
+package de.stw.phoenix.game.engine.provider.completion;
 
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchInfo;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
@@ -12,7 +12,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class ResourceSearchEventPlayerUpdate extends AbstractPlayerUpdateEvent<ResourceSearchEvent> {
 
-    private static final AtomicInteger ID_GENERATOR = new AtomicInteger(1);
+    // TODO MVR this may clashes if the user already has sites and we load this, then 1 is already assigned.... need a better more secure way
+    // of creating ids (maybe use hibernate?)
+    private static final AtomicInteger ID_GENERATOR = new AtomicInteger(10);
 
     public ResourceSearchEventPlayerUpdate(ResourceSearchEvent event) {
         super(event);

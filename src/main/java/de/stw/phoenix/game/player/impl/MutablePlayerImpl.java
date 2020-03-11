@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.engine.api.GameEvent;
+import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.resources.api.Resource;
@@ -35,7 +35,7 @@ public class MutablePlayerImpl implements MutablePlayer {
         this.buildings = Lists.newArrayList(delegate.getBuildings());
         this.events = Lists.newArrayList(delegate.getEvents());
         this.resources = delegate.getResources().stream().map(s -> new MutableResourceStorage(s.getResource(), s.getAmount(), s.getCapacity())).collect(Collectors.toList());
-        this.resourceSites = delegate.getResourceSites().stream().map(site -> new MutableResourceSite(site)).collect(Collectors.toList());
+        this.resourceSites = delegate.getResourceSites().stream().map(MutableResourceSite::new).collect(Collectors.toList());
     }
 
     @Override

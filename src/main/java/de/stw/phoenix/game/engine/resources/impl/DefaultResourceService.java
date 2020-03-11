@@ -1,13 +1,13 @@
 package de.stw.phoenix.game.engine.resources.impl;
 
-import com.google.common.collect.Lists;
+import de.stw.phoenix.game.engine.api.Context;
+import de.stw.phoenix.game.engine.api.GameEngine;
+import de.stw.phoenix.game.engine.api.ResourceProduction;
 import de.stw.phoenix.game.engine.resources.api.ProductionValue;
-import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchInfo;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchRequest;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
-import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
@@ -20,10 +20,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -38,29 +37,23 @@ public class DefaultResourceService implements ResourceService {
     @Autowired
     private MutablePlayerAccessor playerAccessor;
 
-    @Override
-    public List<ResourceOverview> getResourceProduction(final ImmutablePlayer player) {
-        // Base production provided by HQ
-        final Map<Resource, ResourceOverview> resourceOverviewMap = Resources.BASICS.stream()
-                .map(resource -> player.getStorage(resource))
-                .map(storage -> new ResourceOverview(storage, Resources.Productions.create(player, storage.getResource())))
-                .collect(Collectors.toMap(resourceOverview -> resourceOverview.getResource(), Function.identity()));
+    @Autowired
+    private GameEngine gameEngine;
 
-        // Production provided by resource sites
-        player.getResourceSites().forEach(site -> {
-            // TODO MVR ensure that resource storage actually exists
-            final ProductionValue siteProductionValue = Resources.Productions.create(site);
-            final ImmutableResourceStorage siteStorage = site.getStorage();
-            if (resourceOverviewMap.containsKey(siteStorage.getResource())) {
-                ResourceOverview oldOverview = resourceOverviewMap.get(siteStorage.getResource());
-                final ProductionValue oldProduction = oldOverview.getResourceProduction();
-                double newProductionPerHour = oldProduction.getProductionPerTimeUnit() + siteProductionValue.getProductionPerTimeUnit();
-                resourceOverviewMap.put(siteStorage.getResource(), new ResourceOverview(oldOverview.getStorage(), new ProductionValue(newProductionPerHour, TimeUnit.HOURS)));
-            } else {
-                resourceOverviewMap.put(siteStorage.getResource(), new ResourceOverview(player.getStorage(siteStorage.getResource()), siteProductionValue));
-            }
-        });
-        return Collections.unmodifiableList(Lists.newArrayList(resourceOverviewMap.values()));
+    @Override
+    public List<ResourceOverview> getResourceOverview(ImmutablePlayer player) {
+        final Context context = gameEngine.getContext(player);
+        final Collection<ResourceOverview> overviews = context.findElements(ResourceProduction.class)
+                .stream()
+                .filter(p -> p.isActive(player, context.getCurrentTick()))
+                .map(production -> {
+                    final ImmutableResourceStorage storage = player.getStorage(production.getResource());
+                    return new ResourceOverview(storage, production.getProductionValue());
+                }).collect(Collectors.toMap(overview -> overview.getResource(), Function.identity(), (resourceOverview, resourceOverview2) -> {
+                    double productionValue = resourceOverview.getResourceProduction().getProductionPerTimeUnit() + resourceOverview2.getResourceProduction().getProductionPerTimeUnit();
+                    return new ResourceOverview(resourceOverview.getStorage(), new ProductionValue(productionValue, resourceOverview.getResourceProduction().getTimeUnit()));
+                })).values();
+        return new ArrayList<>(overviews);
     }
 
     // TODO MVR implement limit of things we can search

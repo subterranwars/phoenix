@@ -1,10 +1,11 @@
 package de.stw.phoenix.game.engine.impl;
 
 import com.google.common.collect.Lists;
+import de.stw.phoenix.game.engine.api.Context;
+import de.stw.phoenix.game.engine.api.GameElementProvider;
 import de.stw.phoenix.game.engine.api.GameEngine;
+import de.stw.phoenix.game.engine.api.MutableContext;
 import de.stw.phoenix.game.engine.api.PlayerUpdate;
-import de.stw.phoenix.game.engine.modules.CompletionModule;
-import de.stw.phoenix.game.engine.modules.ResourceModule;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
@@ -16,7 +17,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class DefaultGameEngine implements GameEngine {
@@ -30,10 +33,7 @@ public class DefaultGameEngine implements GameEngine {
     private PlayerService playerService;
 
     @Autowired
-    private CompletionModule completionService;
-
-    @Autowired
-    private ResourceModule resourceModule;
+    final List<GameElementProvider> elementProviderList = Lists.newArrayList();
 
     @Override
     public void loop() {
@@ -41,38 +41,47 @@ public class DefaultGameEngine implements GameEngine {
         final Tick tick = clock.nextTick();
         for (ImmutablePlayer eachPlayer : playerService.getPlayers()) {
             playerService.modify(eachPlayer, mutablePlayer -> {
-                final List<PlayerUpdate> playerUpdateList = Lists.newArrayList();
-
-                // Produce resources
-                playerUpdateList.addAll(resourceModule.getPlayerUpdates(mutablePlayer, tick));
-
-                // Finish stuff
-                playerUpdateList.addAll(completionService.getPlayerUpdates(mutablePlayer, tick));
-
+                final List<PlayerUpdate> playerUpdateList = getContext(eachPlayer).findElements(PlayerUpdate.class)
+                        .stream()
+                        .sorted(Comparator.comparing(PlayerUpdate::getPhase))
+                        .collect(Collectors.toList());
                 // Pre Update
                 for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    playerUpdate.preUpdate(mutablePlayer, tick);
+                    if (playerUpdate.isActive(mutablePlayer.asImmutable(), tick)) {
+                        playerUpdate.preUpdate(mutablePlayer, tick);
+                    }
                 }
                 // Update
                 for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    playerUpdate.update(mutablePlayer, tick);
+                    if (playerUpdate.isActive(mutablePlayer.asImmutable(), tick)) {
+                        playerUpdate.update(mutablePlayer, tick);
+                    }
                 }
                 // Post Update
                 for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    playerUpdate.postUpdate(mutablePlayer, tick);
+                    if (playerUpdate.isActive(mutablePlayer.asImmutable(), tick)) {
+                        playerUpdate.postUpdate(mutablePlayer, tick);
+                    }
                 }
             });
         }
+    }
+
+    @Override
+    public Context getContext(ImmutablePlayer player) {
+        final MutableContext context = new DefaultMutableContext(clock.getCurrentTick());
+        playerService.modify(player, mutablePlayer -> elementProviderList.stream().forEach(provider -> provider.registerElements(context, mutablePlayer)));
+        return context.asImmutable();
     }
 
     private void logState() {
         LOG.debug("Tick: {}", clock.getCurrentTick());
         for (ImmutablePlayer eachPlayer : playerService.getPlayers()) {
             for (ImmutableResourceStorage resource : eachPlayer.getResources()) {
-                LOG.trace("{} {}: {}", eachPlayer.getName(), resource.getResource().getName(), resource.getAmount());
+                LOG.debug("{} {}: {}", eachPlayer.getName(), resource.getResource().getName(), resource.getAmount());
             }
             for (BuildingLevel buildingLevel : eachPlayer.getBuildings()) {
-                LOG.trace("{} {}: {}", eachPlayer.getName(), buildingLevel.getBuilding().getLabel(), buildingLevel.getLevel());
+                LOG.debug("{} {}: {}", eachPlayer.getName(), buildingLevel.getBuilding().getLabel(), buildingLevel.getLevel());
             }
         }
     }

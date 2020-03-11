@@ -19,6 +19,7 @@ public final class Building implements BuildingRef {
     private final String description;
     private final Map<Resource, Integer> costs;
     private final TimeDuration buildTime;
+    private final int energyConsumption;
 
     private Building(final Builder builder) {
         Objects.requireNonNull(builder);
@@ -28,6 +29,7 @@ public final class Building implements BuildingRef {
         this.description = builder.description;
         this.buildTime = TimeDuration.ofSeconds(builder.buildTime);
         this.costs = Collections.unmodifiableMap(builder.costs);
+        this.energyConsumption = builder.energyConsumption;
     }
 
     public int getId() {
@@ -58,6 +60,10 @@ public final class Building implements BuildingRef {
         return new Builder().id(id).name(name);
     }
 
+    public int getEnergyConsumption() {
+        return energyConsumption;
+    }
+
     public static final class Builder {
 
         private String name;
@@ -65,6 +71,7 @@ public final class Building implements BuildingRef {
         private String description;
         private int id;
         private long buildTime;
+        private int energyConsumption;
         private Map<Resource, Integer> costs = Maps.newHashMap();
 
         public Builder id(int id) {
@@ -105,7 +112,8 @@ public final class Building implements BuildingRef {
         }
 
         public Builder energyConsumption(int consumption) {
-            // TODO MVR not implemented yet
+            Preconditions.checkArgument(consumption >= 0);
+            this.energyConsumption = consumption;
             return this;
         }
 

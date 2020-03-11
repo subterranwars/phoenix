@@ -14,7 +14,7 @@ import java.util.concurrent.TimeUnit;
 
 @SpringBootApplication
 @EnableScheduling
-@ComponentScan(basePackages = "de.stw")
+@ComponentScan(basePackages = "de.stw.phoenix")
 public class PhoenixApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(PhoenixApplication.class);

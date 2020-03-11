@@ -1,8 +1,8 @@
 package de.stw.phoenix.game.engine.impl;
 
 import de.stw.phoenix.PhoenixApplication;
-import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.engine.api.GameEngine;
+import de.stw.phoenix.game.time.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.engine.api;
+package de.stw.phoenix.game.engine.api.events;
 
 import de.stw.phoenix.game.time.Moment;
 import de.stw.phoenix.game.time.Tick;

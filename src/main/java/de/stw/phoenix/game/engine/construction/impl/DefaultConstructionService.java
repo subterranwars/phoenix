@@ -1,15 +1,15 @@
 package de.stw.phoenix.game.engine.construction.impl;
 
+import de.stw.phoenix.game.engine.buildings.Building;
+import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.construction.api.ConstructionInfo;
 import de.stw.phoenix.game.engine.construction.api.ConstructionService;
-import de.stw.phoenix.game.time.Clock;
-import de.stw.phoenix.game.time.Moment;
-import de.stw.phoenix.game.engine.buildings.Building;
-import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
+import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.time.Moment;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

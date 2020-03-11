@@ -1,7 +1,9 @@
-package de.stw.phoenix.game.engine.modules.completion;
+package de.stw.phoenix.game.engine.provider.completion;
 
-import de.stw.phoenix.game.engine.api.GameEvent;
+import de.stw.phoenix.game.engine.api.events.GameEvent;
+import de.stw.phoenix.game.engine.api.Phases;
 import de.stw.phoenix.game.engine.api.PlayerUpdate;
+import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.time.Tick;
 
@@ -15,7 +17,17 @@ public abstract class AbstractPlayerUpdateEvent<T extends GameEvent> implements 
     }
 
     @Override
+    public int getPhase() {
+        return Phases.FinishEvents;
+    }
+
+    @Override
     public void postUpdate(MutablePlayer player, Tick tick) {
         player.removeEvent(event);
+    }
+
+    @Override
+    public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+        return event.isCompleted(currentTick);
     }
 }

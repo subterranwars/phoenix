@@ -9,8 +9,8 @@ public class ProductionValue {
     private final TimeUnit timeUnit;
     private final double productionPerTimeUnit;
 
-    public ProductionValue(final long productionPerDuration, final TimeDuration duration) {
-        this(productionPerDuration / (double) Objects.requireNonNull(duration).getSeconds(), TimeUnit.SECONDS);
+    public ProductionValue(final double productionPerDuration, final TimeDuration duration) {
+        this(productionPerDuration / (double) Objects.requireNonNull(duration).getMilliseconds(), TimeUnit.MILLISECONDS);
     }
 
     public ProductionValue(double productionPerTimeUnit, TimeUnit timeUnit) {
@@ -20,8 +20,8 @@ public class ProductionValue {
 
     public ProductionValue convert(final TimeUnit timeUnit) {
         Objects.requireNonNull(timeUnit);
-        long convertedSeconds = TimeUnit.SECONDS.convert(1, timeUnit);
-        double convertedProductionPerTimeUnit = productionPerTimeUnit * convertedSeconds;
+        long convertedMilliseconds = TimeUnit.MILLISECONDS.convert(1, timeUnit);
+        double convertedProductionPerTimeUnit = productionPerTimeUnit * convertedMilliseconds;
         return new ProductionValue(convertedProductionPerTimeUnit, timeUnit);
     }
 

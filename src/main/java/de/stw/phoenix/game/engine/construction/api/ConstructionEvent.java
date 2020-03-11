@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.engine.construction.api;
 
-import de.stw.phoenix.game.engine.api.GameEvent;
-import de.stw.phoenix.game.engine.api.EventVisitor;
+import de.stw.phoenix.game.engine.api.events.GameEvent;
+import de.stw.phoenix.game.engine.api.events.EventVisitor;
 import de.stw.phoenix.game.time.Moment;
 
 import java.util.Objects;

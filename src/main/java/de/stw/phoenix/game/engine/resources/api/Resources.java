@@ -1,10 +1,6 @@
 package de.stw.phoenix.game.engine.resources.api;
 
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.engine.buildings.Buildings;
-import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.time.TimeDuration;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -49,18 +45,5 @@ public interface Resources {
         return ALL.stream()
                 .filter(b -> b.getId() == resourceId)
                 .findAny().orElseThrow(() -> new NoSuchElementException("No resource found with id '" + resourceId + "'"));
-    }
-
-    // Production Values
-    interface Productions {
-        static ProductionValue create(ResourceSite site) {
-            return new ProductionValue(site.getDroneCount() * Resources.SITE_PRODUCTION_PER_HOUR, TimeDuration.ofHours(1));
-        }
-
-        static ProductionValue create(ImmutablePlayer player, Resource resource) {
-            final BuildingLevel hqBuilding = player.getBuilding(Buildings.Headquarter);
-            long productionPerHour = hqBuilding.getLevel() * Resources.HQ_PRODUCTION_PER_HOUR;
-            return new ProductionValue(productionPerHour, TimeDuration.ofHours(1));
-        }
     }
 }

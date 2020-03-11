@@ -1,6 +1,10 @@
 package de.stw.phoenix;
 
+import com.google.common.collect.Lists;
 import de.stw.phoenix.game.engine.buildings.Buildings;
+import de.stw.phoenix.game.engine.resources.api.ResourceSite;
+import de.stw.phoenix.game.engine.resources.api.Resources;
+import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.impl.ImmutablePlayerImpl;
 import de.stw.phoenix.user.api.User;
@@ -29,6 +33,9 @@ public class InitialDataSetup {
                 ImmutablePlayerImpl.builder(user.getId(), user.getUsername())
                         .withDefaults()
                         .withBuilding(Buildings.Resourcefacility, 1)
+                        .withResourceSites(Lists.newArrayList(
+                                new ResourceSite(1, new ImmutableResourceStorage(Resources.Iron, 10000, 10000), 10)
+                        ))
                         .build()));
     }
 }

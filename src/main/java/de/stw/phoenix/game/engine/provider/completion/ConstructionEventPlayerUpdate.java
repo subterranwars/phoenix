@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.engine.modules.completion;
+package de.stw.phoenix.game.engine.provider.completion;
 
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;

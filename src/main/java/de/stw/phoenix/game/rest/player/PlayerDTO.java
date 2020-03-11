@@ -1,6 +1,6 @@
 package de.stw.phoenix.game.rest.player;
 
-import de.stw.phoenix.game.engine.api.GameEvent;
+import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;

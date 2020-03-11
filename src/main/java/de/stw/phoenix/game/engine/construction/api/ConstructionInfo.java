@@ -63,6 +63,7 @@ public class ConstructionInfo {
         return costs;
     }
 
+    // TODO MVR this should be some kind of costModifier
     protected static Map<Resource, Integer> calculateCosts(Building building, int level) {
         Preconditions.checkArgument(level > 0);
         if (level == 1) {
@@ -78,6 +79,7 @@ public class ConstructionInfo {
         return calculatedCosts;
     }
 
+    // TODO MVR this should be some kind of constructiontimemodifier
     protected static long calculateBuildTimeInSeconds(Building building, int level, int hqLevel) {
         Preconditions.checkArgument(level > 0);
         Preconditions.checkArgument(hqLevel > 0);

@@ -34,7 +34,7 @@ public class PlayerRestController {
     public PlayerDTO getPlayerState(Principal principal) {
         final String playerName = principal.getName();
         final Optional<ImmutablePlayer> player = playerService.find(playerName);
-        final List<ResourceOverview> resourceOverviews = resourceService.getResourceProduction(player.get());
+        final List<ResourceOverview> resourceOverviews = resourceService.getResourceOverview(player.get());
         return new PlayerDTO(player.get(), resourceOverviews, clock.getCurrentTick());
     }
 

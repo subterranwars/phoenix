@@ -2,7 +2,7 @@ package de.stw.phoenix.game.player.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.engine.api.GameEvent;
+import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;

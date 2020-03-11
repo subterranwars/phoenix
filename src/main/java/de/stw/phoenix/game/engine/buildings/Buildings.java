@@ -11,7 +11,7 @@ public interface Buildings {
     Building Headquarter = Building.builder(1, "hq")
             .label("Hauptquartier")
             .description("Dieses Gebäude ist das Herz jeder Kolonie. Von hier aus werden alle Bauvorhaben der Kolonie koordiniert sowie die Kolonieausbaustufe festgelegt. Pro Gebäudelevel erhältst du 25 Eisen, Stein & Nahrung, und es verringern sich die Bauzeiten deiner anderen Gebäude. Im weiteren Spielverlauf kannst du hier deine Kolonien zur nächsten Ausbaustufe aufsteigen lassen. Tipp: Vor allem am Anfang ist es sehrwichtig, das Hauptquartier intensiv auszubauen, um keine unmenschlichen Bauzeiten bei den anderen Gebäuden zu riskieren.")
-            .energyConsumption(10)
+            .energyConsumption(0)
             .buildTime(30, TimeUnit.SECONDS)
             .costsIron(5000)
             .costsStone(6000)
