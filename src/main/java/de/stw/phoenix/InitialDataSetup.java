@@ -34,7 +34,8 @@ public class InitialDataSetup {
                         .withDefaults()
                         .withBuilding(Buildings.Resourcefacility, 1)
                         .withResourceSites(Lists.newArrayList(
-                                new ResourceSite(1, new ImmutableResourceStorage(Resources.Iron, 10000, 10000), 10)
+                                new ResourceSite(1, new ImmutableResourceStorage(Resources.Iron, 10000, 10000), 10),
+                                new ResourceSite(2, new ImmutableResourceStorage(Resources.Oil, 10000, 10000), 0)
                         ))
                         .build()));
     }

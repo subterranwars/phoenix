@@ -1,8 +1,10 @@
 package de.stw.phoenix.game.engine.resources.impl;
 
 import de.stw.phoenix.game.engine.api.Context;
+import de.stw.phoenix.game.engine.api.EnergyProduction;
 import de.stw.phoenix.game.engine.api.GameEngine;
 import de.stw.phoenix.game.engine.api.ResourceProduction;
+import de.stw.phoenix.game.engine.energy.EnergyOverview;
 import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchInfo;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -54,6 +57,17 @@ public class DefaultResourceService implements ResourceService {
                     return new ResourceOverview(resourceOverview.getStorage(), new ProductionValue(productionValue, resourceOverview.getResourceProduction().getTimeUnit()));
                 })).values();
         return new ArrayList<>(overviews);
+    }
+
+    @Override
+    public EnergyOverview getEnergyOverview(ImmutablePlayer player) {
+        final Context context = gameEngine.getContext(player);
+        final double energyLevel = context.findElements(EnergyProduction.class)
+                .stream()
+                .filter(p -> p.isActive(player, context.getCurrentTick()))
+                .mapToDouble(p -> p.getProductionValue().convert(TimeUnit.HOURS).getProductionPerTimeUnit())
+                .sum();
+        return new EnergyOverview(energyLevel);
     }
 
     // TODO MVR implement limit of things we can search

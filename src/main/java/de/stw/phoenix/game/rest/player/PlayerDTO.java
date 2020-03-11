@@ -2,6 +2,7 @@ package de.stw.phoenix.game.rest.player;
 
 import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
+import de.stw.phoenix.game.engine.energy.EnergyOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
@@ -24,13 +25,15 @@ public class PlayerDTO {
     private List<BuildingLevel> buildings;
     private List<GameEventDTO> events;
     private List<ResourceSite> resourceSites;
+    private final EnergyOverview energy;
 
-    public PlayerDTO(final ImmutablePlayer player, final List<ResourceOverview> resourceOverviews, final Tick currentTick) {
+    public PlayerDTO(final ImmutablePlayer player, final List<ResourceOverview> resourceOverviews, final EnergyOverview energyOverview, final Tick currentTick) {
         Objects.requireNonNull(player);
         this.buildings = player.getBuildings();
         this.events = player.getEvents().stream().map(e -> convert(e, currentTick)).collect(Collectors.toList());
         this.id = player.getId();
         this.name = player.getName();
+        this.energy = Objects.requireNonNull(energyOverview).convert(TimeUnit.HOURS);
         this.resourceOverviews = Objects.requireNonNull(resourceOverviews).stream()
                 .map(overview -> overview.convert(TimeUnit.MINUTES))
                 .collect(Collectors.toList());
@@ -57,6 +60,14 @@ public class PlayerDTO {
         return events;
     }
 
+    public List<ResourceSite> getResourceSites() {
+        return resourceSites;
+    }
+
+    public EnergyOverview getEnergy() {
+        return energy;
+    }
+
     // Converts the given gameEvent updating the time to subtract already passed ticks
     private static GameEventDTO convert(final GameEvent event, final Tick currentTick) {
         final long diffSeconds = currentTick.toMoment().getDiff(event.getUserCompletionMoment());
@@ -67,9 +78,5 @@ public class PlayerDTO {
             return new ResourceSearchEventDTO(diffSeconds, ((ResourceSearchEvent) event).getInfo());
         }
         throw new IllegalStateException("Cannot convert GameEvent of type " + event.getClass().getSimpleName());
-    }
-
-    public List<ResourceSite> getResourceSites() {
-        return resourceSites;
     }
 }

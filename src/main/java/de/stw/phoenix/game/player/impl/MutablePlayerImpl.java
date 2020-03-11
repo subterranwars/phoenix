@@ -108,6 +108,11 @@ public class MutablePlayerImpl implements MutablePlayer {
     }
 
     @Override
+    public void removeResources(Resource resource, double consumption) {
+        getMutableStorage(resource).ifPresent(storage -> storage.retrieve(consumption));
+    }
+
+    @Override
     public void addResources(Resource resource, double amount) {
         getMutableStorage(resource).ifPresent(storage -> storage.store(amount));
     }
