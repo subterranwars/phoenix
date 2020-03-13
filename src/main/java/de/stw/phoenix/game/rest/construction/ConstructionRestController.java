@@ -16,7 +16,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.security.Principal;
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping(path="/constructions")
@@ -31,7 +30,7 @@ public class ConstructionRestController {
 
     @GetMapping
     public List<ConstructionInfo> listConstructions(Principal principal) {
-        final ImmutablePlayer player = playerService.find(principal.getName()).orElseThrow(() -> new NoSuchElementException("Player with name '" + principal.getName() + "' not found"));
+        final ImmutablePlayer player = playerService.get(principal.getName());
         return constructionService.listConstructions(player);
     }
 

@@ -6,10 +6,8 @@ import de.stw.phoenix.game.engine.api.MutableContext;
 import de.stw.phoenix.game.time.Tick;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class DefaultMutableContext implements MutableContext {
 
@@ -45,20 +43,6 @@ public class DefaultMutableContext implements MutableContext {
 
     @Override
     public Context asImmutable() {
-        final List<GameElement> theElements = Collections.unmodifiableList(this.gameElements);
-        return new Context() {
-            @Override
-            public <T extends GameElement> List<T> findElements(Class<T> elementClass) {
-                return theElements.stream()
-                        .filter(e -> elementClass.isAssignableFrom(e.getClass()))
-                        .map(e -> (T) e)
-                        .collect(Collectors.toList());
-            }
-
-            @Override
-            public Tick getCurrentTick() {
-                return currentTick;
-            }
-        };
+        return new DefaultContext(gameElements, currentTick);
     }
 }

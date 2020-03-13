@@ -1,19 +1,26 @@
 package de.stw.phoenix.game.engine.construction.impl;
 
+import de.stw.phoenix.game.engine.api.Context;
+import de.stw.phoenix.game.engine.api.GameEngine;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
+import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionCostCalculator;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.construction.api.ConstructionInfo;
 import de.stw.phoenix.game.engine.construction.api.ConstructionService;
+import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCalculator;
+import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.time.Moment;
+import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
@@ -26,14 +33,28 @@ public class DefaultConstructionService implements ConstructionService {
     @Autowired
     private MutablePlayerAccessor playerAccessor;
 
+    @Autowired
+    private ConstructionTimeCalculator constructionTimeCalculator;
+
+    @Autowired
+    private ConstructionCostCalculator constructionCostCalculator;
+
+    @Autowired
+    private GameEngine gameEngine;
+
     @Override
     public List<ConstructionInfo> listConstructions(final ImmutablePlayer player) {
         Objects.requireNonNull(player);
         final BuildingLevel hqBuilding = player.getBuilding(Buildings.Headquarter);
+        final Context context = gameEngine.getContext(player);
         return Buildings.ALL.stream()
                 .map(player::getBuilding)
                 .map(BuildingLevel::next)
-                .map(bl -> new ConstructionInfo(bl, hqBuilding))
+                .map(bl -> {
+                    final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(bl, context, player);
+                    final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(bl, context, player);
+                    return new ConstructionInfo(bl, costs, constructionTime);
+                })
                 .collect(Collectors.toList());
     }
 
@@ -42,8 +63,11 @@ public class DefaultConstructionService implements ConstructionService {
         Objects.requireNonNull(player);
         Objects.requireNonNull(building);
         if (player.getConstructionEvent() == null) {
-            final BuildingLevel userLevel = player.getBuilding(building);
-            final ConstructionInfo constructionInfo = new ConstructionInfo(userLevel.next(), player.getBuilding(Buildings.Headquarter));
+            final Context context = gameEngine.getContext(player);
+            final BuildingLevel nextLevel = player.getBuilding(building).next();
+            final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(nextLevel, context, player);
+            final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(nextLevel, context, player);
+            final ConstructionInfo constructionInfo =  new ConstructionInfo(nextLevel, costs, constructionTime);
             if (player.canAfford(constructionInfo.getCosts())) {
                 playerAccessor.modify(player, mutablePlayer -> {
                     // Enqueue

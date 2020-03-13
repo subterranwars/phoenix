@@ -1,5 +1,7 @@
 package de.stw.phoenix.game.time;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import java.util.concurrent.TimeUnit;
 
 public class TimeDuration {
@@ -18,14 +20,17 @@ public class TimeDuration {
         return milliseconds;
     }
 
+    @JsonIgnore
     public long getSeconds() {
         return milliseconds / 1000;
     }
 
+    @JsonIgnore
     public long getMinutes() {
         return getSeconds() / 60;
     }
 
+    @JsonIgnore
     public long getHours() {
         return getSeconds() / 3600;
     }
