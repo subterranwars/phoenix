@@ -73,10 +73,10 @@ public class DefaultGameEngine implements GameEngine {
         LOG.debug("Tick: {}", clock.getCurrentTick());
         for (ImmutablePlayer eachPlayer : playerService.getPlayers()) {
             for (ImmutableResourceStorage resource : eachPlayer.getResources()) {
-                LOG.debug("{} {}: {}", eachPlayer.getName(), resource.getResource().getName(), resource.getAmount());
+                LOG.trace("{} {}: {}", eachPlayer.getName(), resource.getResource().getName(), resource.getAmount());
             }
             for (BuildingLevel buildingLevel : eachPlayer.getBuildings()) {
-                LOG.debug("{} {}: {}", eachPlayer.getName(), buildingLevel.getBuilding().getLabel(), buildingLevel.getLevel());
+                LOG.trace("{} {}: {}", eachPlayer.getName(), buildingLevel.getBuilding().getLabel(), buildingLevel.getLevel());
             }
         }
     }

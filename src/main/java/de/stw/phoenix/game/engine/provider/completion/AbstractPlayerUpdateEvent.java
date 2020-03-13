@@ -1,8 +1,9 @@
 package de.stw.phoenix.game.engine.provider.completion;
 
-import de.stw.phoenix.game.engine.api.events.GameEvent;
+import com.google.common.eventbus.EventBus;
 import de.stw.phoenix.game.engine.api.Phases;
 import de.stw.phoenix.game.engine.api.PlayerUpdate;
+import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.time.Tick;
@@ -11,9 +12,11 @@ import java.util.Objects;
 
 public abstract class AbstractPlayerUpdateEvent<T extends GameEvent> implements PlayerUpdate {
     protected final T event;
+    protected final EventBus eventBus;
 
-    public AbstractPlayerUpdateEvent(T event) {
+    public AbstractPlayerUpdateEvent(EventBus eventBus, T event) {
         this.event = Objects.requireNonNull(event);
+        this.eventBus = Objects.requireNonNull(eventBus);
     }
 
     @Override

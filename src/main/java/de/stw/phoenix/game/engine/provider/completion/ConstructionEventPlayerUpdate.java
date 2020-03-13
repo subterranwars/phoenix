@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.provider.completion;
 
+import com.google.common.eventbus.EventBus;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
@@ -11,8 +12,8 @@ import org.slf4j.LoggerFactory;
 
 public class ConstructionEventPlayerUpdate extends AbstractPlayerUpdateEvent<ConstructionEvent> {
 
-    public ConstructionEventPlayerUpdate(ConstructionEvent event) {
-        super(event);
+    public ConstructionEventPlayerUpdate(EventBus eventBus, ConstructionEvent event) {
+        super(eventBus, event);
     }
 
     @Override
@@ -22,5 +23,8 @@ public class ConstructionEventPlayerUpdate extends AbstractPlayerUpdateEvent<Con
         final Building building = Buildings.findByRef(constructionInfo.getBuilding());
         final BuildingLevel newLevel = new BuildingLevel(building, constructionInfo.getLevelToBuild());
         player.setBuilding(newLevel);
+
+        // TODO MVR is this really how we want to do things?
+        eventBus.post(event);
     }
 }

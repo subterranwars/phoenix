@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.provider.completion;
 
+import com.google.common.eventbus.EventBus;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchInfo;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
@@ -16,8 +17,8 @@ public class ResourceSearchEventPlayerUpdate extends AbstractPlayerUpdateEvent<R
     // of creating ids (maybe use hibernate?)
     private static final AtomicInteger ID_GENERATOR = new AtomicInteger(10);
 
-    public ResourceSearchEventPlayerUpdate(ResourceSearchEvent event) {
-        super(event);
+    public ResourceSearchEventPlayerUpdate(EventBus eventBus, ResourceSearchEvent event) {
+        super(eventBus, event);
     }
 
     @Override

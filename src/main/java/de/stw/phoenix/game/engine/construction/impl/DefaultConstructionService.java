@@ -72,7 +72,7 @@ public class DefaultConstructionService implements ConstructionService {
                 playerAccessor.modify(player, mutablePlayer -> {
                     // Enqueue
                     final Moment futureMoment = clock.getMoment(constructionInfo.getBuildTime());
-                    final ConstructionEvent constructionEvent = new ConstructionEvent(constructionInfo, futureMoment);
+                    final ConstructionEvent constructionEvent = new ConstructionEvent(mutablePlayer, constructionInfo, futureMoment);
                     mutablePlayer.addEvent(constructionEvent);
 
                     // Subtract resources
