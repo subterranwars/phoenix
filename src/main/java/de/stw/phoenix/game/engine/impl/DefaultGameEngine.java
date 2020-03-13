@@ -46,17 +46,8 @@ public class DefaultGameEngine implements GameEngine {
                     .filter(pu -> pu.isActive(mutablePlayer.asImmutable(), tick))
                     .sorted(Comparator.comparing(PlayerUpdate::getPhase))
                     .collect(Collectors.toList());
-                // Pre Update
-                for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    playerUpdate.preUpdate(mutablePlayer, tick);
-                }
-                // Update
                 for (PlayerUpdate playerUpdate : playerUpdateList) {
                     playerUpdate.update(mutablePlayer, tick);
-                }
-                // Post Update
-                for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    playerUpdate.postUpdate(mutablePlayer, tick);
                 }
             });
         }

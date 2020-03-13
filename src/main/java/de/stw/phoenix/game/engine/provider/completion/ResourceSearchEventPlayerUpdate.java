@@ -22,7 +22,7 @@ public class ResourceSearchEventPlayerUpdate extends AbstractPlayerUpdateEvent<R
     }
 
     @Override
-    public void update(MutablePlayer player, Tick tick) {
+    public void updateInternal(MutablePlayer player, Tick tick) {
         final long amount = (long) (Math.random() * 100000);
         final ResourceSearchInfo info = event.getInfo();
         LoggerFactory.getLogger(getClass()).info("Completing resource search event. User: {}, Resource: {}, Success: {}, Amount: {}", player.getName(), info.getResource().getName(), info.isSuccess(), amount);

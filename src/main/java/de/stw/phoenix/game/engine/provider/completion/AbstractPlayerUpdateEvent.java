@@ -25,7 +25,8 @@ public abstract class AbstractPlayerUpdateEvent<T extends GameEvent> implements 
     }
 
     @Override
-    public void postUpdate(MutablePlayer player, Tick tick) {
+    public void update(MutablePlayer player, Tick tick) {
+        updateInternal(player, tick);
         player.removeEvent(event);
     }
 
@@ -33,4 +34,6 @@ public abstract class AbstractPlayerUpdateEvent<T extends GameEvent> implements 
     public boolean isActive(ImmutablePlayer player, Tick currentTick) {
         return event.isCompleted(currentTick);
     }
+
+    protected abstract void updateInternal(MutablePlayer player, Tick tick);
 }

@@ -17,7 +17,7 @@ public class ConstructionEventPlayerUpdate extends AbstractPlayerUpdateEvent<Con
     }
 
     @Override
-    public void update(MutablePlayer player, Tick tick) {
+    protected void updateInternal(MutablePlayer player, Tick tick) {
         final ConstructionInfo constructionInfo = event.getConstructionInfo();
         LoggerFactory.getLogger(getClass()).info("Completing construction event. User: {}, Building: {}, Level: {}", player.getName(), constructionInfo.getBuilding().getLabel(), constructionInfo.getLevelToBuild());
         final Building building = Buildings.findByRef(constructionInfo.getBuilding());

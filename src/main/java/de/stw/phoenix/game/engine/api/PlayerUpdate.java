@@ -7,9 +7,6 @@ public interface PlayerUpdate extends GameElement {
 
     int getPhase();
 
-    default void preUpdate(MutablePlayer player, Tick tick) {}
-
     void update(MutablePlayer player, Tick tick);
 
-    default void postUpdate(MutablePlayer player, Tick tick) {}
 }
