@@ -6,6 +6,7 @@ import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
+import de.stw.phoenix.game.engine.energy.PlayerModifier;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.player.api.BuildingLevel;
@@ -17,6 +18,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static de.stw.phoenix.game.engine.resources.api.Resources.DEFAULT_AMOUNT;
 import static de.stw.phoenix.game.engine.resources.api.Resources.Food;
@@ -34,6 +36,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     private final List<BuildingLevel> buildings;
     private final List<GameEvent> events;
     private final List<ResourceSite> resourceSites;
+    private final List<PlayerModifier> modifiers;
 
     private ImmutablePlayerImpl(Builder builder) {
         Objects.requireNonNull(builder);
@@ -43,6 +46,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         this.buildings = Collections.unmodifiableList(builder.buildings);
         this.events = Collections.unmodifiableList(builder.events);
         this.resourceSites = Collections.unmodifiableList(builder.resourceSites);
+        this.modifiers = Collections.unmodifiableList(builder.modifiers);
     }
 
     @Override
@@ -104,8 +108,22 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     @Override
     public ConstructionEvent getConstructionEvent() {
         return (ConstructionEvent) getEvents().stream()
-                .filter(e -> e.getClass().isAssignableFrom(ConstructionEvent.class))
+                .filter(e -> ConstructionEvent.class.isAssignableFrom(e.getClass()))
                 .findAny().orElse(null);
+    }
+
+    @Override
+    public List<PlayerModifier> getModifiers() {
+        return modifiers;
+    }
+
+    @Override
+    public <T extends PlayerModifier> List<T> findModifier(Class<T> modifierType) {
+        Objects.requireNonNull(modifierType);
+        return modifiers.stream()
+                .filter(e -> modifierType.isAssignableFrom(e.getClass()))
+                .map(e -> (T) e)
+                .collect(Collectors.toList());
     }
 
     public static Builder builder(long id, String name) {
@@ -119,6 +137,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         private List<BuildingLevel> buildings = Lists.newArrayList();
         private List<GameEvent> events = Lists.newArrayList();
         private List<ResourceSite> resourceSites = Lists.newArrayList();
+        private List<PlayerModifier> modifiers = Lists.newArrayList();
 
         public Builder id(long id) {
             Preconditions.checkArgument(id > 0, "id must be > 0");
@@ -161,6 +180,20 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
 
         public Builder withEvents(List<GameEvent> events) {
             this.events.addAll(events);
+            return this;
+        }
+
+        public Builder withModifiers(List<PlayerModifier> modifiers) {
+            Objects.requireNonNull(modifiers);
+            modifiers.forEach(this::withModifier);
+            return this;
+        }
+
+        public Builder withModifier(PlayerModifier modifier) {
+            Objects.requireNonNull(modifier);
+            if (!this.modifiers.contains(modifier)) {
+                this.modifiers.add(modifier);
+            }
             return this;
         }
 

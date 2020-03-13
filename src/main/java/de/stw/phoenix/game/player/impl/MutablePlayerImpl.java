@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
+import de.stw.phoenix.game.engine.energy.PlayerModifier;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.player.api.BuildingLevel;
@@ -27,6 +28,7 @@ public class MutablePlayerImpl implements MutablePlayer {
     private List<MutableResourceSite> resourceSites;
     private final long id;
     private final String name;
+    private List<PlayerModifier> modifiers;
 
     MutablePlayerImpl(ImmutablePlayer delegate) {
         Objects.requireNonNull(delegate);
@@ -36,6 +38,7 @@ public class MutablePlayerImpl implements MutablePlayer {
         this.events = Lists.newArrayList(delegate.getEvents());
         this.resources = delegate.getResources().stream().map(s -> new MutableResourceStorage(s.getResource(), s.getAmount(), s.getCapacity())).collect(Collectors.toList());
         this.resourceSites = delegate.getResourceSites().stream().map(MutableResourceSite::new).collect(Collectors.toList());
+        this.modifiers = Lists.newArrayList(delegate.getModifiers());
     }
 
     @Override
@@ -72,12 +75,26 @@ public class MutablePlayerImpl implements MutablePlayer {
 
     @Override
     public List<GameEvent> getEvents() {
-        return Collections.unmodifiableList(this.events);
+        // TODO MVR Collections.unmodifiableList does not create a copy, but ensures it is unmodifiable
+        // This is bad, as we want to iterate over the getEvents() and invoke removeEvent(..) later
+        // Ensure that ALL Collections.unmodifiableList(...) calls in this application are actually implemented properly
+        // Either create a copy before using unmodifiableList or use ImmutableLists from guava (or similar)
+        return Collections.unmodifiableList(Lists.newArrayList(this.events));
     }
 
     @Override
     public ConstructionEvent getConstructionEvent() {
         return asImmutable().getConstructionEvent();
+    }
+
+    @Override
+    public List<PlayerModifier> getModifiers() {
+        return asImmutable().getModifiers();
+    }
+
+    @Override
+    public <T extends PlayerModifier> List<T> findModifier(Class<T> modifierType) {
+        return asImmutable().findModifier(modifierType);
     }
 
     @Override
@@ -105,6 +122,20 @@ public class MutablePlayerImpl implements MutablePlayer {
         if (canAfford(costs)) {
             costs.entrySet().forEach(e -> getMutableStorage(e.getKey()).get().retrieve(e.getValue()));
         }
+    }
+
+    @Override
+    public void addModifier(PlayerModifier modifier) {
+        Objects.requireNonNull(modifier);
+        if (!modifiers.contains(modifier)) {
+            modifiers.add(modifier);
+        }
+    }
+
+    @Override
+    public void removeModifier(PlayerModifier modifier) {
+        Objects.requireNonNull(modifier);
+        modifiers.remove(modifier);
     }
 
     @Override
@@ -162,12 +193,19 @@ public class MutablePlayerImpl implements MutablePlayer {
     }
 
     @Override
+    public void addEvents(List<GameEvent> newEvents) {
+        Objects.requireNonNull(newEvents);
+        newEvents.forEach(this::addEvent);
+    }
+
+    @Override
     public ImmutablePlayer asImmutable() {
         return ImmutablePlayerImpl.builder(getId(), getName())
                 .withBuildings(this.buildings)
                 .withResources(this.resources.stream().map(MutableResourceStorage::asImmutable).collect(Collectors.toList()))
                 .withResourceSites(this.resourceSites.stream().map(MutableResourceSite::asImmutable).collect(Collectors.toList()))
                 .withEvents(this.events)
+                .withModifiers(this.modifiers)
                 .build();
     }
 

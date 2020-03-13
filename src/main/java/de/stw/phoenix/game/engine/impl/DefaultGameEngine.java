@@ -1,6 +1,5 @@
 package de.stw.phoenix.game.engine.impl;
 
-import com.google.common.collect.Lists;
 import de.stw.phoenix.game.engine.api.Context;
 import de.stw.phoenix.game.engine.api.GameElementProvider;
 import de.stw.phoenix.game.engine.api.GameEngine;
@@ -33,7 +32,7 @@ public class DefaultGameEngine implements GameEngine {
     private PlayerService playerService;
 
     @Autowired
-    final List<GameElementProvider> elementProviderList = Lists.newArrayList();
+    private List<GameElementProvider> elementProviderList;
 
     @Override
     public void loop() {

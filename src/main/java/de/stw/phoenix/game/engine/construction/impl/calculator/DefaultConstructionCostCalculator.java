@@ -1,7 +1,6 @@
 package de.stw.phoenix.game.engine.construction.impl.calculator;
 
 import com.google.common.base.Preconditions;
-import de.stw.phoenix.game.engine.api.Context;
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionCostCalculator;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
@@ -16,7 +15,7 @@ import java.util.stream.Collectors;
 public class DefaultConstructionCostCalculator implements ConstructionCostCalculator {
 
     @Override
-    public Map<Resource, Integer> calculateConstructionCosts(BuildingLevel level, Context context, ImmutablePlayer player) {
+    public Map<Resource, Integer> calculateConstructionCosts(BuildingLevel level, ImmutablePlayer player) {
         Objects.requireNonNull(level);
         Preconditions.checkArgument(level.getLevel() > 0);
         if (level.getLevel() == 1) {

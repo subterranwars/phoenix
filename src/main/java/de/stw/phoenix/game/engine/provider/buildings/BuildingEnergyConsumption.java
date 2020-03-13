@@ -10,7 +10,7 @@ import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.stereotype.Service;
 
 @Service
-public class Buildings implements GameElementProvider {
+public class BuildingEnergyConsumption implements GameElementProvider {
     @Override
     public void registerElements(MutableContext context, ImmutablePlayer player) {
         player.getBuildings().stream()

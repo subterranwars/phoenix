@@ -1,13 +1,12 @@
 package de.stw.phoenix.game.engine.construction.impl;
 
-import de.stw.phoenix.game.engine.api.Context;
 import de.stw.phoenix.game.engine.api.GameEngine;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
-import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionCostCalculator;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.construction.api.ConstructionInfo;
 import de.stw.phoenix.game.engine.construction.api.ConstructionService;
+import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionCostCalculator;
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCalculator;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
@@ -45,14 +44,12 @@ public class DefaultConstructionService implements ConstructionService {
     @Override
     public List<ConstructionInfo> listConstructions(final ImmutablePlayer player) {
         Objects.requireNonNull(player);
-        final BuildingLevel hqBuilding = player.getBuilding(Buildings.Headquarter);
-        final Context context = gameEngine.getContext(player);
         return Buildings.ALL.stream()
                 .map(player::getBuilding)
                 .map(BuildingLevel::next)
                 .map(bl -> {
-                    final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(bl, context, player);
-                    final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(bl, context, player);
+                    final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(bl, player);
+                    final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(bl, player);
                     return new ConstructionInfo(bl, costs, constructionTime);
                 })
                 .collect(Collectors.toList());
@@ -63,10 +60,9 @@ public class DefaultConstructionService implements ConstructionService {
         Objects.requireNonNull(player);
         Objects.requireNonNull(building);
         if (player.getConstructionEvent() == null) {
-            final Context context = gameEngine.getContext(player);
             final BuildingLevel nextLevel = player.getBuilding(building).next();
-            final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(nextLevel, context, player);
-            final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(nextLevel, context, player);
+            final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(nextLevel, player);
+            final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(nextLevel, player);
             final ConstructionInfo constructionInfo =  new ConstructionInfo(nextLevel, costs, constructionTime);
             if (player.canAfford(constructionInfo.getCosts())) {
                 playerAccessor.modify(player, mutablePlayer -> {

@@ -55,7 +55,7 @@ public class Headquarter implements GameElementProvider {
         context.add(new EnergyProduction() {
             @Override
             public ProductionValue getProductionValue() {
-                return new ProductionValue(100, TimeDuration.ofHours(1));
+                return new ProductionValue(50, TimeDuration.ofHours(1));
             }
 
             @Override

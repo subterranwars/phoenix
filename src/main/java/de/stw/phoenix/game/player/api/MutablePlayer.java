@@ -1,8 +1,9 @@
 package de.stw.phoenix.game.player.api;
 
+import de.stw.phoenix.game.engine.api.events.GameEvent;
+import de.stw.phoenix.game.engine.energy.PlayerModifier;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
-import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.player.impl.MutableResourceSite;
 
 import java.util.List;
@@ -16,6 +17,7 @@ public interface MutablePlayer extends ImmutablePlayer {
     <T extends GameEvent> void addEvent(T event);
     void removeEvent(GameEvent event);
     void removeEvents(List<GameEvent> completedEvents);
+    void addEvents(List<GameEvent> newEvents);
 
     void addResourceSite(ResourceSite resourceSite);
     void removeResourceSite(MutableResourceSite resourceSite);
@@ -26,6 +28,9 @@ public interface MutablePlayer extends ImmutablePlayer {
     void addResources(Resource resource, double amount);
     void removeResources(Resource resource, double consumptionPerTick);
     void removeResources(Map<Resource, Integer> costs);
+
+    void addModifier(PlayerModifier modifier);
+    void removeModifier(PlayerModifier modifier);
 
     ImmutablePlayer asImmutable();
 
