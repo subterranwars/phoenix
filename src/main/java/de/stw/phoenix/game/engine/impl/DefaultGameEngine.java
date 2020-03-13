@@ -41,27 +41,22 @@ public class DefaultGameEngine implements GameEngine {
         final Tick tick = clock.nextTick();
         for (ImmutablePlayer eachPlayer : playerService.getPlayers()) {
             playerService.modify(eachPlayer, mutablePlayer -> {
-                final List<PlayerUpdate> playerUpdateList = getContext(eachPlayer).findElements(PlayerUpdate.class)
-                        .stream()
-                        .sorted(Comparator.comparing(PlayerUpdate::getPhase))
-                        .collect(Collectors.toList());
+                final List<PlayerUpdate> playerUpdateList = getContext(eachPlayer)
+                    .findElements(PlayerUpdate.class).stream()
+                    .filter(pu -> pu.isActive(mutablePlayer.asImmutable(), tick))
+                    .sorted(Comparator.comparing(PlayerUpdate::getPhase))
+                    .collect(Collectors.toList());
                 // Pre Update
                 for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    if (playerUpdate.isActive(mutablePlayer.asImmutable(), tick)) {
-                        playerUpdate.preUpdate(mutablePlayer, tick);
-                    }
+                    playerUpdate.preUpdate(mutablePlayer, tick);
                 }
                 // Update
                 for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    if (playerUpdate.isActive(mutablePlayer.asImmutable(), tick)) {
-                        playerUpdate.update(mutablePlayer, tick);
-                    }
+                    playerUpdate.update(mutablePlayer, tick);
                 }
                 // Post Update
                 for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    if (playerUpdate.isActive(mutablePlayer.asImmutable(), tick)) {
-                        playerUpdate.postUpdate(mutablePlayer, tick);
-                    }
+                    playerUpdate.postUpdate(mutablePlayer, tick);
                 }
             });
         }
