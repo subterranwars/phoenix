@@ -1,18 +1,18 @@
 package de.stw.phoenix.game.player.impl;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.energy.PlayerModifier;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.player.api.BuildingLevel;
+import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.MutableResourceStorage;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -43,13 +43,13 @@ public class MutablePlayerImpl implements MutablePlayer {
     @Override
     public List<ImmutableResourceStorage> getResources() {
         final List<ImmutableResourceStorage> resources = this.resources.stream().map(MutableResourceStorage::asImmutable).collect(Collectors.toList());
-        return Collections.unmodifiableList(resources);
+        return ImmutableList.copyOf(resources);
     }
 
     @Override
     public List<ResourceSite> getResourceSites() {
         List<ResourceSite> sites = resourceSites.stream().map(MutableResourceSite::asImmutable).collect(Collectors.toList());
-        return Collections.unmodifiableList(sites);
+        return ImmutableList.copyOf(sites);
     }
 
     @Override
@@ -59,7 +59,7 @@ public class MutablePlayerImpl implements MutablePlayer {
 
     @Override
     public List<BuildingLevel> getBuildings() {
-        return Collections.unmodifiableList(this.buildings);
+        return ImmutableList.copyOf(this.buildings);
     }
 
     @Override
@@ -74,11 +74,7 @@ public class MutablePlayerImpl implements MutablePlayer {
 
     @Override
     public List<GameEvent> getEvents() {
-        // TODO MVR Collections.unmodifiableList does not create a copy, but ensures it is unmodifiable
-        // This is bad, as we want to iterate over the getEvents() and invoke removeEvent(..) later
-        // Ensure that ALL Collections.unmodifiableList(...) calls in this application are actually implemented properly
-        // Either create a copy before using unmodifiableList or use ImmutableLists from guava (or similar)
-        return Collections.unmodifiableList(Lists.newArrayList(this.events));
+        return ImmutableList.copyOf(this.events);
     }
 
     @Override

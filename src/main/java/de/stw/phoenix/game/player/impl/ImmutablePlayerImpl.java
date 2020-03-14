@@ -1,18 +1,18 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.energy.PlayerModifier;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.player.api.BuildingLevel;
+import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -41,11 +41,11 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         Objects.requireNonNull(builder);
         this.id = builder.id;
         this.name = builder.name;
-        this.resources = Collections.unmodifiableList(builder.resources);
-        this.buildings = Collections.unmodifiableList(builder.buildings);
-        this.events = Collections.unmodifiableList(builder.events);
-        this.resourceSites = Collections.unmodifiableList(builder.resourceSites);
-        this.modifiers = Collections.unmodifiableList(builder.modifiers);
+        this.resources = ImmutableList.copyOf(builder.resources);
+        this.buildings = ImmutableList.copyOf(builder.buildings);
+        this.events = ImmutableList.copyOf(builder.events);
+        this.resourceSites = ImmutableList.copyOf(builder.resourceSites);
+        this.modifiers = ImmutableList.copyOf(builder.modifiers);
     }
 
     @Override

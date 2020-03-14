@@ -1,12 +1,12 @@
 package de.stw.phoenix.game.engine.buildings;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.Resources;
-
 import de.stw.phoenix.game.time.TimeDuration;
-import java.util.Collections;
+
 import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
@@ -28,7 +28,7 @@ public final class Building implements BuildingRef {
         this.label = builder.label;
         this.description = builder.description;
         this.buildTime = TimeDuration.ofSeconds(builder.buildTime);
-        this.costs = Collections.unmodifiableMap(builder.costs);
+        this.costs = ImmutableMap.copyOf(builder.costs);
         this.energyConsumption = builder.energyConsumption;
     }
 

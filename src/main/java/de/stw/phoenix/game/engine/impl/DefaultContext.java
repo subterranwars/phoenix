@@ -1,10 +1,10 @@
 package de.stw.phoenix.game.engine.impl;
 
+import com.google.common.collect.ImmutableList;
 import de.stw.phoenix.game.engine.api.Context;
 import de.stw.phoenix.game.engine.api.GameElement;
 import de.stw.phoenix.game.time.Tick;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
@@ -16,7 +16,7 @@ public class DefaultContext implements Context {
 
     public DefaultContext(List<GameElement> elements, Tick currentTick) {
         Objects.requireNonNull(elements);
-        this.elements = Collections.unmodifiableList(elements);
+        this.elements = ImmutableList.copyOf(elements);
         this.currentTick = Objects.requireNonNull(currentTick);
     }
 
