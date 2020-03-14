@@ -1,5 +1,6 @@
 package de.stw.phoenix.user.impl;
 
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import de.stw.phoenix.auth.api.PasswordEncoder;
 import de.stw.phoenix.user.api.User;
@@ -8,7 +9,6 @@ import de.stw.phoenix.user.api.password.HashedPassword;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -26,7 +26,7 @@ public class DefaultUserRepository implements UserRepository {
 
     @Override
     public List<User> findAll() {
-        return Collections.unmodifiableList(users);
+        return ImmutableList.copyOf(users);
     }
 
     @Override

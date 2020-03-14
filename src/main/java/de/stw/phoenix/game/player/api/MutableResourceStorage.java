@@ -1,7 +1,7 @@
 package de.stw.phoenix.game.player.api;
 
 import com.google.common.base.Preconditions;
-import de.stw.phoenix.game.data.resources.Resource;
+import de.stw.phoenix.game.engine.resources.api.Resource;
 
 import java.util.Objects;
 
@@ -28,7 +28,7 @@ public class MutableResourceStorage {
      * @param amountToStore
      */
     public void store(double amountToStore) {
-        Preconditions.checkArgument(amountToStore > 0);
+        Preconditions.checkArgument(amountToStore >= 0);
         this.amount = Math.min(maxStorageCapacity, amount + amountToStore);
     }
 

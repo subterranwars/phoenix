@@ -16,18 +16,18 @@ public class ArtificialClock implements Clock {
     }
 
     @Override
-    public Tick nextTick() {
+    public synchronized Tick nextTick() {
         this.tick = new Tick(tick.getEnd(), tick.getEnd() + TimeUnit.MILLISECONDS.convert(tickLength, tickUnit));
         return tick;
     }
 
     @Override
-    public Tick getCurrentTick() {
+    public synchronized Tick getCurrentTick() {
         return tick;
     }
 
     @Override
-    public Moment getMoment(long duration, TimeUnit timeUnit) {
+    public synchronized Moment getMoment(long duration, TimeUnit timeUnit) {
         final Tick currentTick = getCurrentTick();
         final long durationInMs = TimeUnit.MILLISECONDS.convert(duration, timeUnit);
         final long tickLengthInMs = TimeUnit.MILLISECONDS.convert(tickLength, tickUnit);

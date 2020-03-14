@@ -5,16 +5,18 @@ import de.stw.phoenix.game.time.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.SpringBootConfiguration;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.scheduling.annotation.EnableScheduling;
 
 import java.util.concurrent.TimeUnit;
 
-@SpringBootApplication
+@SpringBootConfiguration
+@EnableAutoConfiguration
 @EnableScheduling
-@ComponentScan(basePackages = "de.stw")
+@ComponentScan(basePackages = "de.stw.phoenix")
 public class PhoenixApplication {
 
     private static final Logger LOG = LoggerFactory.getLogger(PhoenixApplication.class);

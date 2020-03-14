@@ -1,29 +1,30 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.time.Tick;
-import de.stw.phoenix.game.data.buildings.Building;
-import de.stw.phoenix.game.data.buildings.Buildings;
-import de.stw.phoenix.game.data.resources.Resource;
-import static de.stw.phoenix.game.data.resources.Resources.DEFAULT_AMOUNT;
-import static de.stw.phoenix.game.data.resources.Resources.Food;
-import static de.stw.phoenix.game.data.resources.Resources.Iron;
-import static de.stw.phoenix.game.data.resources.Resources.MAX_STORAGE_CAPACITY;
-import static de.stw.phoenix.game.data.resources.Resources.Oil;
-import static de.stw.phoenix.game.data.resources.Resources.Stone;
-import de.stw.phoenix.game.engine.modules.construction.ConstructionEvent;
-import de.stw.phoenix.game.events.GameEvent;
+import de.stw.phoenix.game.engine.buildings.Building;
+import de.stw.phoenix.game.engine.buildings.Buildings;
+import de.stw.phoenix.game.engine.energy.PlayerModifier;
+import de.stw.phoenix.game.engine.resources.api.Resource;
+import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.player.api.BuildingLevel;
+import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static de.stw.phoenix.game.engine.resources.api.Resources.DEFAULT_AMOUNT;
+import static de.stw.phoenix.game.engine.resources.api.Resources.Food;
+import static de.stw.phoenix.game.engine.resources.api.Resources.Iron;
+import static de.stw.phoenix.game.engine.resources.api.Resources.MAX_STORAGE_CAPACITY;
+import static de.stw.phoenix.game.engine.resources.api.Resources.Oil;
+import static de.stw.phoenix.game.engine.resources.api.Resources.Stone;
 
 // TODO MVR do we need this to be immutable?
 public final class ImmutablePlayerImpl implements ImmutablePlayer {
@@ -33,14 +34,18 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     private final List<ImmutableResourceStorage> resources;
     private final List<BuildingLevel> buildings;
     private final List<GameEvent> events;
+    private final List<ResourceSite> resourceSites;
+    private final List<PlayerModifier> modifiers;
 
     private ImmutablePlayerImpl(Builder builder) {
         Objects.requireNonNull(builder);
         this.id = builder.id;
         this.name = builder.name;
-        this.resources = Collections.unmodifiableList(builder.resources);
-        this.buildings = Collections.unmodifiableList(builder.buildings);
-        this.events = Collections.unmodifiableList(builder.events);
+        this.resources = ImmutableList.copyOf(builder.resources);
+        this.buildings = ImmutableList.copyOf(builder.buildings);
+        this.events = ImmutableList.copyOf(builder.events);
+        this.resourceSites = ImmutableList.copyOf(builder.resourceSites);
+        this.modifiers = ImmutableList.copyOf(builder.modifiers);
     }
 
     @Override
@@ -58,7 +63,12 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
 		return resources;
 	}
 
-	@Override
+    @Override
+    public List<ResourceSite> getResourceSites() {
+        return resourceSites;
+    }
+
+    @Override
     public ImmutableResourceStorage getStorage(Resource resource) {
         Objects.requireNonNull(resource);
         return resources.stream().filter(r -> r.getResource().getId() == resource.getId()).findAny().orElse(null);
@@ -95,16 +105,37 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     }
 
     @Override
-    public ConstructionEvent getConstructionEvent() {
-        return (ConstructionEvent) getEvents().stream()
-                .filter(e -> e.getClass().isAssignableFrom(ConstructionEvent.class))
-                .findAny().orElse(null);
+    public <T extends GameEvent> Optional<T> findSingleEvent(Class<T> eventType) {
+        Objects.requireNonNull(eventType);
+        final List<T> events = findEvents(eventType);
+        if (events.isEmpty()) {
+            return Optional.empty();
+        }
+        // TODO MVR add logging if more than 1 elements
+        return Optional.of(events.get(0));
     }
 
     @Override
-    public List<GameEvent> getEvents(final Tick tick) {
-        Objects.requireNonNull(tick);
-        return events.stream().filter(e -> e.isComplete(tick)).collect(Collectors.toList());
+    public <T extends GameEvent> List<T> findEvents(Class<T> eventType) {
+        Objects.requireNonNull(eventType);
+        return getEvents().stream()
+                .filter(e -> eventType.isAssignableFrom(e.getClass()))
+                .map( e -> (T) e)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PlayerModifier> getModifiers() {
+        return modifiers;
+    }
+
+    @Override
+    public <T extends PlayerModifier> List<T> findModifier(Class<T> modifierType) {
+        Objects.requireNonNull(modifierType);
+        return modifiers.stream()
+                .filter(e -> modifierType.isAssignableFrom(e.getClass()))
+                .map(e -> (T) e)
+                .collect(Collectors.toList());
     }
 
     public static Builder builder(long id, String name) {
@@ -117,6 +148,8 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         private List<ImmutableResourceStorage> resources = Lists.newArrayList();
         private List<BuildingLevel> buildings = Lists.newArrayList();
         private List<GameEvent> events = Lists.newArrayList();
+        private List<ResourceSite> resourceSites = Lists.newArrayList();
+        private List<PlayerModifier> modifiers = Lists.newArrayList();
 
         public Builder id(long id) {
             Preconditions.checkArgument(id > 0, "id must be > 0");
@@ -162,11 +195,30 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
             return this;
         }
 
+        public Builder withModifiers(List<PlayerModifier> modifiers) {
+            Objects.requireNonNull(modifiers);
+            modifiers.forEach(this::withModifier);
+            return this;
+        }
+
+        public Builder withModifier(PlayerModifier modifier) {
+            Objects.requireNonNull(modifier);
+            if (!this.modifiers.contains(modifier)) {
+                this.modifiers.add(modifier);
+            }
+            return this;
+        }
+
+        public Builder withResourceSites(List<ResourceSite> sites) {
+            this.resourceSites.addAll(sites);
+            return this;
+        }
+
         public Builder withDefaultResourceStorage() {
             withResource(Iron, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
-            withResource(Stone, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
-            withResource(Food, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
-            withResource(Oil, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);
+            withResource(Stone, DEFAULT_AMOUNT, MAX_STORAGE_CAPACITY);;
+            withResource(Oil, 0, MAX_STORAGE_CAPACITY);
+            withResource(Food, 0, MAX_STORAGE_CAPACITY);
             return this;
         }
 

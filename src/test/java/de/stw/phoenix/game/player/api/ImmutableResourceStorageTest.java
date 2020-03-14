@@ -1,6 +1,6 @@
 package de.stw.phoenix.game.player.api;
 
-import de.stw.phoenix.game.data.resources.Resources;
+import de.stw.phoenix.game.engine.resources.api.Resources;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertThrows;
