@@ -6,28 +6,16 @@ import de.stw.phoenix.game.engine.api.GameElementProvider;
 import de.stw.phoenix.game.engine.api.MutableContext;
 import de.stw.phoenix.game.engine.api.Phases;
 import de.stw.phoenix.game.engine.api.PlayerUpdate;
-import de.stw.phoenix.game.engine.api.events.EventVisitor;
-import de.stw.phoenix.game.engine.api.events.GameEvent;
-import de.stw.phoenix.game.engine.buildings.Building;
-import de.stw.phoenix.game.engine.buildings.Buildings;
-import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
-import de.stw.phoenix.game.engine.construction.api.ConstructionInfo;
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCalculator;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
-import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
-import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.time.Tick;
-import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class EnergyModule implements GameElementProvider {
@@ -50,6 +38,8 @@ public class EnergyModule implements GameElementProvider {
     @Autowired
     private PlayerService playerService;
 
+    // TODO MVR when the modifier is added we should update the build times as well as that is only
+    //  happening the next tick (could be okay though)
     @Subscribe
     public void onEnergyUpdateModifier(EnergyEvent energyEvent) {
         playerAccessor.modify(energyEvent.getPlayer(), mutablePlayer -> {
@@ -58,36 +48,6 @@ public class EnergyModule implements GameElementProvider {
             } else {
                 mutablePlayer.removeModifier(Modifiers.CRITICAL_ENERGY_LEVEL);
             }
-        });
-    }
-
-    @Subscribe
-    public void onEnergyUpdateEvents(EnergyEvent energyEvent) {
-        playerAccessor.modify(energyEvent.getPlayer(), mutablePlayer -> {
-            final EventVisitor<GameEvent> visitor = new EventVisitor<GameEvent>() {
-
-                @Override
-                public GameEvent visit(ConstructionEvent constructionEvent) {
-                    final ConstructionInfo constructionInfo = constructionEvent.getConstructionInfo();
-                    final Building building = Buildings.findByRef(constructionEvent.getConstructionInfo().getBuilding());
-                    final BuildingLevel buildingLevel = new BuildingLevel(building, constructionInfo.getLevelToBuild());
-                    final ImmutablePlayer player = playerService.get(constructionEvent.getPlayerRef().getId());
-                    final TimeDuration newDuration = constructionTimeCalculator.calculateConstructionTime(buildingLevel, player);
-                    final ConstructionInfo newConstructionInfo = new ConstructionInfo(buildingLevel, constructionInfo.getCosts(), newDuration);
-                    return new ConstructionEvent(player, newConstructionInfo, clock.getMoment(newDuration));
-                }
-
-                @Override
-                public GameEvent visit(ResourceSearchEvent resourceSearchEvent) {
-                    return resourceSearchEvent;
-                }
-            };
-            final List<GameEvent> newEvents = mutablePlayer.getEvents()
-                    .stream()
-                    .map(e -> e.accept(visitor))
-                    .collect(Collectors.toList());
-            mutablePlayer.removeEvents(mutablePlayer.getEvents());
-            mutablePlayer.addEvents(newEvents);
         });
     }
 

@@ -1,4 +1,4 @@
-package de.stw.phoenix.game.engine.api.events;
+package de.stw.phoenix.game.player.api;
 
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;

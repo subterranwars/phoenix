@@ -13,7 +13,6 @@ import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.time.Clock;
-import de.stw.phoenix.game.time.Moment;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -59,7 +58,7 @@ public class DefaultConstructionService implements ConstructionService {
     public void build(final ImmutablePlayer player, final Building building) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(building);
-        if (player.getConstructionEvent() == null) {
+        if (!player.findSingleEvent(ConstructionEvent.class).isPresent()) {
             final BuildingLevel nextLevel = player.getBuilding(building).next();
             final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(nextLevel, player);
             final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(nextLevel, player);
@@ -67,8 +66,12 @@ public class DefaultConstructionService implements ConstructionService {
             if (player.canAfford(constructionInfo.getCosts())) {
                 playerAccessor.modify(player, mutablePlayer -> {
                     // Enqueue
-                    final Moment futureMoment = clock.getMoment(constructionInfo.getBuildTime());
-                    final ConstructionEvent constructionEvent = new ConstructionEvent(mutablePlayer, constructionInfo, futureMoment);
+                    final ConstructionEvent constructionEvent = new ConstructionEvent(
+                            mutablePlayer,
+                            constructionInfo,
+                            0,
+                            constructionInfo.getBuildTime(),
+                            clock.getCurrentTick().toMoment());
                     mutablePlayer.addEvent(constructionEvent);
 
                     // Subtract resources

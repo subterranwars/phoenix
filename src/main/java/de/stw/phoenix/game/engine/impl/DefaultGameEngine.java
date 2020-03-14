@@ -42,11 +42,12 @@ public class DefaultGameEngine implements GameEngine {
             playerService.modify(eachPlayer, mutablePlayer -> {
                 final List<PlayerUpdate> playerUpdateList = getContext(eachPlayer)
                     .findElements(PlayerUpdate.class).stream()
-                    .filter(pu -> pu.isActive(mutablePlayer.asImmutable(), tick))
                     .sorted(Comparator.comparing(PlayerUpdate::getPhase))
                     .collect(Collectors.toList());
                 for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    playerUpdate.update(mutablePlayer, tick);
+                    if (playerUpdate.isActive(mutablePlayer.asImmutable(), tick)) {
+                        playerUpdate.update(mutablePlayer, tick);
+                    }
                 }
             });
         }

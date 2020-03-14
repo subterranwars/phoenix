@@ -1,9 +1,8 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.engine.api.events.GameEvent;
+import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
-import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.energy.PlayerModifier;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
@@ -83,8 +82,13 @@ public class MutablePlayerImpl implements MutablePlayer {
     }
 
     @Override
-    public ConstructionEvent getConstructionEvent() {
-        return asImmutable().getConstructionEvent();
+    public <T extends GameEvent> List<T> findEvents(Class<T> eventType) {
+        return asImmutable().findEvents(eventType);
+    }
+
+    @Override
+    public <T extends GameEvent> Optional<T> findSingleEvent(Class<T> eventType) {
+        return asImmutable().findSingleEvent(eventType);
     }
 
     @Override

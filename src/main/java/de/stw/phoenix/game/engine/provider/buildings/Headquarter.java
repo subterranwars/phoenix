@@ -65,27 +65,5 @@ public class Headquarter implements GameElementProvider {
         });
 
         context.addAll(resourceProductions);
-
-
-//        gameElements.add(new ConstructionTimeModifier() {
-//            @Override
-//            public ConstructionInfo modify(ImmutablePlayer player, ConstructionInfo input) {
-//                final Building building = Buildings.findByRef(input.getBuilding());
-//                final BuildingLevel hq = player.getBuilding(Buildings.Headquarter);
-////                Preconditions.checkArgument(level > 0);
-////                Preconditions.checkArgument(hqLevel > 0);
-//                double rawBuildTime = building.getBuildTime().getSeconds() * Math.pow(1.8, 2 * (input.getLevelToBuild() - 1) / hq.getLevel());
-//                return Double.valueOf(rawBuildTime - (rawBuildTime % 10)).longValue();
-//                // Make values a bit nicer
-////                return new ConstructionInfo(building, input.getLevelToBuild(), hq.getLevel());
-//
-//                return null;
-//            }
-//
-//            @Override
-//            public boolean isActive(ImmutablePlayer player) {
-//                return true;
-//            }
-//        });
     }
 }

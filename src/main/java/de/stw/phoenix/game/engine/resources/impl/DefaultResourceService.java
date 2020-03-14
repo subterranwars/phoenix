@@ -7,7 +7,6 @@ import de.stw.phoenix.game.engine.api.ResourceProduction;
 import de.stw.phoenix.game.engine.energy.EnergyOverview;
 import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
-import de.stw.phoenix.game.engine.resources.api.ResourceSearchInfo;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchRequest;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
@@ -15,8 +14,6 @@ import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.time.Clock;
-import de.stw.phoenix.game.time.Moment;
-import de.stw.phoenix.game.time.TimeDuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,20 +72,11 @@ public class DefaultResourceService implements ResourceService {
     public void search(ResourceSearchRequest resourceSearchRequest) {
         // TODO MVR ensure user actually has resource building before searching is supported
         final PlayerRef playerRef = resourceSearchRequest.getPlayerRef();
-        final Moment userCompletionMoment = clock.getMoment(resourceSearchRequest.getDuration());
-        final Moment internalMoment = calculateFinishMoment(resourceSearchRequest);
-        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(new ResourceSearchInfo(resourceSearchRequest.getResource(), resourceSearchRequest.getDuration(), internalMoment), userCompletionMoment);
+        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(playerRef, resourceSearchRequest.getResource(), clock.getCurrentTick().toMoment());
         playerAccessor.modify(playerRef, mutablePlayer -> {
             mutablePlayer.addEvent(resourceSearchEvent);
         });
-        if (LOG.isDebugEnabled()) {
-            LOG.debug("{} searching for {} for {} hours which is successful {} and completes at moment {}",
-                    playerRef.getName(),
-                    resourceSearchEvent.getInfo().getResource().getName(),
-                    resourceSearchEvent.getInfo().getDuration().getHours(),
-                    resourceSearchEvent.getInfo().isSuccess(),
-                    resourceSearchEvent.getCompletionMoment().asSeconds());
-        }
+        LOG.debug("{} searching for {}", playerRef.getName(), resourceSearchEvent.getResource().getName());
     }
 
     @Override
@@ -108,17 +96,5 @@ public class DefaultResourceService implements ResourceService {
                 site.setDroneCount(droneCount);
             });
         });
-    }
-
-    // Returns the moment when the resource was detected, otherwise null
-    private Moment calculateFinishMoment(ResourceSearchRequest resourceSearchRequest) {
-        // TODO MVR use getHours() instead of getSeconds()
-        for (int i = 0; i < resourceSearchRequest.getDuration().getSeconds(); i++) {
-            if (Math.random() < resourceSearchRequest.getResource().getOccurrence()) {
-                final Moment internalMoment = clock.getMoment(TimeDuration.ofSeconds(i + 1 * 30)); // TODO MVR use actual hours instead of seconds
-                return internalMoment;
-            }
-        }
-        return null;
     }
 }

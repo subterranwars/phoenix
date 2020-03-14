@@ -1,24 +1,19 @@
 package de.stw.phoenix.game.rest;
 
+
+import de.stw.phoenix.game.player.api.Progress;
+
 import java.util.Objects;
 
 public abstract class GameEventDTO {
 
-    private long completedInSeconds;
+    private Progress progress;
 
     private String type;
 
-    public GameEventDTO(String type, long completedInSeconds) {
+    public GameEventDTO(String type, Progress progress) {
         this.type = Objects.requireNonNull(type);
-        this.completedInSeconds = completedInSeconds;
-    }
-
-    public long getCompletedInSeconds() {
-        return completedInSeconds;
-    }
-
-    public void setCompletedInSeconds(long completedInSeconds) {
-        this.completedInSeconds = completedInSeconds;
+        this.progress = Objects.requireNonNull(progress);
     }
 
     public String getType() {
@@ -27,5 +22,9 @@ public abstract class GameEventDTO {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Progress getProgress() {
+        return progress;
     }
 }

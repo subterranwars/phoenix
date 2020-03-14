@@ -1,14 +1,13 @@
 package de.stw.phoenix.game.player.api;
 
-import de.stw.phoenix.game.engine.api.events.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
-import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.energy.PlayerModifier;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public interface ImmutablePlayer extends PlayerRef {
 
@@ -24,9 +23,8 @@ public interface ImmutablePlayer extends PlayerRef {
     boolean canAfford(Map<Resource, Integer> costs);
 
     List<GameEvent> getEvents();
-
-    // TODO MVR add a findEvent(...) method
-    ConstructionEvent getConstructionEvent();
+    <T extends GameEvent> List<T> findEvents(Class<T> eventType);
+    <T extends GameEvent> Optional<T> findSingleEvent(Class<T> eventType);
 
     List<PlayerModifier> getModifiers();
     <T extends PlayerModifier> List<T> findModifier(Class<T> modifierType);

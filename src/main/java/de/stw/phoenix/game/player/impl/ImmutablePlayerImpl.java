@@ -2,10 +2,9 @@ package de.stw.phoenix.game.player.impl;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
-import de.stw.phoenix.game.engine.api.events.GameEvent;
+import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
-import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.energy.PlayerModifier;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
@@ -106,10 +105,23 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     }
 
     @Override
-    public ConstructionEvent getConstructionEvent() {
-        return (ConstructionEvent) getEvents().stream()
-                .filter(e -> ConstructionEvent.class.isAssignableFrom(e.getClass()))
-                .findAny().orElse(null);
+    public <T extends GameEvent> Optional<T> findSingleEvent(Class<T> eventType) {
+        Objects.requireNonNull(eventType);
+        final List<T> events = findEvents(eventType);
+        if (events.isEmpty()) {
+            return Optional.empty();
+        }
+        // TODO MVR add logging if more than 1 elements
+        return Optional.of(events.get(0));
+    }
+
+    @Override
+    public <T extends GameEvent> List<T> findEvents(Class<T> eventType) {
+        Objects.requireNonNull(eventType);
+        return getEvents().stream()
+                .filter(e -> eventType.isAssignableFrom(e.getClass()))
+                .map( e -> (T) e)
+                .collect(Collectors.toList());
     }
 
     @Override

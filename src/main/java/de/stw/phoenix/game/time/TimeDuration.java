@@ -6,6 +6,8 @@ import java.util.concurrent.TimeUnit;
 
 public class TimeDuration {
 
+    public static final TimeDuration UNKNOWN = new TimeDuration(-1, TimeUnit.MILLISECONDS);
+
     private final long milliseconds;
 
     public TimeDuration(java.time.Duration duration) {
