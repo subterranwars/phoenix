@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.resources.impl;
 
+import com.google.common.eventbus.EventBus;
 import de.stw.phoenix.game.engine.api.Context;
 import de.stw.phoenix.game.engine.api.EnergyProduction;
 import de.stw.phoenix.game.engine.api.GameEngine;
@@ -13,6 +14,7 @@ import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.player.api.PlayerRef;
+import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.time.Clock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,6 +41,12 @@ public class DefaultResourceService implements ResourceService {
 
     @Autowired
     private GameEngine gameEngine;
+
+    @Autowired
+    private EventBus eventBus;
+
+    @Autowired
+    private PlayerService playerService;
 
     @Override
     public List<ResourceOverview> getResourceOverview(ImmutablePlayer player) {
@@ -76,6 +84,7 @@ public class DefaultResourceService implements ResourceService {
         playerAccessor.modify(playerRef, mutablePlayer -> {
             mutablePlayer.addEvent(resourceSearchEvent);
         });
+        eventBus.post(playerService.get(playerRef.getId()));
         LOG.debug("{} searching for {}", playerRef.getName(), resourceSearchEvent.getResource().getName());
     }
 
@@ -84,6 +93,7 @@ public class DefaultResourceService implements ResourceService {
         // TODO MVR add exception if resourceSiteId is not available
         playerAccessor.modify(player, mutablePlayer -> mutablePlayer.getResourceSite(resourceSiteId)
                 .ifPresent(mutableResourceSite -> mutablePlayer.removeResourceSite(mutableResourceSite)));
+        eventBus.post(player);
     }
 
     @Override
@@ -96,5 +106,6 @@ public class DefaultResourceService implements ResourceService {
                 site.setDroneCount(droneCount);
             });
         });
+        eventBus.post(player);
     }
 }

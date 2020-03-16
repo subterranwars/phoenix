@@ -3,6 +3,7 @@ package de.stw.phoenix;
 import de.stw.phoenix.auth.impl.AuthorizationUserDetailsService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -25,6 +26,7 @@ import java.util.Collections;
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@Order(200)
 public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
     @Override
@@ -33,7 +35,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
             .and()
                 .addFilterAfter(preAuthenticationFilter(), RequestHeaderAuthenticationFilter.class)
                 .authorizeRequests()
-                    .antMatchers("/health", "/users/register", "/authenticate").permitAll()
+                    .antMatchers("/health", "/users/register", "/authenticate", "/ws/**").permitAll()
                 .anyRequest().authenticated()
             .and()
                 .exceptionHandling().authenticationEntryPoint(authenticationEntryPoint())

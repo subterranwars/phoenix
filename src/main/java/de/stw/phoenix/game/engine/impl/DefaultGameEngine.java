@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.impl;
 
+import com.google.common.eventbus.EventBus;
 import de.stw.phoenix.game.engine.api.Context;
 import de.stw.phoenix.game.engine.api.GameElementProvider;
 import de.stw.phoenix.game.engine.api.GameEngine;
@@ -34,6 +35,9 @@ public class DefaultGameEngine implements GameEngine {
     @Autowired
     private List<GameElementProvider> elementProviderList;
 
+    @Autowired
+    private EventBus eventBus;
+
     @Override
     public void loop() {
         logState();
@@ -50,6 +54,8 @@ public class DefaultGameEngine implements GameEngine {
                     }
                 }
             });
+            // Notify listeners about player changes
+            eventBus.post(eachPlayer);
         }
     }
 

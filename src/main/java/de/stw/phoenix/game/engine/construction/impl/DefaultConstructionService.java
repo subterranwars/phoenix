@@ -1,6 +1,6 @@
 package de.stw.phoenix.game.engine.construction.impl;
 
-import de.stw.phoenix.game.engine.api.GameEngine;
+import com.google.common.eventbus.EventBus;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
@@ -38,7 +38,7 @@ public class DefaultConstructionService implements ConstructionService {
     private ConstructionCostCalculator constructionCostCalculator;
 
     @Autowired
-    private GameEngine gameEngine;
+    private EventBus eventBus;
 
     @Override
     public List<ConstructionInfo> listConstructions(final ImmutablePlayer player) {
@@ -77,6 +77,7 @@ public class DefaultConstructionService implements ConstructionService {
                     // Subtract resources
                     mutablePlayer.removeResources(constructionInfo.getCosts());
                 });
+                eventBus.post(player);
             } else {
                 // TODO MVR throw exception? Cannot afford?
             }
