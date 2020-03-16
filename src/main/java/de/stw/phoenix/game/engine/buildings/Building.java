@@ -17,7 +17,7 @@ public final class Building implements BuildingRef {
     private final String name;
     private final String label;
     private final String description;
-    private final Map<Resource, Integer> costs;
+    private final Map<Resource, Double> costs;
     private final TimeDuration buildTime;
     private final int energyConsumption;
 
@@ -48,7 +48,7 @@ public final class Building implements BuildingRef {
         return description;
     }
 
-    public Map<Resource, Integer> getCosts() {
+    public Map<Resource, Double> getCosts() {
         return costs;
     }
 
@@ -72,7 +72,7 @@ public final class Building implements BuildingRef {
         private int id;
         private long buildTime;
         private int energyConsumption;
-        private Map<Resource, Integer> costs = Maps.newHashMap();
+        private Map<Resource, Double> costs = Maps.newHashMap();
 
         public Builder id(int id) {
             Preconditions.checkArgument(id > 0);
@@ -86,7 +86,7 @@ public final class Building implements BuildingRef {
             return this;
         }
 
-        public Builder costsResource(Resource resource, int amount) {
+        public Builder costsResource(Resource resource, double amount) {
             Objects.requireNonNull(resource);
             Preconditions.checkArgument(amount > 0);
             this.costs.put(resource, amount);

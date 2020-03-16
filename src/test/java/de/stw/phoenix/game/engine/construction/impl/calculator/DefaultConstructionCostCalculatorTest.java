@@ -25,16 +25,16 @@ class DefaultConstructionCostCalculatorTest {
 
     @Test
     public void verifyCosts() {
-        assertThat(Headquarter.getCosts(), hasEntry(Resources.Iron, 5000));
-        assertThat(Headquarter.getCosts(), hasEntry(Resources.Stone, 6000));
+        assertThat(Headquarter.getCosts(), hasEntry(Resources.Iron, 5000d));
+        assertThat(Headquarter.getCosts(), hasEntry(Resources.Stone, 6000d));
 
         assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 1), player), is(Headquarter.getCosts()));
 
-        assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 2), player), hasEntry(Resources.Iron, 10000));
-        assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 2), player), hasEntry(Resources.Stone, 12000));
+        assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 2), player), hasEntry(Resources.Iron, 10000d));
+        assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 2), player), hasEntry(Resources.Stone, 12000d));
 
-        assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 3), player), hasEntry(Resources.Iron, 13320));
-        assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 3), player), hasEntry(Resources.Stone, 15990));
+        assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 3), player), hasEntry(Resources.Iron, 13320d));
+        assertThat(costCalculator.calculateConstructionCosts(new BuildingLevel(Headquarter, 3), player), hasEntry(Resources.Stone, 15990d));
     }
 
 }
