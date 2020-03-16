@@ -87,10 +87,10 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     }
 
     @Override
-    public boolean canAfford(Map<Resource, Integer> costs) {
-        for (Map.Entry<Resource, Integer> entry : costs.entrySet()) {
+    public boolean canAfford(Map<Resource, Double> costs) {
+        for (Map.Entry<Resource, Double> entry : costs.entrySet()) {
             final Resource resource = entry.getKey();
-            final int cost = entry.getValue();
+            final double cost = entry.getValue();
             final ImmutableResourceStorage storage = getStorage(resource);
             if (storage == null || storage.getAmount() < cost) {
                 return false;

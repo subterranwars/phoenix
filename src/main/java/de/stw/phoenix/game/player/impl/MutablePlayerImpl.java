@@ -68,7 +68,7 @@ public class MutablePlayerImpl implements MutablePlayer {
     }
 
     @Override
-    public boolean canAfford(Map<Resource, Integer> costs) {
+    public boolean canAfford(Map<Resource, Double> costs) {
         return asImmutable().canAfford(costs);
     }
 
@@ -117,7 +117,7 @@ public class MutablePlayerImpl implements MutablePlayer {
     }
 
     @Override
-    public void removeResources(Map<Resource, Integer> costs) {
+    public void removeResources(Map<Resource, Double> costs) {
         Objects.requireNonNull(costs);
         if (canAfford(costs)) {
             costs.entrySet().forEach(e -> getMutableStorage(e.getKey()).get().retrieve(e.getValue()));

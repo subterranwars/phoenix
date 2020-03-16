@@ -15,18 +15,21 @@ import java.util.stream.Collectors;
 public class DefaultConstructionCostCalculator implements ConstructionCostCalculator {
 
     @Override
-    public Map<Resource, Integer> calculateConstructionCosts(BuildingLevel level, ImmutablePlayer player) {
+    public Map<Resource, Double> calculateConstructionCosts(BuildingLevel level, ImmutablePlayer player) {
         Objects.requireNonNull(level);
         Preconditions.checkArgument(level.getLevel() > 0);
+        final Map<Resource, Double> baseBuildingCosts = level.getBuilding().getCosts().entrySet()
+                .stream()
+                .collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue().doubleValue()));
         if (level.getLevel() == 1) {
-            return level.getBuilding().getCosts();
+            return baseBuildingCosts;
         }
         int actualLevel = level.getLevel() - 1;
-        final Map<Resource, Integer> calculatedCosts = level.getBuilding().getCosts().entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> {
-            int baseCost = e.getValue();
+        final Map<Resource, Double> calculatedCosts = baseBuildingCosts.entrySet().stream().collect(Collectors.toMap(e -> e.getKey(), e -> {
+            double baseCost = e.getValue();
             double costs = baseCost * Math.pow(2, Math.pow(actualLevel, 0.5));
             // Make values a bit nicer
-            return Double.valueOf(costs - (costs % 10)).intValue();
+            return Double.valueOf(costs - (costs % 10));
         }));
         return calculatedCosts;
     }

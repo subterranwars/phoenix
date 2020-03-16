@@ -19,13 +19,13 @@ public class ConstructionInfo {
     private final TimeDuration buildTime;
 
     //Costs for the level to build
-    private final Map<Resource, Integer> costs;
+    private final Map<Resource, Double> costs;
 
-    public ConstructionInfo(BuildingLevel buildingLevel, Map<Resource, Integer> costs, TimeDuration constructionTime) {
+    public ConstructionInfo(BuildingLevel buildingLevel, Map<Resource, Double> costs, TimeDuration constructionTime) {
         this(Objects.requireNonNull(buildingLevel).getBuilding(), buildingLevel.getLevel(), costs, constructionTime);
     }
 
-    public ConstructionInfo(BuildingRef building, int levelToBuild, Map<Resource, Integer> costs, TimeDuration constructionTime) {
+    public ConstructionInfo(BuildingRef building, int levelToBuild, Map<Resource, Double> costs, TimeDuration constructionTime) {
         this.building = Objects.requireNonNull(building);
         this.levelToBuild = levelToBuild;
         this.costs = Objects.requireNonNull(costs);
@@ -44,7 +44,7 @@ public class ConstructionInfo {
         return buildTime;
     }
 
-    public Map<Resource, Integer> getCosts() {
+    public Map<Resource, Double> getCosts() {
         return costs;
     }
 

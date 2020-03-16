@@ -7,5 +7,5 @@ import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import java.util.Map;
 
 public interface ConstructionCostCalculator {
-    Map<Resource, Integer> calculateConstructionCosts(BuildingLevel level, ImmutablePlayer player);
+    Map<Resource, Double> calculateConstructionCosts(BuildingLevel level, ImmutablePlayer player);
 }

@@ -26,7 +26,7 @@ public interface MutablePlayer extends ImmutablePlayer {
 
     void addResources(Resource resource, double amount);
     void removeResources(Resource resource, double consumptionPerTick);
-    void removeResources(Map<Resource, Integer> costs);
+    void removeResources(Map<Resource, Double> costs);
 
     void addModifier(PlayerModifier modifier);
     void removeModifier(PlayerModifier modifier);

@@ -2,11 +2,13 @@ package de.stw.phoenix.game.engine.energy;
 
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
+import de.stw.phoenix.game.engine.api.EnergyProduction;
 import de.stw.phoenix.game.engine.api.GameElementProvider;
 import de.stw.phoenix.game.engine.api.MutableContext;
 import de.stw.phoenix.game.engine.api.Phases;
 import de.stw.phoenix.game.engine.api.PlayerUpdate;
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCalculator;
+import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.MutablePlayer;
@@ -14,6 +16,7 @@ import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.time.Tick;
+import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -53,6 +56,22 @@ public class EnergyModule implements GameElementProvider {
 
     @Override
     public void registerElements(MutableContext context, ImmutablePlayer player) {
+        player.getBuildings().stream()
+                .filter(b -> b.getBuilding().getEnergyConsumption() > 0)
+                .forEach(bl -> {
+                    context.add(new EnergyProduction() {
+                        @Override
+                        public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+                            return true;
+                        }
+
+                        @Override
+                        public ProductionValue getProductionValue() {
+                            return new ProductionValue( - 1 * bl.getBuilding().getEnergyConsumption() * bl.getLevel(), TimeDuration.ofHours(1));
+                        }
+                    });
+                });
+
         context.add(new PlayerUpdate() {
             @Override
             public int getPhase() {

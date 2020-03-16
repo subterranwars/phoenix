@@ -20,7 +20,7 @@ public interface ImmutablePlayer extends PlayerRef {
 
     BuildingLevel getBuilding(Building building);
 
-    boolean canAfford(Map<Resource, Integer> costs);
+    boolean canAfford(Map<Resource, Double> costs);
 
     List<GameEvent> getEvents();
     <T extends GameEvent> List<T> findEvents(Class<T> eventType);

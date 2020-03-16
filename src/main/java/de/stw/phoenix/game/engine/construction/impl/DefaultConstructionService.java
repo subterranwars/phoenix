@@ -47,7 +47,7 @@ public class DefaultConstructionService implements ConstructionService {
                 .map(player::getBuilding)
                 .map(BuildingLevel::next)
                 .map(bl -> {
-                    final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(bl, player);
+                    final Map<Resource, Double> costs = constructionCostCalculator.calculateConstructionCosts(bl, player);
                     final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(bl, player);
                     return new ConstructionInfo(bl, costs, constructionTime);
                 })
@@ -60,7 +60,7 @@ public class DefaultConstructionService implements ConstructionService {
         Objects.requireNonNull(building);
         if (!player.findSingleEvent(ConstructionEvent.class).isPresent()) {
             final BuildingLevel nextLevel = player.getBuilding(building).next();
-            final Map<Resource, Integer> costs = constructionCostCalculator.calculateConstructionCosts(nextLevel, player);
+            final Map<Resource, Double> costs = constructionCostCalculator.calculateConstructionCosts(nextLevel, player);
             final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(nextLevel, player);
             final ConstructionInfo constructionInfo =  new ConstructionInfo(nextLevel, costs, constructionTime);
             if (player.canAfford(constructionInfo.getCosts())) {
