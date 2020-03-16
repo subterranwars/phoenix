@@ -1,12 +1,11 @@
 package de.stw.phoenix.game.rest.resources;
 
-import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchRequest;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
+import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
-import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -32,10 +31,9 @@ public class ResourcesRestController {
     private PlayerService playerService;
 
     @PostMapping
-    public void search(Principal principal, @RequestParam("resourceId") int resourceId, @RequestParam("hours") int hours) {
+    public void search(Principal principal, @RequestParam("resourceId") int resourceId) {
         final ImmutablePlayer player = playerService.get(principal.getName());
-        // TODO MVR ensure hours is > 1
-        final ResourceSearchRequest resourceSearchRequest = new ResourceSearchRequest(player, Resources.findById(resourceId), TimeDuration.ofHours(hours));
+        final ResourceSearchRequest resourceSearchRequest = new ResourceSearchRequest(player, Resources.findById(resourceId));
         resourceService.search(resourceSearchRequest);
     }
 
