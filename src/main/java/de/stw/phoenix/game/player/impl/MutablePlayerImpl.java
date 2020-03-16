@@ -28,6 +28,7 @@ public class MutablePlayerImpl implements MutablePlayer {
     private final long id;
     private final String name;
     private List<PlayerModifier> modifiers;
+    private long totalDroneCount;
 
     MutablePlayerImpl(ImmutablePlayer delegate) {
         Objects.requireNonNull(delegate);
@@ -105,6 +106,16 @@ public class MutablePlayerImpl implements MutablePlayer {
     @Override
     public String getName() {
         return name;
+    }
+
+    @Override
+    public long getTotalDroneCount() {
+        return totalDroneCount;
+    }
+
+    @Override
+    public void updateTotalDroneCount(long totalDroneCount) {
+        this.totalDroneCount = totalDroneCount;
     }
 
     @Override
@@ -205,6 +216,7 @@ public class MutablePlayerImpl implements MutablePlayer {
                 .withResources(this.resources.stream().map(MutableResourceStorage::asImmutable).collect(Collectors.toList()))
                 .withResourceSites(this.resourceSites.stream().map(MutableResourceSite::asImmutable).collect(Collectors.toList()))
                 .withEvents(this.events)
+                .withTotalDroneCount(this.totalDroneCount)
                 .withModifiers(this.modifiers)
                 .build();
     }

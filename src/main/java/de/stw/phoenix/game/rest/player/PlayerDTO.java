@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
 public class PlayerDTO {
     private long id;
     private String name;
+    private long totalDroneCount;
     private List<ResourceOverview> resourceOverviews;
     private List<BuildingLevel> buildings;
     private List<GameEventDTO> events;
@@ -33,6 +34,7 @@ public class PlayerDTO {
         this.events = player.getEvents().stream().map(e -> convert(e)).collect(Collectors.toList());
         this.id = player.getId();
         this.name = player.getName();
+        this.totalDroneCount = player.getTotalDroneCount();
         this.energy = Objects.requireNonNull(energyOverview).convert(TimeUnit.HOURS);
         this.resourceOverviews = Objects.requireNonNull(resourceOverviews).stream()
                 .map(overview -> overview.convert(TimeUnit.MINUTES))
@@ -66,6 +68,10 @@ public class PlayerDTO {
 
     public EnergyOverview getEnergy() {
         return energy;
+    }
+
+    public long getTotalDroneCount() {
+        return totalDroneCount;
     }
 
     // Converts the given gameEvent updating the time to subtract already passed ticks

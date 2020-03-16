@@ -36,6 +36,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     private final List<GameEvent> events;
     private final List<ResourceSite> resourceSites;
     private final List<PlayerModifier> modifiers;
+    private final long totalDroneCount;
 
     private ImmutablePlayerImpl(Builder builder) {
         Objects.requireNonNull(builder);
@@ -46,6 +47,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         this.events = ImmutableList.copyOf(builder.events);
         this.resourceSites = ImmutableList.copyOf(builder.resourceSites);
         this.modifiers = ImmutableList.copyOf(builder.modifiers);
+        this.totalDroneCount = builder.totalDroneCount;
     }
 
     @Override
@@ -100,6 +102,11 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     }
 
     @Override
+    public long getTotalDroneCount() {
+        return totalDroneCount;
+    }
+
+    @Override
     public List<GameEvent> getEvents() {
         return events;
     }
@@ -150,6 +157,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         private List<GameEvent> events = Lists.newArrayList();
         private List<ResourceSite> resourceSites = Lists.newArrayList();
         private List<PlayerModifier> modifiers = Lists.newArrayList();
+        private long totalDroneCount = 0;
 
         public Builder id(long id) {
             Preconditions.checkArgument(id > 0, "id must be > 0");
@@ -230,6 +238,12 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         public Builder withDefaults() {
             withDefaultResourceStorage();
             withDefaultBuildings();
+            return this;
+        }
+
+        public Builder withTotalDroneCount(long totalDroneCount) {
+            Preconditions.checkArgument(totalDroneCount >= 0);
+            this.totalDroneCount = totalDroneCount;
             return this;
         }
 

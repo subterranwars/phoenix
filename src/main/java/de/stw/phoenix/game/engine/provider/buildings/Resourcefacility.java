@@ -1,22 +1,28 @@
 package de.stw.phoenix.game.engine.provider.buildings;
 
+import com.google.common.eventbus.Subscribe;
 import de.stw.phoenix.game.engine.api.GameElement;
 import de.stw.phoenix.game.engine.api.GameElementProvider;
 import de.stw.phoenix.game.engine.api.MutableContext;
 import de.stw.phoenix.game.engine.api.Phases;
 import de.stw.phoenix.game.engine.api.PlayerUpdate;
 import de.stw.phoenix.game.engine.api.ResourceProduction;
+import de.stw.phoenix.game.engine.buildings.Buildings;
+import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
+import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
@@ -28,6 +34,21 @@ import java.util.stream.Collectors;
 public class Resourcefacility implements GameElementProvider {
 
     final SecureRandom secureRandom = new SecureRandom();
+
+    @Autowired
+    private MutablePlayerAccessor playerAccessor;
+
+    @Subscribe
+    public void onConstructionCompleted(ConstructionEvent constructionEvent) {
+        if (Buildings.findByRef(constructionEvent.getConstructionInfo().getBuilding()) == Buildings.Resourcefacility) {
+            playerAccessor.modify(constructionEvent.getPlayerRef(), mutablePlayer -> {
+                final BuildingLevel building = mutablePlayer.getBuilding(Buildings.Resourcefacility);
+                long droneIncrease = 5 + building.getLevel() - 1;
+                long totalDrones = mutablePlayer.getTotalDroneCount() + droneIncrease;
+                mutablePlayer.updateTotalDroneCount(totalDrones);
+            });
+        }
+    }
 
     @Override
     public void registerElements(MutableContext context, ImmutablePlayer player) {

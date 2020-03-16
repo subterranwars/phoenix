@@ -21,7 +21,7 @@ public interface Buildings {
             .label("Rohstoffgebäude")
             .description("Alle direkt förderbaren Rohstoffe können hier abgebaut werden, vorausgesetzt du hast die Rohstoffe überhaupt entdeckt. Dazu suchst du am besten zuerst nach ein paar Vorkommen. Sind diese gefunden kannst du Drohnen beauftragen dort Rohstoffe abzubauen. Besonders wichtig sind Eisen, Stein und Öl. Mit jedem Level dieses Gebäudes erhältst du 5 Drohnen zusätzlich. Tipp: Eine ausreichende Grundversorgung an Rohstoffen ist von herausragender Bedeutung. Wann immer es möglich ist, solltest du hier investieren.")
             .energyConsumption(30)
-            .buildTime(20, TimeUnit.SECONDS)
+            .buildTime(10, TimeUnit.SECONDS)
             .costsIron(5000)
             .costsStone(5000)
             .build();

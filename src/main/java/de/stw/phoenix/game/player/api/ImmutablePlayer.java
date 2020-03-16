@@ -29,4 +29,6 @@ public interface ImmutablePlayer extends PlayerRef {
     List<PlayerModifier> getModifiers();
     <T extends PlayerModifier> List<T> findModifier(Class<T> modifierType);
 
+    long getTotalDroneCount();
+
 }

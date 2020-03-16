@@ -12,7 +12,6 @@ import java.util.Optional;
 public interface MutablePlayer extends ImmutablePlayer {
     void setBuilding(BuildingLevel buildingLevel);
 
-
     <T extends GameEvent> void addEvent(T event);
     void removeEvent(GameEvent event);
     void removeEvents(List<GameEvent> completedEvents);
@@ -30,6 +29,8 @@ public interface MutablePlayer extends ImmutablePlayer {
 
     void addModifier(PlayerModifier modifier);
     void removeModifier(PlayerModifier modifier);
+
+    void updateTotalDroneCount(long totalDrones);
 
     ImmutablePlayer asImmutable();
 
