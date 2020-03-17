@@ -31,7 +31,8 @@ public interface MutablePlayer extends ImmutablePlayer {
     void removeModifier(PlayerModifier modifier);
 
     void updateTotalDroneCount(long totalDrones);
+    
+    void addNotification(Notification notification);
 
     ImmutablePlayer asImmutable();
-
 }
