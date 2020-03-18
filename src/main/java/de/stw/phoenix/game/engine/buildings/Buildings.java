@@ -1,6 +1,6 @@
 package de.stw.phoenix.game.engine.buildings;
 
-import com.google.common.collect.Lists;
+import com.google.common.collect.ImmutableList;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -43,7 +43,16 @@ public interface Buildings {
             .costsStone(2000)
             .build();
 
-    List<Building> ALL = Lists.newArrayList(Headquarter, Resourcefacility, Resourcedepot, Powerplant);
+    Building Researchlab = Building.builder(21, "research-lab")
+            .label("Forschungslabor")
+            .description("Beschreibung des Forschungslabor \\o/")
+            .buildTime(20, TimeUnit.SECONDS)
+            .energyConsumption(50)
+            .costsIron(5000)
+            .costsStone(5000)
+            .build();
+
+    List<Building> ALL = ImmutableList.of(Headquarter, Resourcefacility, Resourcedepot, Powerplant, Researchlab);
 
     static Building findByRef(BuildingRef building) {
         Objects.requireNonNull(building);
