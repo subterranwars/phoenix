@@ -31,20 +31,20 @@ public class GameEventCompletionHandler {
 			@Override
 			public Notification visit(ConstructionEvent constructionEvent) {
 			ConstructionInfo info = constructionEvent.getConstructionInfo();
-			return new Notification(secureRandom.nextLong(), Instant.now(), "Construction completed",
+			return new Notification(secureRandom.nextInt(), Instant.now(), "Construction completed",
 				info.getBuilding().getLabel() + " Lvl. " + info.getLevelToBuild());
 			}
 
 			@Override
 			public Notification visit(ResourceSearchEvent resourceSearchEvent) {
-			return new Notification(secureRandom.nextLong(), Instant.now(), "Resource found",
+			return new Notification(secureRandom.nextInt(), Instant.now(), "Resource found",
 				resourceSearchEvent.getResource().getName());
 			}
 
 			@Override
 			public Notification visit(ResearchEvent researchEvent) {
 				final ResearchInfo researchInfo = researchEvent.getResearchInfo();
-				return new Notification(secureRandom.nextLong(), Instant.now(), "Research completed",
+				return new Notification(secureRandom.nextInt(), Instant.now(), "Research completed",
 						researchInfo.getResearch().getLabel() + " Lvl. " + researchInfo.getLevelToResearch());
 			}
 		});
