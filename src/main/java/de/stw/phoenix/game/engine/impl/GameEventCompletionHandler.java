@@ -18,27 +18,37 @@ import de.stw.phoenix.game.player.api.PlayerService;
 
 @Service
 public class GameEventCompletionHandler {
+    // TODO:: CJS needs to be solved with UUID provider
+    private static long uuid = 0;
+
     @Autowired
     PlayerService playerService;
-    
+
     @Subscribe
     public void onEventCompletion(GameEvent event) {
-	final Notification notification = event.accept(new EventVisitor<Notification> () {
+	final Notification notification = event.accept(new EventVisitor<Notification>() {
 
 	    @Override
 	    public Notification visit(ConstructionEvent constructionEvent) {
 		ConstructionInfo info = constructionEvent.getConstructionInfo();
-		return new Notification(Instant.now(), "Construction completed", info.getBuilding().getLabel() + " Lvl. " + info.getLevelToBuild());
+		return new Notification(getUuid(), Instant.now(), "Construction completed",
+			info.getBuilding().getLabel() + " Lvl. " + info.getLevelToBuild());
 	    }
 
 	    @Override
 	    public Notification visit(ResourceSearchEvent resourceSearchEvent) {
-		return new Notification(Instant.now(), "Resource found", resourceSearchEvent.getResource().getName());
+		return new Notification(getUuid(), Instant.now(), "Resource found",
+			resourceSearchEvent.getResource().getName());
 	    }
 	});
 	ImmutablePlayer player = playerService.get(event.getPlayerRef().getId());
 	playerService.modify(player, (mutablePlayer) -> {
 	    mutablePlayer.addNotification(notification);
 	});
+    }
+
+    // TODO:: CJS needs to be solved with UUID provider
+    private long getUuid() {
+	return uuid++;
     }
 }
