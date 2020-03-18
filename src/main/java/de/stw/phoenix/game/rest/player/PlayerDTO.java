@@ -84,7 +84,7 @@ public class PlayerDTO {
     
     public List<Notification> getNotifications() {
 	return notifications;
-    }    
+    }
 
     public List<ResearchLevel> getResearchs() {
         return researchs;
