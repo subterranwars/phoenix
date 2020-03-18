@@ -7,9 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.google.common.eventbus.Subscribe;
-
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.construction.api.ConstructionInfo;
+import de.stw.phoenix.game.engine.research.api.ResearchEvent;
+import de.stw.phoenix.game.engine.research.api.ResearchInfo;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
 import de.stw.phoenix.game.player.api.EventVisitor;
 import de.stw.phoenix.game.player.api.GameEvent;
@@ -40,6 +41,13 @@ public class GameEventCompletionHandler {
 		return new Notification(secureRandom.nextLong(), Instant.now(), "Resource found",
 			resourceSearchEvent.getResource().getName());
 	    }
+
+		@Override
+		public Notification visit(ResearchEvent researchEvent) {
+			final ResearchInfo researchInfo = researchEvent.getResearchInfo();
+			return new Notification(secureRandom.nextLong(), Instant.now(), "Research completed",
+					researchInfo.getResearch().getLabel() + " Lvl. " + researchInfo.getLevelToResearch());
+		}
 	});
 	ImmutablePlayer player = playerService.get(event.getPlayerRef().getId());
 	playerService.modify(player, (mutablePlayer) -> {

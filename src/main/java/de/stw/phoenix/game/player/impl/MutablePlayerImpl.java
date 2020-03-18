@@ -4,6 +4,7 @@ import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.energy.PlayerModifier;
+import de.stw.phoenix.game.engine.research.api.Research;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.player.api.BuildingLevel;
@@ -13,6 +14,7 @@ import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.MutableResourceStorage;
 import de.stw.phoenix.game.player.api.Notification;
+import de.stw.phoenix.game.player.api.ResearchLevel;
 
 import java.util.List;
 import java.util.Map;
@@ -23,6 +25,7 @@ import java.util.stream.Collectors;
 public class MutablePlayerImpl implements MutablePlayer {
 
     private final List<BuildingLevel> buildings;
+    private final List<ResearchLevel> researchs;
     private final List<GameEvent> events;
     private final List<MutableResourceStorage> resources;
     private List<MutableResourceSite> resourceSites;
@@ -37,6 +40,7 @@ public class MutablePlayerImpl implements MutablePlayer {
         this.id = delegate.getId();
         this.name = delegate.getName();
         this.buildings = Lists.newArrayList(delegate.getBuildings());
+        this.researchs = Lists.newArrayList(delegate.getResearchs());
         this.events = Lists.newArrayList(delegate.getEvents());
         this.resources = delegate.getResources().stream().map(s -> new MutableResourceStorage(s.getResource(), s.getAmount(), s.getCapacity())).collect(Collectors.toList());
         this.resourceSites = delegate.getResourceSites().stream().map(MutableResourceSite::new).collect(Collectors.toList());
@@ -69,6 +73,16 @@ public class MutablePlayerImpl implements MutablePlayer {
     @Override
     public BuildingLevel getBuilding(Building building) {
         return asImmutable().getBuilding(building);
+    }
+
+    @Override
+    public List<ResearchLevel> getResearchs() {
+        return ImmutableList.copyOf(this.researchs);
+    }
+
+    @Override
+    public ResearchLevel getResearch(Research research) {
+        return asImmutable().getResearch(research);
     }
 
     @Override
@@ -128,6 +142,15 @@ public class MutablePlayerImpl implements MutablePlayer {
             buildings.remove(any.get());
         }
         buildings.add(buildingLevel);
+    }
+
+    @Override
+    public void setResearch(ResearchLevel newLevel) {
+        Optional<ResearchLevel> any = getResearchs().stream().filter(rl -> rl.getResearch().getId() == newLevel.getResearch().getId()).findAny();
+        if (any.isPresent()) {
+            researchs.remove(any.get());
+        }
+        researchs.add(newLevel);
     }
 
     @Override
@@ -216,6 +239,7 @@ public class MutablePlayerImpl implements MutablePlayer {
     public ImmutablePlayer asImmutable() {
         return ImmutablePlayerImpl.builder(getId(), getName())
                 .withBuildings(this.buildings)
+                .withResearchs(this.researchs)
                 .withResources(this.resources.stream().map(MutableResourceStorage::asImmutable).collect(Collectors.toList()))
                 .withResourceSites(this.resourceSites.stream().map(MutableResourceSite::asImmutable).collect(Collectors.toList()))
                 .withEvents(this.events)

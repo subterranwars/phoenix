@@ -12,6 +12,8 @@ import java.util.Optional;
 public interface MutablePlayer extends ImmutablePlayer {
     void setBuilding(BuildingLevel buildingLevel);
 
+    void setResearch(ResearchLevel newLevel);
+
     <T extends GameEvent> void addEvent(T event);
     void removeEvent(GameEvent event);
     void removeEvents(List<GameEvent> completedEvents);

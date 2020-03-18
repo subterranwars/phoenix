@@ -2,6 +2,7 @@ package de.stw.phoenix.game.rest.player;
 
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.energy.EnergyOverview;
+import de.stw.phoenix.game.engine.research.api.ResearchEvent;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
@@ -10,8 +11,10 @@ import de.stw.phoenix.game.player.api.EventVisitor;
 import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.Notification;
+import de.stw.phoenix.game.player.api.ResearchLevel;
 import de.stw.phoenix.game.rest.GameEventDTO;
 import de.stw.phoenix.game.rest.construction.ConstructionEventDTO;
+import de.stw.phoenix.game.rest.research.ResearchEventDTO;
 import de.stw.phoenix.game.rest.resources.ResourceSearchEventDTO;
 
 import java.util.List;
@@ -25,6 +28,7 @@ public class PlayerDTO {
     private long totalDroneCount;
     private List<ResourceOverview> resourceOverviews;
     private List<BuildingLevel> buildings;
+    private final List<ResearchLevel> researchs;
     private List<GameEventDTO> events;
     private List<ResourceSite> resourceSites;
     private final EnergyOverview energy;
@@ -33,6 +37,7 @@ public class PlayerDTO {
     public PlayerDTO(final ImmutablePlayer player, final List<ResourceOverview> resourceOverviews, final EnergyOverview energyOverview) {
         Objects.requireNonNull(player);
         this.buildings = player.getBuildings();
+        this.researchs = player.getResearchs();
         this.events = player.getEvents().stream().map(e -> convert(e)).collect(Collectors.toList());
         this.id = player.getId();
         this.name = player.getName();
@@ -81,6 +86,10 @@ public class PlayerDTO {
 	return notifications;
     }
 
+    public List<ResearchLevel> getResearchs() {
+        return researchs;
+    }
+
     // Converts the given gameEvent updating the time to subtract already passed ticks
     private static GameEventDTO convert(final GameEvent event) {
         final EventVisitor<GameEventDTO> visitor = new EventVisitor<GameEventDTO>() {
@@ -93,6 +102,11 @@ public class PlayerDTO {
             @Override
             public GameEventDTO visit(ResourceSearchEvent resourceSearchEvent) {
                 return new ResourceSearchEventDTO(resourceSearchEvent.getProgress(), resourceSearchEvent.getResource());
+            }
+
+            @Override
+            public GameEventDTO visit(ResearchEvent researchEvent) {
+                return new ResearchEventDTO(researchEvent.getProgress(), researchEvent.getResearchInfo());
             }
         };
         return event.accept(visitor);
