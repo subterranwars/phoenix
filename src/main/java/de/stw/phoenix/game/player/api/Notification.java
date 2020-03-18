@@ -11,7 +11,7 @@ public class Notification {
     private final boolean read;
 
     public Notification(long id, Instant completionDate, String label, String content) {
-	this(id, completionDate, label, content, false);
+	    this(id, completionDate, label, content, false);
     }
 
     public Notification(long id, Instant completionDate, String label, String content, boolean read) {

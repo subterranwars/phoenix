@@ -258,8 +258,8 @@ public class MutablePlayerImpl implements MutablePlayer {
 
     @Override
     public void addNotification(Notification notification) {
-	Objects.requireNonNull(notification);
-	notifications.add(notification);
+	    Objects.requireNonNull(notification);
+	    notifications.add(notification);
     }
 
     @Override
@@ -269,15 +269,15 @@ public class MutablePlayerImpl implements MutablePlayer {
 
     @Override
     public void removeNotificationById(long notificationId) {
-	notifications.stream().filter(n -> n.getId() == notificationId).findAny().ifPresent(n -> notifications.remove(n));
+	    notifications.stream().filter(n -> n.getId() == notificationId).findAny().ifPresent(n -> notifications.remove(n));
     }
 
     @Override
     public void markNotificationAsRead(long notificationId) {
-	notifications.stream().filter(n -> n.getId() == notificationId).findAny().ifPresent(n -> {
-	    final Notification readNotification = new Notification(n.getId(), n.getCompletionDate(), n.getLabel(), n.getContent(), true);
-	    notifications.remove(n);
-	    notifications.add(readNotification);
-	});
+        notifications.stream().filter(n -> n.getId() == notificationId).findAny().ifPresent(n -> {
+            final Notification readNotification = new Notification(n.getId(), n.getCompletionDate(), n.getLabel(), n.getContent(), true);
+            notifications.remove(n);
+            notifications.add(readNotification);
+        });
     }
 }
