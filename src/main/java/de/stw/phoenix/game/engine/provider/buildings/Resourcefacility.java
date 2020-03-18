@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.provider.buildings;
 
+import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import de.stw.phoenix.game.engine.api.GameElement;
 import de.stw.phoenix.game.engine.api.GameElementProvider;
@@ -37,6 +38,9 @@ public class Resourcefacility implements GameElementProvider {
 
     @Autowired
     private MutablePlayerAccessor playerAccessor;
+    
+    @Autowired
+    private EventBus eventBus;    
 
     @Subscribe
     public void onConstructionCompleted(ConstructionEvent constructionEvent) {
@@ -97,6 +101,7 @@ public class Resourcefacility implements GameElementProvider {
                         final long amount = (long) (Math.random() * 100000);
                         LoggerFactory.getLogger(getClass()).info("Completing resource search event. User: {}, Resource: {}, Amount: {}", player.getName(), event.getResource().getName(), amount);
                         final ResourceSite resourceSite = new ResourceSite(secureRandom.nextInt(), new ImmutableResourceStorage(event.getResource(), amount, amount), 0);
+                        eventBus.post(event);
                         player.addResourceSite(resourceSite);
                         player.removeEvent(event);
                     } else {
