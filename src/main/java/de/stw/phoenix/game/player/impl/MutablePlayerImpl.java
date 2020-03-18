@@ -12,6 +12,7 @@ import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
 import de.stw.phoenix.game.player.api.MutablePlayer;
 import de.stw.phoenix.game.player.api.MutableResourceStorage;
+import de.stw.phoenix.game.player.api.Notification;
 
 import java.util.List;
 import java.util.Map;
@@ -29,6 +30,7 @@ public class MutablePlayerImpl implements MutablePlayer {
     private final String name;
     private List<PlayerModifier> modifiers;
     private long totalDroneCount;
+    private final List<Notification> notifications;
 
     MutablePlayerImpl(ImmutablePlayer delegate) {
         Objects.requireNonNull(delegate);
@@ -39,6 +41,7 @@ public class MutablePlayerImpl implements MutablePlayer {
         this.resources = delegate.getResources().stream().map(s -> new MutableResourceStorage(s.getResource(), s.getAmount(), s.getCapacity())).collect(Collectors.toList());
         this.resourceSites = delegate.getResourceSites().stream().map(MutableResourceSite::new).collect(Collectors.toList());
         this.modifiers = Lists.newArrayList(delegate.getModifiers());
+        this.notifications = Lists.newArrayList(delegate.getNotifications());
     }
 
     @Override
@@ -218,6 +221,7 @@ public class MutablePlayerImpl implements MutablePlayer {
                 .withEvents(this.events)
                 .withTotalDroneCount(this.totalDroneCount)
                 .withModifiers(this.modifiers)
+                .withNotifications(this.notifications)
                 .build();
     }
 
@@ -226,5 +230,16 @@ public class MutablePlayerImpl implements MutablePlayer {
             return resources.stream()
                     .filter(r -> r.getResource().getId() == resource.getId())
                     .findAny();
+    }
+
+    @Override
+    public void addNotification(Notification notification) {
+	Objects.requireNonNull(notification);
+	notifications.add(notification);
+    }
+
+    @Override
+    public List<Notification> getNotifications() {
+	return asImmutable().getNotifications();
     }
 }

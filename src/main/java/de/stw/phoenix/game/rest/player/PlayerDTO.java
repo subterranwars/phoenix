@@ -9,6 +9,7 @@ import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.EventVisitor;
 import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
+import de.stw.phoenix.game.player.api.Notification;
 import de.stw.phoenix.game.rest.GameEventDTO;
 import de.stw.phoenix.game.rest.construction.ConstructionEventDTO;
 import de.stw.phoenix.game.rest.resources.ResourceSearchEventDTO;
@@ -27,6 +28,7 @@ public class PlayerDTO {
     private List<GameEventDTO> events;
     private List<ResourceSite> resourceSites;
     private final EnergyOverview energy;
+    private List<Notification> notifications;
 
     public PlayerDTO(final ImmutablePlayer player, final List<ResourceOverview> resourceOverviews, final EnergyOverview energyOverview) {
         Objects.requireNonNull(player);
@@ -40,6 +42,7 @@ public class PlayerDTO {
                 .map(overview -> overview.convert(TimeUnit.MINUTES))
                 .collect(Collectors.toList());
         this.resourceSites = Objects.requireNonNull(player.getResourceSites());
+        this.notifications = player.getNotifications();
     }
 
     public long getId() {
@@ -73,6 +76,10 @@ public class PlayerDTO {
     public long getTotalDroneCount() {
         return totalDroneCount;
     }
+    
+    public List<Notification> getNotifications() {
+	return notifications;
+    }    
 
     // Converts the given gameEvent updating the time to subtract already passed ticks
     private static GameEventDTO convert(final GameEvent event) {

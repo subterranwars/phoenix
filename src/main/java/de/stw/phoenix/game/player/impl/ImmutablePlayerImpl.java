@@ -12,6 +12,7 @@ import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
+import de.stw.phoenix.game.player.api.Notification;
 
 import java.util.List;
 import java.util.Map;
@@ -37,6 +38,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
     private final List<ResourceSite> resourceSites;
     private final List<PlayerModifier> modifiers;
     private final long totalDroneCount;
+    private final List<Notification> notifications;
 
     private ImmutablePlayerImpl(Builder builder) {
         Objects.requireNonNull(builder);
@@ -48,6 +50,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         this.resourceSites = ImmutableList.copyOf(builder.resourceSites);
         this.modifiers = ImmutableList.copyOf(builder.modifiers);
         this.totalDroneCount = builder.totalDroneCount;
+        this.notifications = ImmutableList.copyOf(builder.notifications);
     }
 
     @Override
@@ -158,6 +161,7 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
         private List<ResourceSite> resourceSites = Lists.newArrayList();
         private List<PlayerModifier> modifiers = Lists.newArrayList();
         private long totalDroneCount = 0;
+        private List<Notification> notifications = Lists.newArrayList();
 
         public Builder id(long id) {
             Preconditions.checkArgument(id > 0, "id must be > 0");
@@ -246,11 +250,21 @@ public final class ImmutablePlayerImpl implements ImmutablePlayer {
             this.totalDroneCount = totalDroneCount;
             return this;
         }
+        
+        public Builder withNotifications(List<Notification> notifications) {
+            this.notifications.addAll(notifications);
+            return this;
+        }
 
         public ImmutablePlayerImpl build() {
             return new ImmutablePlayerImpl(this);
         }
 
 
+    }
+
+    @Override
+    public List<Notification> getNotifications() {
+	return notifications;
     }
 }
