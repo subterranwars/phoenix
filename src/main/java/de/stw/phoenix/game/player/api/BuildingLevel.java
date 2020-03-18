@@ -4,6 +4,7 @@ import de.stw.phoenix.game.engine.buildings.Building;
 
 import java.util.Objects;
 
+// TODO MVR identical to ResearchLevel
 public class BuildingLevel {
     private final Building building;
     private final int level;

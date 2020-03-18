@@ -2,6 +2,7 @@ package de.stw.phoenix.game.player.api;
 
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.energy.PlayerModifier;
+import de.stw.phoenix.game.engine.research.api.Research;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 
@@ -17,8 +18,10 @@ public interface ImmutablePlayer extends PlayerRef {
     ImmutableResourceStorage getStorage(Resource resource);
 
     List<BuildingLevel> getBuildings();
-
     BuildingLevel getBuilding(Building building);
+
+    List<ResearchLevel> getResearchs();
+    ResearchLevel getResearch(Research research);
 
     boolean canAfford(Map<Resource, Double> costs);
 
