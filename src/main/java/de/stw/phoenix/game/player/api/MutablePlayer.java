@@ -35,4 +35,7 @@ public interface MutablePlayer extends ImmutablePlayer {
     void addNotification(Notification notification);
 
     ImmutablePlayer asImmutable();
+
+    void removeNotificationById(long notificationId);
+    void markNotificationAsRead(long notificationId);
 }

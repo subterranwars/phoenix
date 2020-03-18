@@ -8,9 +8,13 @@ public class Notification {
     private final Instant completionDate;
     private final String label;
     private final String content;
-    private final boolean read = false;
+    private final boolean read;
 
     public Notification(long id, Instant completionDate, String label, String content) {
+	this(id, completionDate, label, content, false);
+    }
+
+    public Notification(long id, Instant completionDate, String label, String content, boolean read) {
 	Objects.requireNonNull(completionDate);
 	Objects.requireNonNull(label);
 	Objects.requireNonNull(content);
@@ -19,25 +23,26 @@ public class Notification {
 	this.completionDate = completionDate;
 	this.content = content;
 	this.label = label;
+	this.read = read;
     }
-    
+
     public long getId() {
 	return id;
     }
 
     public Instant getCompletionDate() {
-        return completionDate;
+	return completionDate;
     }
 
     public String getLabel() {
-        return label;
+	return label;
     }
 
     public String getContent() {
-        return content;
+	return content;
     }
 
     public boolean isRead() {
-        return read;
+	return read;
     }
 }

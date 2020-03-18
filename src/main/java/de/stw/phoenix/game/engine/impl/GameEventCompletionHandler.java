@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.impl;
 
+import java.security.SecureRandom;
 import java.time.Instant;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,8 +19,7 @@ import de.stw.phoenix.game.player.api.PlayerService;
 
 @Service
 public class GameEventCompletionHandler {
-    // TODO:: CJS needs to be solved with UUID provider
-    private static long uuid = 0;
+    final SecureRandom secureRandom = new SecureRandom();
 
     @Autowired
     PlayerService playerService;
@@ -31,13 +31,13 @@ public class GameEventCompletionHandler {
 	    @Override
 	    public Notification visit(ConstructionEvent constructionEvent) {
 		ConstructionInfo info = constructionEvent.getConstructionInfo();
-		return new Notification(getUuid(), Instant.now(), "Construction completed",
+		return new Notification(secureRandom.nextLong(), Instant.now(), "Construction completed",
 			info.getBuilding().getLabel() + " Lvl. " + info.getLevelToBuild());
 	    }
 
 	    @Override
 	    public Notification visit(ResourceSearchEvent resourceSearchEvent) {
-		return new Notification(getUuid(), Instant.now(), "Resource found",
+		return new Notification(secureRandom.nextLong(), Instant.now(), "Resource found",
 			resourceSearchEvent.getResource().getName());
 	    }
 	});
@@ -45,10 +45,5 @@ public class GameEventCompletionHandler {
 	playerService.modify(player, (mutablePlayer) -> {
 	    mutablePlayer.addNotification(notification);
 	});
-    }
-
-    // TODO:: CJS needs to be solved with UUID provider
-    private long getUuid() {
-	return uuid++;
     }
 }

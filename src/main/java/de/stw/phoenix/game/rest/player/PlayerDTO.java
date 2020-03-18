@@ -79,7 +79,7 @@ public class PlayerDTO {
     
     public List<Notification> getNotifications() {
 	return notifications;
-    }    
+    }
 
     // Converts the given gameEvent updating the time to subtract already passed ticks
     private static GameEventDTO convert(final GameEvent event) {
