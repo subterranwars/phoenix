@@ -3,7 +3,7 @@ package de.stw.phoenix.game.engine.construction.impl.calculator;
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionCostCalculator;
 import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.impl.ImmutablePlayerImpl;
+import de.stw.phoenix.game.player.impl.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -15,12 +15,12 @@ import static org.hamcrest.Matchers.is;
 class DefaultConstructionCostCalculatorTest {
 
     private ConstructionCostCalculator costCalculator;
-    private ImmutablePlayerImpl player;
+    private Player player;
 
     @BeforeEach
     public void beforeEach() {
         costCalculator = new DefaultConstructionCostCalculator();
-        player = ImmutablePlayerImpl.builder(1, "test").withDefaults().build();
+        player = Player.builder(1, "test").withDefaults().build();
     }
 
     @Test

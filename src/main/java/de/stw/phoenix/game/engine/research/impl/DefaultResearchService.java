@@ -7,9 +7,9 @@ import de.stw.phoenix.game.engine.research.api.ResearchInfo;
 import de.stw.phoenix.game.engine.research.api.ResearchService;
 import de.stw.phoenix.game.engine.research.api.Researchs;
 import de.stw.phoenix.game.engine.research.api.calculator.ResearchTimeCalculator;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
+import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.api.ResearchLevel;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ public class DefaultResearchService implements ResearchService {
     private ResearchTimeCalculator researchTimeCalculator;
 
     @Autowired
-    private MutablePlayerAccessor playerAccessor;
+    private PlayerService playerService;
 
     @Autowired
     private EventBus eventBus;
@@ -35,7 +35,7 @@ public class DefaultResearchService implements ResearchService {
     private Clock clock;
 
     @Override
-    public List<ResearchInfo> listResearchs(ImmutablePlayer player) {
+    public List<ResearchInfo> listResearchs(Player player) {
         Objects.requireNonNull(player);
         return Researchs.ALL.stream()
                 .map(player::getResearch)
@@ -49,17 +49,17 @@ public class DefaultResearchService implements ResearchService {
 
     // TODO MVR ensure research is only performed if user has researchlab
     @Override
-    public void research(ImmutablePlayer player, Research research) {
+    public void research(Player player, Research research) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(research);
         if (!player.findSingleEvent(ResearchEvent.class).isPresent()) {
             final ResearchLevel nextLevel = player.getResearch(research).next();
             final TimeDuration researchTime = researchTimeCalculator.calculateResearchTime(nextLevel, player);
             final ResearchInfo researchInfo =  new ResearchInfo(nextLevel, researchTime);
-            playerAccessor.modify(player, mutablePlayer -> {
+            playerService.modify(player, mutablePlayer -> {
                 // Enqueue
                 final ResearchEvent researchEvent = new ResearchEvent(
-                        mutablePlayer,
+                        mutablePlayer.asPlayerRef(),
                         researchInfo,
                         0,
                         researchInfo.getResearchTime(),

@@ -1,16 +1,23 @@
 package de.stw.phoenix.game.player.api;
 
+import de.stw.phoenix.game.player.impl.Player;
+
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
-public interface PlayerService extends MutablePlayerAccessor {
-    List<ImmutablePlayer> getPlayers();
+public interface PlayerService {
+    List<Player> getPlayers();
 
-    Optional<ImmutablePlayer> find(long playerId);
-    Optional<ImmutablePlayer> find(String playerName);
-    ImmutablePlayer get(long playerId);
-    ImmutablePlayer get(String name);
+    Optional<Player> find(long playerId);
+    Optional<Player> find(String playerName);
+    Player get(long playerId);
+    Player get(String name);
 
-    void save(ImmutablePlayer player);
+    void save(Player player);
+
+    void modify(Player player, Consumer<Player> consumer);
+    void modify(String playerName, Consumer<Player> consumer);
+    void modify(PlayerRef playerRef, Consumer<Player> consumer);
 
 }

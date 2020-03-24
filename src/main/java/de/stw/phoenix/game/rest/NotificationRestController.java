@@ -1,8 +1,8 @@
 package de.stw.phoenix.game.rest;
 
 import com.google.common.eventbus.EventBus;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
+import de.stw.phoenix.game.player.impl.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -24,15 +24,17 @@ public class NotificationRestController {
     private EventBus eventBus;
 
     @DeleteMapping
+    // TODO MVR move to own service
     public void deleteNotification(Principal principal, @RequestParam("notificationId") long notificationId) {
-        final ImmutablePlayer player = playerService.get(principal.getName());
+        final Player player = playerService.get(principal.getName());
         playerService.modify(player, mutablePlayer -> mutablePlayer.removeNotificationById(notificationId));
         eventBus.post(player);
     }
     
     @PatchMapping
+    // TODO MVR move to own service
     public void markAsRead(Principal principal, @RequestParam("notificationId") long notificationId) {
-        final ImmutablePlayer player = playerService.get(principal.getName());
+        final Player player = playerService.get(principal.getName());
         playerService.modify(player, mutablePlayer -> mutablePlayer.markNotificationAsRead(notificationId));
         eventBus.post(player);
     };

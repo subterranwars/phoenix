@@ -11,8 +11,7 @@ import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.construction.api.ConstructionInfo;
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCalculator;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.slf4j.LoggerFactory;
@@ -31,7 +30,7 @@ public class ConstructionProgress implements GameElementProvider {
     private EventBus eventBus;
 
     @Override
-    public void registerElements(MutableContext context, ImmutablePlayer player) {
+    public void registerElements(MutableContext context, Player player) {
         context.add(new PlayerUpdate() {
 
             @Override
@@ -40,7 +39,7 @@ public class ConstructionProgress implements GameElementProvider {
             }
 
             @Override
-            public void update(MutablePlayer player, Tick tick) {
+            public void update(Player player, Tick tick) {
                 final ConstructionEvent constructionEvent = player.findSingleEvent(ConstructionEvent.class).get();
                 final ConstructionInfo constructionInfo = constructionEvent.getConstructionInfo();
 
@@ -56,13 +55,13 @@ public class ConstructionProgress implements GameElementProvider {
                 LoggerFactory.getLogger(ConstructionProgress.this.getClass()).info("Progress: {}/{}, estimated duration left: {} sec", progressPerTick, totalProgress, estimatedDuration.getSeconds());
 
                 // Updated event
-                final ConstructionEvent updatedEvent = new ConstructionEvent(player, constructionInfo, constructionEvent.getProgress().getValue() + progressPerTick, estimatedDuration, tick.toMoment());
+                final ConstructionEvent updatedEvent = new ConstructionEvent(player.asPlayerRef(), constructionInfo, constructionEvent.getProgress().getValue() + progressPerTick, estimatedDuration, tick.toMoment());
                 player.removeEvent(constructionEvent);
                 player.addEvent(updatedEvent);
             }
 
             @Override
-            public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+            public boolean isActive(Player player, Tick currentTick) {
                 final Optional<ConstructionEvent> singleEvent = player.findSingleEvent(ConstructionEvent.class);
                 return singleEvent.isPresent() && !singleEvent.get().isFinished();
             }
@@ -74,11 +73,11 @@ public class ConstructionProgress implements GameElementProvider {
             }
 
             @Override
-            public void update(MutablePlayer player, Tick tick) {
+            public void update(Player player, Tick tick) {
                 final ConstructionEvent event = player.findSingleEvent(ConstructionEvent.class).get();
                 final ConstructionInfo constructionInfo = event.getConstructionInfo();
-                LoggerFactory.getLogger(getClass()).info("Completing construction event. User: {}, Building: {}, Level: {}", player.getName(), constructionInfo.getBuilding().getLabel(), constructionInfo.getLevelToBuild());
                 final Building building = Buildings.findByRef(constructionInfo.getBuilding());
+                LoggerFactory.getLogger(getClass()).info("Completing construction event. User: {}, Building: {}, Level: {}", player.getName(), building.getLabel(), constructionInfo.getLevelToBuild());
                 final BuildingLevel newLevel = new BuildingLevel(building, constructionInfo.getLevelToBuild());
                 player.setBuilding(newLevel);
 
@@ -88,7 +87,7 @@ public class ConstructionProgress implements GameElementProvider {
             }
 
             @Override
-            public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+            public boolean isActive(Player player, Tick currentTick) {
                 final ConstructionEvent constructionEvent = player.findSingleEvent(ConstructionEvent.class).orElse(null);
                 return constructionEvent != null && constructionEvent.isFinished();
             }

@@ -16,7 +16,6 @@ import java.time.Instant;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.UUID;
 
 @Service
 public class DefaultAuthService implements AuthService {
@@ -44,19 +43,19 @@ public class DefaultAuthService implements AuthService {
 
     @Override
     public Token authenticate(String username, String password) {
-        final Optional<User> userOptional = userRepository.lookup(username, password);
-        if (userOptional.isPresent()) {
-            // Ensure already existing tokens are invalidated
-            findToken(userOptional.get().getUsername())
-                    .ifPresent(token -> invalidate(token));
-
-            // Create new token
-            final String token = UUID.randomUUID().toString();
-            final Token newToken = new Token(token, Instant.now(), tokenExpiration);
-            userTokenMap.put(username, newToken);
-            tokenUserMap.put(token, username);
-            return newToken;
-        }
+//        final Optional<User> userOptional = userRepository.lookup(username, password);
+//        if (userOptional.isPresent()) {
+//            // Ensure already existing tokens are invalidated
+//            findToken(userOptional.get().getUsername())
+//                    .ifPresent(token -> invalidate(token));
+//
+//            // Create new token
+//            final String token = UUID.randomUUID().toString();
+//            final Token newToken = new Token(token, Instant.now(), tokenExpiration);
+//            userTokenMap.put(username, newToken);
+//            tokenUserMap.put(token, username);
+//            return newToken;
+//        }
         throw new BadCredentialsException("Username or password incorrect");
     }
 
@@ -78,7 +77,7 @@ public class DefaultAuthService implements AuthService {
                     }
                     // token is valid, fetch the User
                     return Optional.ofNullable(tokenUserMap.get(tokenString))
-                            .flatMap(username -> userRepository.find(username));
+                            .flatMap(username -> userRepository.findByUsername(username));
                 }).orElse(Optional.empty());
         return user;
     }

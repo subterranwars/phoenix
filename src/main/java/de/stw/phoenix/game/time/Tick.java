@@ -2,12 +2,19 @@ package de.stw.phoenix.game.time;
 
 import com.google.common.base.MoreObjects;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
+@Embeddable
 public class Tick {
-    private final long startTime;
-    private final long endTime;
+
+    private long startTime;
+    private long endTime;
+
+    private Tick() {
+
+    }
 
     public Tick(long startTime, long endTime) {
         this.startTime = startTime;

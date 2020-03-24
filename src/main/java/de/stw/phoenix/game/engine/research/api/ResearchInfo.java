@@ -4,12 +4,29 @@ import com.google.common.base.Preconditions;
 import de.stw.phoenix.game.player.api.ResearchLevel;
 import de.stw.phoenix.game.time.TimeDuration;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
+import javax.persistence.Transient;
 import java.util.Objects;
 
+@Embeddable
 public class ResearchInfo {
-    private final Research research;
-    private final int levelToResearch;
-    private final TimeDuration researchTime;
+
+    @OneToOne
+    @JoinColumn(name="research_id")
+    private Research research;
+
+    @Column(name="level")
+    private int levelToResearch;
+
+    @Transient
+    private TimeDuration researchTime;
+
+    private ResearchInfo() {
+
+    }
 
     public ResearchInfo(final Research research, int levelToResearch, TimeDuration researchTime) {
         Preconditions.checkArgument(levelToResearch > 0);

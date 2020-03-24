@@ -10,8 +10,8 @@ import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionCostCa
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCalculator;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
+import de.stw.phoenix.game.player.api.PlayerService;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +29,7 @@ public class DefaultConstructionService implements ConstructionService {
     private Clock clock;
 
     @Autowired
-    private MutablePlayerAccessor playerAccessor;
+    private PlayerService playerService;
 
     @Autowired
     private ConstructionTimeCalculator constructionTimeCalculator;
@@ -41,7 +41,7 @@ public class DefaultConstructionService implements ConstructionService {
     private EventBus eventBus;
 
     @Override
-    public List<ConstructionInfo> listConstructions(final ImmutablePlayer player) {
+    public List<ConstructionInfo> listConstructions(final Player player) {
         Objects.requireNonNull(player);
         return Buildings.ALL.stream()
                 .map(player::getBuilding)
@@ -55,7 +55,7 @@ public class DefaultConstructionService implements ConstructionService {
     }
 
     @Override
-    public void build(final ImmutablePlayer player, final Building building) {
+    public void build(final Player player, final Building building) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(building);
         if (!player.findSingleEvent(ConstructionEvent.class).isPresent()) {
@@ -64,10 +64,10 @@ public class DefaultConstructionService implements ConstructionService {
             final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(nextLevel, player);
             final ConstructionInfo constructionInfo =  new ConstructionInfo(nextLevel, costs, constructionTime);
             if (player.canAfford(constructionInfo.getCosts())) {
-                playerAccessor.modify(player, mutablePlayer -> {
+                playerService.modify(player, mutablePlayer -> {
                     // Enqueue
                     final ConstructionEvent constructionEvent = new ConstructionEvent(
-                            mutablePlayer,
+                            mutablePlayer.asPlayerRef(),
                             constructionInfo,
                             0,
                             constructionInfo.getBuildTime(),

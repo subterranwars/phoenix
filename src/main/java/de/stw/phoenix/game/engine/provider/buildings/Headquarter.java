@@ -10,8 +10,7 @@ import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.stereotype.Service;
@@ -24,7 +23,7 @@ import java.util.stream.Collectors;
 public class Headquarter implements GameElementProvider {
 
     @Override
-    public void registerElements(final MutableContext context, final ImmutablePlayer player) {
+    public void registerElements(final MutableContext context, final Player player) {
         final List<GameElement> resourceProductions = Resources.BASICS.stream().map(resource -> new ResourceProduction() {
 
             @Override
@@ -33,7 +32,7 @@ public class Headquarter implements GameElementProvider {
             }
 
             @Override
-            public void update(MutablePlayer player, Tick tick) {
+            public void update(Player player, Tick tick) {
                 final double productionPerTickUnit = getProductionValue().convert(TimeUnit.MILLISECONDS).getProductionPerTimeUnit();
                 final double amountToProduceInTick = productionPerTickUnit * tick.getDelta();
                 player.addResources(resource, amountToProduceInTick);
@@ -47,7 +46,7 @@ public class Headquarter implements GameElementProvider {
             }
 
             @Override
-            public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+            public boolean isActive(Player player, Tick currentTick) {
                 return player.getBuilding(Buildings.Headquarter).getLevel() >= 1;
             }
         }).collect(Collectors.toList());
@@ -59,7 +58,7 @@ public class Headquarter implements GameElementProvider {
             }
 
             @Override
-            public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+            public boolean isActive(Player player, Tick currentTick) {
                 return player.getBuilding(Buildings.Headquarter).getLevel() >= 1;
             }
         });

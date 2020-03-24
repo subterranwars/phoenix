@@ -4,8 +4,8 @@ import com.google.common.eventbus.Subscribe;
 import de.stw.phoenix.game.engine.energy.EnergyOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.rest.player.PlayerDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationListener;
@@ -28,8 +28,8 @@ public class PlayerUpdateEventHandler implements ApplicationListener<SessionSubs
     private PlayerService playerService;
 
     @Subscribe
-    public void onPlayerUpdated(final ImmutablePlayer player) {
-        final ImmutablePlayer actualPlayer = playerService.get(player.getId());
+    public void onPlayerUpdated(final Player player) {
+        final Player actualPlayer = playerService.get(player.getId());
         final List<ResourceOverview> resourceOverviews = resourceService.getResourceOverview(actualPlayer);
         final EnergyOverview energyOverview = resourceService.getEnergyOverview(actualPlayer);
         final PlayerDTO playerDTO = new PlayerDTO(actualPlayer, resourceOverviews, energyOverview);
@@ -38,7 +38,7 @@ public class PlayerUpdateEventHandler implements ApplicationListener<SessionSubs
 
     @Override
     public void onApplicationEvent(SessionSubscribeEvent event) {
-        final ImmutablePlayer player = playerService.get(event.getUser().getName());
+        final Player player = playerService.get(event.getUser().getName());
         onPlayerUpdated(player);
     }
 }

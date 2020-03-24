@@ -12,21 +12,19 @@ import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.Resource;
-import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
-import de.stw.phoenix.game.player.api.MutablePlayer;
-import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
+import de.stw.phoenix.game.player.api.PlayerService;
+import de.stw.phoenix.game.player.api.ResourceSite;
+import de.stw.phoenix.game.player.api.ResourceStorage;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.stream.Collectors;
@@ -34,10 +32,8 @@ import java.util.stream.Collectors;
 @Service
 public class Resourcefacility implements GameElementProvider {
 
-    final SecureRandom secureRandom = new SecureRandom();
-
     @Autowired
-    private MutablePlayerAccessor playerAccessor;
+    private PlayerService playerService;
     
     @Autowired
     private EventBus eventBus;    
@@ -45,7 +41,7 @@ public class Resourcefacility implements GameElementProvider {
     @Subscribe
     public void onConstructionCompleted(ConstructionEvent constructionEvent) {
         if (Buildings.findByRef(constructionEvent.getConstructionInfo().getBuilding()) == Buildings.Resourcefacility) {
-            playerAccessor.modify(constructionEvent.getPlayerRef(), mutablePlayer -> {
+            playerService.modify(constructionEvent.getPlayerRef(), mutablePlayer -> {
                 final BuildingLevel building = mutablePlayer.getBuilding(Buildings.Resourcefacility);
                 long droneIncrease = 5 + building.getLevel() - 1;
                 long totalDrones = mutablePlayer.getTotalDroneCount() + droneIncrease;
@@ -55,14 +51,14 @@ public class Resourcefacility implements GameElementProvider {
     }
 
     @Override
-    public void registerElements(MutableContext context, ImmutablePlayer player) {
+    public void registerElements(MutableContext context, Player player) {
         final List<GameElement> siteProductions = player.getResourceSites()
             .stream()
             .filter(site -> site.getDroneCount() > 0)
             .map(site -> new ResourceProduction() {
 
                 @Override
-                public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+                public boolean isActive(Player player, Tick currentTick) {
                     return !player.getResourceSites().isEmpty();
                 }
 
@@ -77,7 +73,7 @@ public class Resourcefacility implements GameElementProvider {
                 }
 
                 @Override
-                public void update(MutablePlayer player, Tick tick) {
+                public void update(Player player, Tick tick) {
                     final double siteProductionPerTickUnit = getProductionValue().convert(TimeUnit.MILLISECONDS).getProductionPerTimeUnit();
                     final double amountToProduceInTick = siteProductionPerTickUnit * tick.getDelta();
                     final double availableAmount = Math.min(site.getStorage().getAmount(), amountToProduceInTick);
@@ -96,22 +92,22 @@ public class Resourcefacility implements GameElementProvider {
                 }
 
                 @Override
-                public void update(MutablePlayer player, Tick tick) {
+                public void update(Player player, Tick tick) {
                     if (Math.random() < event.getResource().getOccurrence()) {
                         final long amount = (long) (Math.random() * 100000);
                         LoggerFactory.getLogger(getClass()).info("Completing resource search event. User: {}, Resource: {}, Amount: {}", player.getName(), event.getResource().getName(), amount);
-                        final ResourceSite resourceSite = new ResourceSite(secureRandom.nextInt(), new ImmutableResourceStorage(event.getResource(), amount, amount), 0);
+                        final ResourceSite resourceSite = new ResourceSite(new ResourceStorage(event.getResource(), amount, amount), 0);
                         eventBus.post(event);
                         player.addResourceSite(resourceSite);
                         player.removeEvent(event);
                     } else {
                         player.removeEvent(event);
-                        player.addEvent(new ResourceSearchEvent(player, event.getResource(), tick.toMoment()));
+                        player.addEvent(new ResourceSearchEvent(player.asPlayerRef(), event.getResource(), tick.toMoment()));
                     }
                 }
 
                 @Override
-                public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+                public boolean isActive(Player player, Tick currentTick) {
                     return event.getLastUpdate().getDiff(currentTick.toMoment()) >= TimeDuration.ofSeconds(30).getSeconds(); // TODO MVR implement once per hour
                 }
             }));

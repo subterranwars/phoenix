@@ -3,12 +3,23 @@ package de.stw.phoenix.game.player.api;
 import com.google.common.base.Preconditions;
 import de.stw.phoenix.game.time.TimeDuration;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.Embedded;
 import java.util.Objects;
 
+@Embeddable
 public class Progress {
 
-    private final TimeDuration duration;
-    private final double currentValue; // 0 -> 1
+    @Embedded
+    private TimeDuration duration;
+
+    @Column(name = "progress", nullable = false)
+    private double currentValue; // 0 -> 1
+
+    private Progress() {
+
+    }
 
     private Progress(Builder builder) {
         Objects.requireNonNull(builder);

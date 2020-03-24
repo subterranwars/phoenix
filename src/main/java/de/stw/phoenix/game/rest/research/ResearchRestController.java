@@ -4,8 +4,8 @@ import de.stw.phoenix.game.engine.research.api.Research;
 import de.stw.phoenix.game.engine.research.api.ResearchInfo;
 import de.stw.phoenix.game.engine.research.api.ResearchService;
 import de.stw.phoenix.game.engine.research.api.Researchs;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
+import de.stw.phoenix.game.player.impl.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -30,13 +30,13 @@ public class ResearchRestController {
 
     @GetMapping
     public List<ResearchInfo> listConstructions(Principal principal) {
-        final ImmutablePlayer player = playerService.get(principal.getName());
+        final Player player = playerService.get(principal.getName());
         return researchService.listResearchs(player);
     }
 
     @PostMapping
     public void build(Principal principal, @RequestParam("researchId") int researchId) {
-        final ImmutablePlayer player = playerService.get(principal.getName());
+        final Player player = playerService.get(principal.getName());
         final Research research = Researchs.findById(researchId);
         researchService.research(player, research);
     }

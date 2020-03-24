@@ -4,7 +4,7 @@ import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCalculator;
 import de.stw.phoenix.game.engine.energy.ConstructionTimeModifier;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.stereotype.Service;
 
@@ -13,7 +13,7 @@ public class DefaultConstructionTimeCalculator implements ConstructionTimeCalcul
 
     // TODO MVR remove context
     @Override
-    public TimeDuration calculateConstructionTime(BuildingLevel level, ImmutablePlayer player) {
+    public TimeDuration calculateConstructionTime(BuildingLevel level, Player player) {
         int hqLevel = player.getBuilding(Buildings.Headquarter).getLevel();
         int levelToBuild = level.getLevel();
         double rawBuildTime = level.getBuilding().getBuildTime().getSeconds() * Math.pow(1.8, 2 * (levelToBuild - 1) / hqLevel);

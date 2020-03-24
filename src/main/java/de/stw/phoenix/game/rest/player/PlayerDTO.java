@@ -4,14 +4,14 @@ import de.stw.phoenix.game.engine.construction.api.ConstructionEvent;
 import de.stw.phoenix.game.engine.energy.EnergyOverview;
 import de.stw.phoenix.game.engine.research.api.ResearchEvent;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
-import de.stw.phoenix.game.engine.resources.api.ResourceSite;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.EventVisitor;
 import de.stw.phoenix.game.player.api.GameEvent;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.Notification;
 import de.stw.phoenix.game.player.api.ResearchLevel;
+import de.stw.phoenix.game.player.api.ResourceSite;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.rest.GameEventDTO;
 import de.stw.phoenix.game.rest.construction.ConstructionEventDTO;
 import de.stw.phoenix.game.rest.research.ResearchEventDTO;
@@ -34,7 +34,7 @@ public class PlayerDTO {
     private final EnergyOverview energy;
     private List<Notification> notifications;
 
-    public PlayerDTO(final ImmutablePlayer player, final List<ResourceOverview> resourceOverviews, final EnergyOverview energyOverview) {
+    public PlayerDTO(final Player player, final List<ResourceOverview> resourceOverviews, final EnergyOverview energyOverview) {
         Objects.requireNonNull(player);
         this.buildings = player.getBuildings();
         this.researchs = player.getResearchs();

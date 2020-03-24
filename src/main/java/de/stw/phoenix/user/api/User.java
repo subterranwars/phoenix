@@ -4,13 +4,25 @@ import com.google.common.base.Preconditions;
 import de.stw.phoenix.user.api.password.Password;
 import de.stw.phoenix.user.api.password.UnsecurePassword;
 
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
 import java.util.Objects;
 
+@Table(name="users")
+@Entity
 public class User {
+
+    @Id
     private long id;
     private String username;
     private String email;
+
+    @Transient
     private Password password;
+
+    private User() {}
 
     private User(Builder builder) {
         Objects.requireNonNull(builder);
