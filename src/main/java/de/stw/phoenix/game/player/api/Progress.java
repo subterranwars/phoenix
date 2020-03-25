@@ -35,6 +35,14 @@ public class Progress {
         return currentValue;
     }
 
+    public void setValue(double value) {
+        this.currentValue = value;
+    }
+
+    public void setDuration(TimeDuration duration) {
+        this.duration = duration;
+    }
+
     public boolean isFinished() {
         return currentValue >= 1.0;
     }

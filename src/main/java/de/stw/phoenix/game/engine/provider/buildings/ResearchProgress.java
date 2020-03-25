@@ -7,7 +7,6 @@ import de.stw.phoenix.game.engine.api.Phases;
 import de.stw.phoenix.game.engine.api.PlayerUpdate;
 import de.stw.phoenix.game.engine.research.api.Research;
 import de.stw.phoenix.game.engine.research.api.ResearchEvent;
-import de.stw.phoenix.game.engine.research.api.ResearchInfo;
 import de.stw.phoenix.game.engine.research.api.Researchs;
 import de.stw.phoenix.game.engine.research.api.calculator.ResearchTimeCalculator;
 import de.stw.phoenix.game.player.api.ResearchLevel;
@@ -41,10 +40,9 @@ public class ResearchProgress implements GameElementProvider {
             @Override
             public void update(Player player, Tick tick) {
                 final ResearchEvent researchEvent = player.findSingleEvent(ResearchEvent.class).get();
-                final ResearchInfo researchInfo = researchEvent.getResearchInfo();
 
                 // Calculate progress
-                final TimeDuration timeDuration = researchTimeCalculator.calculateResearchTime(researchInfo.getResearch(), researchInfo.getLevelToResearch(), player);
+                final TimeDuration timeDuration = researchTimeCalculator.calculateResearchTime(researchEvent.getResearch(), researchEvent.getLevelToResearch(), player);
                 final double progressPerTick = (double) tick.getDelta() / (double) timeDuration.getMilliseconds();
                 final double totalProgress = researchEvent.getProgress().getValue() + progressPerTick;
                 final double progressPerSecond = progressPerTick / tick.getDelta() * 1000;
@@ -52,12 +50,9 @@ public class ResearchProgress implements GameElementProvider {
                 final long estimatedSecondsLeft = Math.round(leftProgress / progressPerSecond);
                 final TimeDuration estimatedDuration = TimeDuration.ofSeconds(estimatedSecondsLeft);
 
-                LoggerFactory.getLogger(ResearchProgress.this.getClass()).info("Progress: {}/{}, estimated duration left: {} sec", progressPerTick, totalProgress, estimatedDuration.getSeconds());
-
                 // Updated event
-                final ResearchEvent updatedEvent = new ResearchEvent(player, researchInfo, researchEvent.getProgress().getValue() + progressPerTick, estimatedDuration, tick.toMoment());
-                player.removeEvent(researchEvent);
-                player.addEvent(updatedEvent);
+                LoggerFactory.getLogger(ResearchProgress.this.getClass()).info("Progress: {}/{}, estimated duration left: {} sec", progressPerTick, totalProgress, estimatedDuration.getSeconds());
+                researchEvent.updateProgress(progressPerTick, estimatedDuration, tick.toMoment());
             }
 
             @Override
@@ -75,10 +70,9 @@ public class ResearchProgress implements GameElementProvider {
             @Override
             public void update(Player player, Tick tick) {
                 final ResearchEvent event = player.findSingleEvent(ResearchEvent.class).get();
-                final ResearchInfo researchInfo = event.getResearchInfo();
-                final Research research = Researchs.findByRef(researchInfo.getResearch());
-                LoggerFactory.getLogger(getClass()).info("Completing research event. User: {}, Building: {}, Level: {}", player.getName(), research.getLabel(), researchInfo.getLevelToResearch());
-                final ResearchLevel newLevel = new ResearchLevel(research, researchInfo.getLevelToResearch());
+                final Research research = Researchs.findByRef(event.getResearch());
+                LoggerFactory.getLogger(getClass()).info("Completing research event. User: {}, Building: {}, Level: {}", player.getName(), research.getLabel(), event.getLevelToResearch());
+                final ResearchLevel newLevel = new ResearchLevel(research, event.getLevelToResearch());
                 player.setResearch(newLevel);
 
                 // TODO MVR is this really how we want to do things?

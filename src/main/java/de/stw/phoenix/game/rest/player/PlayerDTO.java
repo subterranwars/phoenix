@@ -96,7 +96,7 @@ public class PlayerDTO {
 
             @Override
             public GameEventDTO visit(ConstructionEvent constructionEvent) {
-                return new ConstructionEventDTO(constructionEvent.getProgress(), constructionEvent.getConstructionInfo());
+                return new ConstructionEventDTO(constructionEvent.getProgress(), constructionEvent.getBuilding(), constructionEvent.getLevelToBuild());
             }
 
             @Override
@@ -106,7 +106,7 @@ public class PlayerDTO {
 
             @Override
             public GameEventDTO visit(ResearchEvent researchEvent) {
-                return new ResearchEventDTO(researchEvent.getProgress(), researchEvent.getResearchInfo());
+                return new ResearchEventDTO(researchEvent.getProgress(), researchEvent.getResearch(), researchEvent.getLevelToResearch());
             }
         };
         return event.accept(visitor);

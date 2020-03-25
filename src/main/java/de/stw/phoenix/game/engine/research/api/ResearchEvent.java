@@ -7,34 +7,44 @@ import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Moment;
 import de.stw.phoenix.game.time.TimeDuration;
 
+import javax.persistence.Column;
 import javax.persistence.DiscriminatorValue;
-import javax.persistence.Embedded;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import java.util.Objects;
 
 @Entity
 @DiscriminatorValue("research")
 public class ResearchEvent extends GameEventEntity {
 
-    @Embedded
-    private ResearchInfo researchInfo;
+    @OneToOne
+    @JoinColumn(name="research_id")
+    private Research research;
+
+    @Column(name="level")
+    private int levelToResearch;
 
     private ResearchEvent() {
 
     }
 
-    public ResearchEvent(Player player, ResearchInfo researchInfo, double progress, TimeDuration estimatedDuration, Moment lastUpdate) {
+    public ResearchEvent(Player player, Research research, int levelToResearch, double progress, TimeDuration estimatedDuration, Moment lastUpdate) {
         super(player,
                 Progress.builder()
                 .withValue(progress)
                 .withDuration(estimatedDuration).build()
         , lastUpdate);
-        this.researchInfo = Objects.requireNonNull(researchInfo);
+        this.research = Objects.requireNonNull(research);
+        this.levelToResearch = levelToResearch;
     }
 
+    public Research getResearch() {
+        return research;
+    }
 
-    public ResearchInfo getResearchInfo() {
-        return researchInfo;
+    public int getLevelToResearch() {
+        return levelToResearch;
     }
 
     @Override

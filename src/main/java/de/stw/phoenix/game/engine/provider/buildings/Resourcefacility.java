@@ -39,7 +39,7 @@ public class Resourcefacility implements GameElementProvider {
     @Subscribe
     public void onConstructionCompleted(ConstructionEvent constructionEvent) {
         Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "No active session");
-        if (Buildings.findByRef(constructionEvent.getConstructionInfo().getBuilding()) == Buildings.Resourcefacility) {
+        if (Buildings.findByRef(constructionEvent.getBuilding()) == Buildings.Resourcefacility) {
             final Player player = constructionEvent.getPlayer();
             final BuildingLevel building = player.getBuilding(Buildings.Resourcefacility);
             long droneIncrease = 5 + building.getLevel() - 1;
@@ -99,8 +99,7 @@ public class Resourcefacility implements GameElementProvider {
                         player.addResourceSite(resourceSite);
                         player.removeEvent(event);
                     } else {
-                        player.removeEvent(event);
-                        player.addEvent(new ResourceSearchEvent(player, event.getResource(), tick.toMoment()));
+                        event.setLastUpdated(tick.toMoment());
                     }
                 }
 

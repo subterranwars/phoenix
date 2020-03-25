@@ -62,7 +62,8 @@ public class DefaultResearchService implements ResearchService {
             // Enqueue
             final ResearchEvent researchEvent = new ResearchEvent(
                     player,
-                    researchInfo,
+                    nextLevel.getResearch(),
+                    nextLevel.getLevel(),
                     0,
                     researchInfo.getResearchTime(),
                     clock.getCurrentTick().toMoment());

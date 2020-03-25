@@ -18,7 +18,7 @@ public class ResourceDepot implements GameElementProvider {
     @Subscribe
     public void onConstructionCompleted(ConstructionEvent constructionEvent) {
         Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "No active session");
-        if (Buildings.findByRef(constructionEvent.getConstructionInfo().getBuilding()) == Buildings.Resourcedepot) {
+        if (Buildings.findByRef(constructionEvent.getBuilding()) == Buildings.Resourcedepot) {
             final Player player = constructionEvent.getPlayer();
             final BuildingLevel building = player.getBuilding(Buildings.Resourcedepot);
             final long maxStorage = Resources.MAX_STORAGE_CAPACITY + Resources.STORAGE_CAPACITY_GAIN * building.getLevel();

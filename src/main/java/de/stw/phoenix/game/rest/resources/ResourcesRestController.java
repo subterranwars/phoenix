@@ -7,6 +7,7 @@ import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.api.ResourceSite;
 import de.stw.phoenix.game.player.impl.Player;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,6 +32,7 @@ public class ResourcesRestController {
     private PlayerService playerService;
 
     @PostMapping
+    @Transactional
     public void search(Principal principal, @RequestParam("resourceId") int resourceId) {
         final Player player = playerService.get(principal.getName());
         final ResourceSearchRequest resourceSearchRequest = new ResourceSearchRequest(player, Resources.findById(resourceId));
@@ -38,18 +40,21 @@ public class ResourcesRestController {
     }
 
     @GetMapping
+    @Transactional
     public List<ResourceSite> listResourceSites(Principal principal) {
         final Player player = playerService.get(principal.getName());
         return player.getResourceSites();
     }
 
     @DeleteMapping
+    @Transactional
     public void deleteResourceSite(Principal principal, @RequestParam("siteId") long resourceSiteId) {
         final Player player = playerService.get(principal.getName());
         resourceService.deleteResourceSite(player, resourceSiteId);
     }
 
     @PutMapping
+    @Transactional
     public void updateDroneCount(Principal principal, @RequestParam("siteId") long resourceSiteId, @RequestParam("droneCount") int droneCount) {
         final Player player = playerService.get(principal.getName());
         resourceService.updateDroneCount(player, resourceSiteId, droneCount);

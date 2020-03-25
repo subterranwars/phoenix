@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.Progress;
 import de.stw.phoenix.game.time.Moment;
+import de.stw.phoenix.game.time.TimeDuration;
 
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -67,5 +68,17 @@ public abstract class GameEventEntity implements GameEvent {
     @Override
     public boolean isFinished() {
         return progress.isFinished();
+    }
+
+    public void updateProgress(double progressToAdd, TimeDuration duration, Moment lastUpdate) {
+        Objects.requireNonNull(lastUpdate);
+        Objects.requireNonNull(duration);
+        this.progress.setValue(this.progress.getValue() + progressToAdd);
+        this.progress.setDuration(duration);
+        this.lastUpdate = lastUpdate;
+    }
+
+    public void setLastUpdated(Moment lastUpdate) {
+        this.lastUpdate = Objects.requireNonNull(lastUpdate);
     }
 }

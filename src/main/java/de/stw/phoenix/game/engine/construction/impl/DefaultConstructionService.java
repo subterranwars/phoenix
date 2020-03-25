@@ -61,19 +61,19 @@ public class DefaultConstructionService implements ConstructionService {
             final BuildingLevel nextLevel = player.getBuilding(building).next();
             final Map<Resource, Double> costs = constructionCostCalculator.calculateConstructionCosts(nextLevel, player);
             final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(nextLevel, player);
-            final ConstructionInfo constructionInfo =  new ConstructionInfo(nextLevel, costs, constructionTime);
-            if (player.canAfford(constructionInfo.getCosts())) {
+            if (player.canAfford(costs)) {
                 // Enqueue
                 final ConstructionEvent constructionEvent = new ConstructionEvent(
                         player,
-                        constructionInfo,
+                        nextLevel.getBuilding(),
+                        nextLevel.getLevel(),
                         0,
-                        constructionInfo.getBuildTime(),
+                        constructionTime,
                         clock.getCurrentTick().toMoment());
                 player.addEvent(constructionEvent);
 
                 // Subtract resources
-                player.removeResources(constructionInfo.getCosts());
+                player.removeResources(costs);
                 eventBus.post(player);
             } else {
                 // TODO MVR throw exception? Cannot afford?
