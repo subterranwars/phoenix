@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.player.api;
 
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Moment;
 
 public interface GameEvent {
@@ -7,7 +8,7 @@ public interface GameEvent {
     Moment getLastUpdate();
     Progress getProgress();
 
-    PlayerRef getPlayerRef();
+    Player getPlayer();
 
     boolean isFinished();
 

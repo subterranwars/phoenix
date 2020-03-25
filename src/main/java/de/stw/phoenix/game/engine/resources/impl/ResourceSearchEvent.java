@@ -2,9 +2,9 @@ package de.stw.phoenix.game.engine.resources.impl;
 
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.EventVisitor;
-import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.player.api.Progress;
 import de.stw.phoenix.game.player.impl.GameEventEntity;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Moment;
 
 import javax.persistence.DiscriminatorValue;
@@ -25,8 +25,8 @@ public class ResourceSearchEvent extends GameEventEntity {
 
     }
 
-    public ResourceSearchEvent(PlayerRef playerRef, Resource resource, Moment lastUpdate) {
-        super(playerRef, Progress.builder().withUnknownDuration().build(), lastUpdate);
+    public ResourceSearchEvent(Player player, Resource resource, Moment lastUpdate) {
+        super(player, Progress.builder().withUnknownDuration().build(), lastUpdate);
         this.resource = Objects.requireNonNull(resource);
     }
 

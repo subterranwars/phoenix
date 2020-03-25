@@ -14,6 +14,7 @@ import de.stw.phoenix.game.time.Clock;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Objects;
@@ -35,6 +36,7 @@ public class DefaultResearchService implements ResearchService {
     private Clock clock;
 
     @Override
+    @Transactional
     public List<ResearchInfo> listResearchs(Player player) {
         Objects.requireNonNull(player);
         return Researchs.ALL.stream()
@@ -49,6 +51,7 @@ public class DefaultResearchService implements ResearchService {
 
     // TODO MVR ensure research is only performed if user has researchlab
     @Override
+    @Transactional
     public void research(Player player, Research research) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(research);
@@ -56,16 +59,14 @@ public class DefaultResearchService implements ResearchService {
             final ResearchLevel nextLevel = player.getResearch(research).next();
             final TimeDuration researchTime = researchTimeCalculator.calculateResearchTime(nextLevel, player);
             final ResearchInfo researchInfo =  new ResearchInfo(nextLevel, researchTime);
-            playerService.modify(player, mutablePlayer -> {
-                // Enqueue
-                final ResearchEvent researchEvent = new ResearchEvent(
-                        mutablePlayer.asPlayerRef(),
-                        researchInfo,
-                        0,
-                        researchInfo.getResearchTime(),
-                        clock.getCurrentTick().toMoment());
-                mutablePlayer.addEvent(researchEvent);
-            });
+            // Enqueue
+            final ResearchEvent researchEvent = new ResearchEvent(
+                    player,
+                    researchInfo,
+                    0,
+                    researchInfo.getResearchTime(),
+                    clock.getCurrentTick().toMoment());
+            player.addEvent(researchEvent);
             eventBus.post(player);
         } else {
             // TODO MVR error handling => not allowed while already constructing

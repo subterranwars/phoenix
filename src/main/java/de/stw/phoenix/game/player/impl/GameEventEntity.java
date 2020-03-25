@@ -2,7 +2,6 @@ package de.stw.phoenix.game.player.impl;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import de.stw.phoenix.game.player.api.GameEvent;
-import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.player.api.Progress;
 import de.stw.phoenix.game.time.Moment;
 
@@ -32,7 +31,7 @@ public abstract class GameEventEntity implements GameEvent {
     @JsonIgnore
     @ManyToOne(optional = false)
     @JoinColumn(name="player_id", nullable = false)
-    private PlayerRef playerRef;
+    private Player player;
 
     @Embedded
     private Progress progress;
@@ -44,8 +43,8 @@ public abstract class GameEventEntity implements GameEvent {
 
     }
 
-    public GameEventEntity(PlayerRef playerRef, Progress progress, Moment lastUpdate) {
-        this.playerRef = Objects.requireNonNull(playerRef);
+    public GameEventEntity(Player player, Progress progress, Moment lastUpdate) {
+        this.player = Objects.requireNonNull(player);
         this.progress = Objects.requireNonNull(progress);
         this.lastUpdate = Objects.requireNonNull(lastUpdate);
     }
@@ -61,8 +60,8 @@ public abstract class GameEventEntity implements GameEvent {
     }
 
     @Override
-    public PlayerRef getPlayerRef() {
-        return playerRef;
+    public Player getPlayer() {
+        return player;
     }
 
     @Override

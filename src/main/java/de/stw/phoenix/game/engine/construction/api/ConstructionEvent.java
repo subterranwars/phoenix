@@ -1,9 +1,9 @@
 package de.stw.phoenix.game.engine.construction.api;
 
 import de.stw.phoenix.game.player.api.EventVisitor;
-import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.player.api.Progress;
 import de.stw.phoenix.game.player.impl.GameEventEntity;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Moment;
 import de.stw.phoenix.game.time.TimeDuration;
 
@@ -22,8 +22,8 @@ public class ConstructionEvent extends GameEventEntity {
     private ConstructionEvent() {
     }
 
-    public ConstructionEvent(PlayerRef playerRef, ConstructionInfo constructionInfo, double progress, TimeDuration estimatedDuration, Moment lastUpdate) {
-        super(playerRef, Progress.builder()
+    public ConstructionEvent(Player player, ConstructionInfo constructionInfo, double progress, TimeDuration estimatedDuration, Moment lastUpdate) {
+        super(player, Progress.builder()
                 .withValue(progress)
                 .withDuration(estimatedDuration).build(), lastUpdate);
         this.constructionInfo = Objects.requireNonNull(constructionInfo);

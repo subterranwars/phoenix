@@ -55,7 +55,7 @@ public class ResearchProgress implements GameElementProvider {
                 LoggerFactory.getLogger(ResearchProgress.this.getClass()).info("Progress: {}/{}, estimated duration left: {} sec", progressPerTick, totalProgress, estimatedDuration.getSeconds());
 
                 // Updated event
-                final ResearchEvent updatedEvent = new ResearchEvent(player.asPlayerRef(), researchInfo, researchEvent.getProgress().getValue() + progressPerTick, estimatedDuration, tick.toMoment());
+                final ResearchEvent updatedEvent = new ResearchEvent(player, researchInfo, researchEvent.getProgress().getValue() + progressPerTick, estimatedDuration, tick.toMoment());
                 player.removeEvent(researchEvent);
                 player.addEvent(updatedEvent);
             }

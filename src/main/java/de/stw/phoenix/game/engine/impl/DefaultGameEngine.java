@@ -44,32 +44,30 @@ public class DefaultGameEngine implements GameEngine {
     @Override
     @Transactional
     public void loop() {
-        Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "Transaction Session must be active");
+        Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "Session must be active");
         logState();
         final Tick tick = clock.nextTick();
-
-        // TODO MVR this should be implemented differently
-        for (Player eachPlayer : playerService.getPlayers()) {
-            playerService.modify(eachPlayer, player -> {
-                final List<PlayerUpdate> playerUpdateList = getContext(eachPlayer)
-                    .findElements(PlayerUpdate.class).stream()
-                    .sorted(Comparator.comparing(PlayerUpdate::getPhase))
-                    .collect(Collectors.toList());
-                for (PlayerUpdate playerUpdate : playerUpdateList) {
-                    if (playerUpdate.isActive(player, tick)) {
-                        playerUpdate.update(player, tick);
-                    }
+        for (Player player : playerService.getPlayers()) {
+            final List<PlayerUpdate> playerUpdateList = getContext(player)
+                .findElements(PlayerUpdate.class).stream()
+                .sorted(Comparator.comparing(PlayerUpdate::getPhase))
+                .collect(Collectors.toList());
+            for (PlayerUpdate playerUpdate : playerUpdateList) {
+                if (playerUpdate.isActive(player, tick)) {
+                    playerUpdate.update(player, tick);
                 }
-            });
+            }
             // Notify listeners about player changes
-            eventBus.post(eachPlayer);
+            eventBus.post(player);
         }
     }
 
     @Override
+    @Transactional
     public Context getContext(Player player) {
+        Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "Session must be active");
         final MutableContext context = new DefaultMutableContext(clock.getCurrentTick());
-        playerService.modify(player, mutablePlayer -> elementProviderList.stream().forEach(provider -> provider.registerElements(context, mutablePlayer)));
+        elementProviderList.stream().forEach(provider -> provider.registerElements(context, player));
         return context.asImmutable();
     }
 

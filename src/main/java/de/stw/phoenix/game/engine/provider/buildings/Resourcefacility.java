@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.provider.buildings;
 
+import com.google.common.base.Preconditions;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import de.stw.phoenix.game.engine.api.GameElement;
@@ -15,7 +16,6 @@ import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.engine.resources.impl.ResourceSearchEvent;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.api.ResourceSite;
 import de.stw.phoenix.game.player.api.ResourceStorage;
 import de.stw.phoenix.game.player.impl.Player;
@@ -24,6 +24,7 @@ import de.stw.phoenix.game.time.TimeDuration;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -33,20 +34,17 @@ import java.util.stream.Collectors;
 public class Resourcefacility implements GameElementProvider {
 
     @Autowired
-    private PlayerService playerService;
-    
-    @Autowired
     private EventBus eventBus;    
 
     @Subscribe
     public void onConstructionCompleted(ConstructionEvent constructionEvent) {
+        Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "No active session");
         if (Buildings.findByRef(constructionEvent.getConstructionInfo().getBuilding()) == Buildings.Resourcefacility) {
-            playerService.modify(constructionEvent.getPlayerRef(), mutablePlayer -> {
-                final BuildingLevel building = mutablePlayer.getBuilding(Buildings.Resourcefacility);
-                long droneIncrease = 5 + building.getLevel() - 1;
-                long totalDrones = mutablePlayer.getTotalDroneCount() + droneIncrease;
-                mutablePlayer.updateTotalDroneCount(totalDrones);
-            });
+            final Player player = constructionEvent.getPlayer();
+            final BuildingLevel building = player.getBuilding(Buildings.Resourcefacility);
+            long droneIncrease = 5 + building.getLevel() - 1;
+            long totalDrones = player.getTotalDroneCount() + droneIncrease;
+            player.updateTotalDroneCount(totalDrones);
         }
     }
 
@@ -102,7 +100,7 @@ public class Resourcefacility implements GameElementProvider {
                         player.removeEvent(event);
                     } else {
                         player.removeEvent(event);
-                        player.addEvent(new ResourceSearchEvent(player.asPlayerRef(), event.getResource(), tick.toMoment()));
+                        player.addEvent(new ResourceSearchEvent(player, event.getResource(), tick.toMoment()));
                     }
                 }
 

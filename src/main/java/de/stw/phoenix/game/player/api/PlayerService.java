@@ -16,8 +16,6 @@ public interface PlayerService {
 
     void save(Player player);
 
+    // Helper method to modify a detached (player) object in a save way (no LazyInitializationException)
     void modify(Player player, Consumer<Player> consumer);
-    void modify(String playerName, Consumer<Player> consumer);
-    void modify(PlayerRef playerRef, Consumer<Player> consumer);
-
 }

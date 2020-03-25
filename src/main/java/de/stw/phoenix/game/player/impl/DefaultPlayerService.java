@@ -2,10 +2,10 @@ package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.ImmutableList;
 import de.stw.phoenix.game.player.PlayerRepository;
-import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.player.api.PlayerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -15,6 +15,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 @Service
+@Transactional
 public class DefaultPlayerService implements PlayerService {
 
     @Autowired
@@ -22,7 +23,7 @@ public class DefaultPlayerService implements PlayerService {
 
     @Override
     public List<Player> getPlayers() {
-        return ImmutableList.copyOf(playerRepository.findAll());
+        return ImmutableList.copyOf(playerRepository.readAllForUpdate());
     }
 
     @Override
@@ -52,27 +53,12 @@ public class DefaultPlayerService implements PlayerService {
     }
 
     @Override
-    @Transactional
-    public void modify(String playerName, Consumer<Player> consumer) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void modify(Player detachedPlayer, Consumer<Player> consumer) {
+        Objects.requireNonNull(detachedPlayer);
         Objects.requireNonNull(consumer);
-        Objects.requireNonNull(playerName);
-        final Player player = playerRepository.readForUpdate(playerName);
-        consumer.accept(player);
-        playerRepository.save(player);
-    }
-
-    @Override
-    @Transactional
-    public void modify(Player player, Consumer<Player> consumer) {
-        Objects.requireNonNull(player);
-        modify(player.getName(), consumer);
-    }
-
-    @Override
-    @Transactional
-    public void modify(PlayerRef playerRef, Consumer<Player> consumer) {
-        Objects.requireNonNull(playerRef);
-        final Player player = get(playerRef.getId());
-        modify(player, consumer);
+        final Player attachedPlayer = playerRepository.readForUpdate(detachedPlayer.getId());
+        consumer.accept(attachedPlayer);
+        playerRepository.save(attachedPlayer);
     }
 }

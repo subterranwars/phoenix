@@ -31,6 +31,7 @@ public class PhoenixApplication {
     @Autowired
     private TransactionOperations operations;
 
+    // TODO MVR this looks bad
     @Bean
     public ArtificialClock createClock() {
         return operations.execute(status -> {

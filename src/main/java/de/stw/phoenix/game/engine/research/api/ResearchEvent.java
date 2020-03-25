@@ -1,9 +1,9 @@
 package de.stw.phoenix.game.engine.research.api;
 
 import de.stw.phoenix.game.player.api.EventVisitor;
-import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.player.api.Progress;
 import de.stw.phoenix.game.player.impl.GameEventEntity;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Moment;
 import de.stw.phoenix.game.time.TimeDuration;
 
@@ -23,8 +23,8 @@ public class ResearchEvent extends GameEventEntity {
 
     }
 
-    public ResearchEvent(PlayerRef playerRef, ResearchInfo researchInfo, double progress, TimeDuration estimatedDuration, Moment lastUpdate) {
-        super(playerRef,
+    public ResearchEvent(Player player, ResearchInfo researchInfo, double progress, TimeDuration estimatedDuration, Moment lastUpdate) {
+        super(player,
                 Progress.builder()
                 .withValue(progress)
                 .withDuration(estimatedDuration).build()

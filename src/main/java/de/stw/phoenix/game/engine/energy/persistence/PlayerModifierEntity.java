@@ -1,11 +1,13 @@
 package de.stw.phoenix.game.engine.energy.persistence;
 
 import de.stw.phoenix.game.engine.energy.PlayerModifier;
+import org.hibernate.annotations.NaturalId;
 
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -18,17 +20,31 @@ import java.util.Objects;
 @DiscriminatorColumn(name="type", discriminatorType = DiscriminatorType.STRING)
 public abstract class PlayerModifierEntity implements PlayerModifier {
     @Id
+    @GeneratedValue
     private long id;
 
     @Column(name="description", length=500)
     private String description;
 
+    @NaturalId
+    @Column(name="name")
+    private String name;
+
     public PlayerModifierEntity() {
 
     }
 
-    public PlayerModifierEntity(int id, String description) {
-        this.id = id;
+    public PlayerModifierEntity(String name, String description) {
+        this.name = Objects.requireNonNull(name);
         this.description = Objects.requireNonNull(description);
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    @Override
+    public String getName() {
+        return name;
     }
 }

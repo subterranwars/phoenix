@@ -68,4 +68,8 @@ public class Notification {
     public boolean isRead() {
 	return read;
     }
+
+    public void setRead(boolean read) {
+        this.read = read;
+    }
 }

@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.energy;
 
+import com.google.common.base.Preconditions;
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import de.stw.phoenix.game.engine.api.EnergyProduction;
@@ -15,6 +16,7 @@ import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Service
 public class EnergyModule implements GameElementProvider {
@@ -32,13 +34,13 @@ public class EnergyModule implements GameElementProvider {
     //  happening the next tick (could be okay though)
     @Subscribe
     public void onEnergyUpdateModifier(EnergyEvent energyEvent) {
-        playerService.modify(energyEvent.getPlayer(), mutablePlayer -> {
-            if (energyEvent.getEnergyLevel() == EnergyLevel.Critical) {
-                mutablePlayer.addModifier(Modifiers.CRITICAL_ENERGY_LEVEL);
-            } else {
-                mutablePlayer.removeModifier(Modifiers.CRITICAL_ENERGY_LEVEL);
-            }
-        });
+        Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "No active session");
+        final Player player = energyEvent.getPlayer();
+        if (energyEvent.getEnergyLevel() == EnergyLevel.Critical) {
+            player.addModifier(Modifiers.CRITICAL_ENERGY_LEVEL);
+        } else {
+            player.removeModifier(Modifiers.CRITICAL_ENERGY_LEVEL);
+        }
     }
 
     @Override
@@ -68,9 +70,9 @@ public class EnergyModule implements GameElementProvider {
             @Override
             public void update(Player player, Tick tick) {
                 if (resourceService.getEnergyOverview(player).getProduction().getProductionPerTimeUnit() < 0) {
-                    eventBus.post(new EnergyEvent(player.asPlayerRef(), EnergyLevel.Critical));
+                    eventBus.post(new EnergyEvent(player, EnergyLevel.Critical));
                 } else {
-                    eventBus.post(new EnergyEvent(player.asPlayerRef(), EnergyLevel.Normal));
+                    eventBus.post(new EnergyEvent(player, EnergyLevel.Normal));
                 }
             }
 

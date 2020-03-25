@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.engine.impl;
 
+import com.google.common.base.Preconditions;
 import com.google.common.eventbus.Subscribe;
 import de.stw.phoenix.game.engine.buildings.Building;
 import de.stw.phoenix.game.engine.buildings.Buildings;
@@ -12,9 +13,9 @@ import de.stw.phoenix.game.player.api.EventVisitor;
 import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.Notification;
 import de.stw.phoenix.game.player.api.PlayerService;
-import de.stw.phoenix.game.player.impl.Player;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 import java.time.Instant;
 
@@ -26,6 +27,7 @@ public class GameEventCompletionHandler {
 
     @Subscribe
     public void onEventCompletion(GameEvent event) {
+		Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "No active session");
 		final Notification notification = event.accept(new EventVisitor<Notification>() {
 
 			@Override
@@ -49,9 +51,6 @@ public class GameEventCompletionHandler {
 						researchInfo.getResearch().getLabel() + " Lvl. " + researchInfo.getLevelToResearch());
 			}
 		});
-		Player player = playerService.get(event.getPlayerRef().getId());
-		playerService.modify(player, (mutablePlayer) -> {
-			mutablePlayer.addNotification(notification);
-		});
+		event.getPlayer().addNotification(notification);
     }
 }

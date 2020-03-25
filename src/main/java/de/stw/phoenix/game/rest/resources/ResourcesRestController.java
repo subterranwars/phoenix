@@ -33,7 +33,7 @@ public class ResourcesRestController {
     @PostMapping
     public void search(Principal principal, @RequestParam("resourceId") int resourceId) {
         final Player player = playerService.get(principal.getName());
-        final ResourceSearchRequest resourceSearchRequest = new ResourceSearchRequest(player.asPlayerRef(), Resources.findById(resourceId));
+        final ResourceSearchRequest resourceSearchRequest = new ResourceSearchRequest(player, Resources.findById(resourceId));
         resourceService.search(resourceSearchRequest);
     }
 

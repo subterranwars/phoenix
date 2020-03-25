@@ -19,8 +19,8 @@ public class ConstructionTimeModifierEntity extends PlayerModifierEntity impleme
 
     }
 
-    public ConstructionTimeModifierEntity(int id, double factor, String description) {
-        super(id, description);
+    public ConstructionTimeModifierEntity(String name, double factor, String description) {
+        super(name, description);
         this.factor = factor;
     }
 

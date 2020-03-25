@@ -55,7 +55,7 @@ public class ConstructionProgress implements GameElementProvider {
                 LoggerFactory.getLogger(ConstructionProgress.this.getClass()).info("Progress: {}/{}, estimated duration left: {} sec", progressPerTick, totalProgress, estimatedDuration.getSeconds());
 
                 // Updated event
-                final ConstructionEvent updatedEvent = new ConstructionEvent(player.asPlayerRef(), constructionInfo, constructionEvent.getProgress().getValue() + progressPerTick, estimatedDuration, tick.toMoment());
+                final ConstructionEvent updatedEvent = new ConstructionEvent(player, constructionInfo, constructionEvent.getProgress().getValue() + progressPerTick, estimatedDuration, tick.toMoment());
                 player.removeEvent(constructionEvent);
                 player.addEvent(updatedEvent);
             }

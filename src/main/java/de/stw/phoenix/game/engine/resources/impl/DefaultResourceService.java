@@ -10,8 +10,6 @@ import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchRequest;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
-import de.stw.phoenix.game.player.api.PlayerRef;
-import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.api.ResourceStorage;
 import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Clock;
@@ -19,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,10 +40,8 @@ public class DefaultResourceService implements ResourceService {
     @Autowired
     private EventBus eventBus;
 
-    @Autowired
-    private PlayerService playerService;
-
     @Override
+    @Transactional
     public List<ResourceOverview> getResourceOverview(Player player) {
         final Context context = gameEngine.getContext(player);
         final Collection<ResourceOverview> overviews = context.findElements(ResourceProduction.class)
@@ -61,6 +58,7 @@ public class DefaultResourceService implements ResourceService {
     }
 
     @Override
+    @Transactional
     public EnergyOverview getEnergyOverview(Player player) {
         final Context context = gameEngine.getContext(player);
         final double energyLevel = context.findElements(EnergyProduction.class)
@@ -73,35 +71,31 @@ public class DefaultResourceService implements ResourceService {
 
     // TODO MVR implement limit of things we can search
     @Override
+    @Transactional
     public void search(ResourceSearchRequest resourceSearchRequest) {
         // TODO MVR ensure user actually has resource building before searching is supported
-        final PlayerRef playerRef = resourceSearchRequest.getPlayerRef();
-        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(playerRef, resourceSearchRequest.getResource(), clock.getCurrentTick().toMoment());
-        playerService.modify(playerRef, mutablePlayer -> {
-            mutablePlayer.addEvent(resourceSearchEvent);
-        });
-        eventBus.post(playerService.get(playerRef.getId()));
-        LOG.debug("{} searching for {}", playerRef.getId(), resourceSearchEvent.getResource().getName());
+        final Player player = resourceSearchRequest.getPlayer();
+        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(player, resourceSearchRequest.getResource(), clock.getCurrentTick().toMoment());
+        player.addEvent(resourceSearchEvent);
+        eventBus.post(player);
+        LOG.debug("{} searching for {}", player.getId(), resourceSearchEvent.getResource().getName());
     }
 
     @Override
+    @Transactional
     public void deleteResourceSite(Player player, long resourceSiteId) {
         // TODO MVR add exception if resourceSiteId is not available
-        playerService.modify(player, mutablePlayer -> mutablePlayer.getResourceSite(resourceSiteId)
-                .ifPresent(mutableResourceSite -> mutablePlayer.removeResourceSite(mutableResourceSite)));
+        player.getResourceSite(resourceSiteId).ifPresent(resourceSite -> player.removeResourceSite(resourceSite));
         eventBus.post(player);
     }
 
     @Override
+    @Transactional
     public void updateDroneCount(Player player, long resourceSiteId, int droneCount) {
         // TODO MVR add exception if resourceSiteId is not available
         // TODO MVR ensure droneCount is >= 0
         // TODO MVR ensure max droneCount is not overdoing it
-        playerService.modify(player, mutablePlayer -> {
-            mutablePlayer.getResourceSite(resourceSiteId).ifPresent(site -> {
-                site.setDroneCount(droneCount);
-            });
-        });
+        player.getResourceSite(resourceSiteId).ifPresent(site -> site.setDroneCount(droneCount));
         eventBus.post(player);
     }
 }

@@ -12,7 +12,6 @@ import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.api.GameEvent;
 import de.stw.phoenix.game.player.api.Notification;
-import de.stw.phoenix.game.player.api.PlayerRef;
 import de.stw.phoenix.game.player.api.ResearchLevel;
 import de.stw.phoenix.game.player.api.ResourceSite;
 import de.stw.phoenix.game.player.api.ResourceStorage;
@@ -62,7 +61,7 @@ public class Player {
     @JoinColumn(name="player_id", nullable = false)
     private List<ResearchLevel> researchs = Lists.newArrayList();
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, targetEntity = GameEventEntity.class, mappedBy = "playerRef")
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true, targetEntity = GameEventEntity.class, mappedBy = "player")
     private List<GameEvent> events = Lists.newArrayList();
 
     @ElementCollection
@@ -219,14 +218,20 @@ public class Player {
 
     public void addModifier(PlayerModifier modifier) {
         Objects.requireNonNull(modifier);
-        if (!modifiers.contains(modifier)) {
+        Optional<PlayerModifier> existingModifierOptional = findModifier(modifier.getName());
+        if (!existingModifierOptional.isPresent()) {
             modifiers.add(modifier);
         }
     }
 
     public void removeModifier(PlayerModifier modifier) {
         Objects.requireNonNull(modifier);
-        modifiers.remove(modifier);
+        findModifier(modifier.getName()).ifPresent(m -> modifiers.remove(m));
+    }
+
+    private Optional<PlayerModifier> findModifier(String modifierName) {
+        Objects.requireNonNull(modifierName);
+        return modifiers.stream().filter(m -> modifierName.equalsIgnoreCase(m.getName())).findAny();
     }
 
     public void removeResources(Resource resource, double consumption) {
@@ -301,14 +306,8 @@ public class Player {
 
     public void markNotificationAsRead(long notificationId) {
         notifications.stream().filter(n -> n.getId() == notificationId).findAny().ifPresent(n -> {
-            final Notification readNotification = new Notification(n.getCreationDate(), n.getLabel(), n.getContent(), true);
-            notifications.remove(n);
-            notifications.add(readNotification);
+            n.setRead(true);
         });
-    }
-
-    public PlayerRef asPlayerRef() {
-        return new PlayerRef(this.id);
     }
 
     public static Builder builder(long id, String name) {
