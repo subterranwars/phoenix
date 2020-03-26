@@ -3,9 +3,10 @@ package de.stw.phoenix.game.rest.player;
 import de.stw.phoenix.game.engine.energy.EnergyOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.PlayerService;
+import de.stw.phoenix.game.player.impl.Player;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -28,9 +29,10 @@ public class PlayerRestController {
 
     @GetMapping
     @RequestMapping("state")
+    @Transactional
     public PlayerDTO getPlayerState(Principal principal) {
         final String playerName = principal.getName();
-        final Optional<ImmutablePlayer> player = playerService.find(playerName);
+        final Optional<Player> player = playerService.find(playerName);
         final List<ResourceOverview> resourceOverviews = resourceService.getResourceOverview(player.get());
         final EnergyOverview energyOverview = resourceService.getEnergyOverview(player.get());
         return new PlayerDTO(player.get(), resourceOverviews, energyOverview);

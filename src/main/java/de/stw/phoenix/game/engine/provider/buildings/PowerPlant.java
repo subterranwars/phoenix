@@ -12,8 +12,7 @@ import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
 import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Tick;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,7 @@ public class PowerPlant implements GameElementProvider {
     private ResourceService resourceService;
 
     @Override
-    public void registerElements(MutableContext context, ImmutablePlayer player) {
+    public void registerElements(MutableContext context, Player player) {
         final BuildingLevel building = player.getBuilding(Buildings.Powerplant);
         final ResourceProduction resourceConsumption = new ResourceProduction() {
             @Override
@@ -43,13 +42,13 @@ public class PowerPlant implements GameElementProvider {
             }
 
             @Override
-            public void update(MutablePlayer player, Tick tick) {
+            public void update(Player player, Tick tick) {
                 double consumptionPerTick = getProductionValue().convert(TimeUnit.MILLISECONDS).getProductionPerTimeUnit() * tick.getDelta();
                 player.removeResources(getResource(), Math.abs(consumptionPerTick)); // Have to invoke Math.abs() as retrieve is already subtracting
             }
 
             @Override
-            public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+            public boolean isActive(Player player, Tick currentTick) {
                 return building.getLevel() >= 1;
             }
         };
@@ -61,7 +60,7 @@ public class PowerPlant implements GameElementProvider {
             }
 
             @Override
-            public boolean isActive(ImmutablePlayer player, Tick currentTick) {
+            public boolean isActive(Player player, Tick currentTick) {
                 if (building.getLevel() >= 1) {
                     final double consumptionPerTick = resourceConsumption.getProductionValue().getProductionPerTimeUnit() * currentTick.getDelta();
                     final double absoluteConsumptionPerTick = Math.abs(consumptionPerTick); // consumption is negative, so we must check for positive value

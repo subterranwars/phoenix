@@ -1,12 +1,12 @@
 package de.stw.phoenix.game.engine.construction.api;
 
 import de.stw.phoenix.game.engine.buildings.Building;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
+import de.stw.phoenix.game.player.impl.Player;
 
 import java.util.List;
 
 public interface ConstructionService {
-    List<ConstructionInfo> listConstructions(ImmutablePlayer player);
+    List<ConstructionInfo> listConstructions(Player player);
 
-    void build(ImmutablePlayer player, Building building);
+    void build(Player player, Building building);
 }

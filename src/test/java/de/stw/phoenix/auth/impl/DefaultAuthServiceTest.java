@@ -1,11 +1,14 @@
 package de.stw.phoenix.auth.impl;
 
+import com.google.common.collect.Lists;
+import de.stw.phoenix.auth.api.AuthService;
+import de.stw.phoenix.auth.api.PasswordEncoder;
 import de.stw.phoenix.auth.api.Token;
 import de.stw.phoenix.user.api.User;
 import de.stw.phoenix.user.api.UserRepository;
-import de.stw.phoenix.user.impl.DefaultUserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.Mockito;
 import org.springframework.security.authentication.BadCredentialsException;
 
 import java.time.Duration;
@@ -20,15 +23,20 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class DefaultAuthServiceTest {
 
-    private UserRepository userRepository;
-    private DefaultAuthService authService;
+    private AuthService authService;
 
     @BeforeEach
     public void before() {
-        final User user = User.builder().id(1).username("test").password("test").email("test@subterranwars.de").build();
-        userRepository = new DefaultUserRepository(new BCryptPasswordEncoder(10));
-        userRepository.save(user);
-        authService = new DefaultAuthService(userRepository, Duration.ofSeconds(10));
+        final PasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+
+        // Test user
+        final User user = User.builder().username("test").password(passwordEncoder.encode("test")).email("test@subterranwars.de").build();
+        final UserRepository userRepository = Mockito.mock(UserRepository.class);
+        Mockito.when(userRepository.findAll()).thenReturn(Lists.newArrayList(user));
+        Mockito.when(userRepository.findByUsername("test")).thenReturn(Optional.of(user));
+
+        // Create AuthService
+        authService = new DefaultAuthService(userRepository, passwordEncoder, Duration.ofSeconds(10));
     }
 
     @Test

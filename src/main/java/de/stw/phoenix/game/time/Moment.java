@@ -2,6 +2,10 @@ package de.stw.phoenix.game.time;
 
 import com.fasterxml.jackson.annotation.JsonGetter;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
 
@@ -10,9 +14,19 @@ import java.util.concurrent.TimeUnit;
  *
  * @author mvrueden
  */
+@Embeddable
 public class Moment {
-    private final long moment;
-    private final TimeUnit unit;
+
+    @Column(name="moment")
+    private long moment;
+
+    @Column(name="unit")
+    @Enumerated(EnumType.STRING)
+    private TimeUnit unit;
+
+    private Moment() {
+
+    }
 
     public Moment(long value, TimeUnit unit) {
         this.moment = value;

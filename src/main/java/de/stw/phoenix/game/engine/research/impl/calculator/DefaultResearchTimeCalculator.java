@@ -2,8 +2,8 @@ package de.stw.phoenix.game.engine.research.impl.calculator;
 
 import de.stw.phoenix.game.engine.buildings.Buildings;
 import de.stw.phoenix.game.engine.research.api.calculator.ResearchTimeCalculator;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
 import de.stw.phoenix.game.player.api.ResearchLevel;
+import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.stereotype.Service;
 
@@ -11,7 +11,7 @@ import org.springframework.stereotype.Service;
 public class DefaultResearchTimeCalculator implements ResearchTimeCalculator {
 
     @Override
-    public TimeDuration calculateResearchTime(ResearchLevel level, ImmutablePlayer player) {
+    public TimeDuration calculateResearchTime(ResearchLevel level, Player player) {
         int labLevel = player.getBuilding(Buildings.Researchlab).getLevel();
         int levelToResearch = level.getLevel();
         double rawBuildTime = level.getResearch().getResearchTime().getSeconds() * Math.pow(1.8, 2 * (levelToResearch - 1) / labLevel);

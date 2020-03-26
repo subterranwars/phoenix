@@ -10,7 +10,7 @@ public class BCryptPasswordEncoder implements PasswordEncoder {
 
     private final org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder delegate;
 
-    public BCryptPasswordEncoder(@Value("${de.subterranwars.auth.bcrypt.strength | 10}") int strength) {
+    public BCryptPasswordEncoder(@Value("${de.stw.auth.bcrypt.strength | 10}") int strength) {
         this.delegate = new org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder(
                 org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder.BCryptVersion.$2Y, strength);
     }

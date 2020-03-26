@@ -4,7 +4,7 @@ import com.google.common.base.Preconditions;
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionCostCalculator;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
+import de.stw.phoenix.game.player.impl.Player;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -15,7 +15,7 @@ import java.util.stream.Collectors;
 public class DefaultConstructionCostCalculator implements ConstructionCostCalculator {
 
     @Override
-    public Map<Resource, Double> calculateConstructionCosts(BuildingLevel level, ImmutablePlayer player) {
+    public Map<Resource, Double> calculateConstructionCosts(BuildingLevel level, Player player) {
         Objects.requireNonNull(level);
         Preconditions.checkArgument(level.getLevel() > 0);
         final Map<Resource, Double> baseBuildingCosts = level.getBuilding().getCosts().entrySet()

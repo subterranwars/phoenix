@@ -10,16 +10,14 @@ import de.stw.phoenix.game.engine.resources.api.ProductionValue;
 import de.stw.phoenix.game.engine.resources.api.ResourceOverview;
 import de.stw.phoenix.game.engine.resources.api.ResourceSearchRequest;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.ImmutableResourceStorage;
-import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
-import de.stw.phoenix.game.player.api.PlayerRef;
-import de.stw.phoenix.game.player.api.PlayerService;
-import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.player.api.ResourceStorage;
+import de.stw.phoenix.game.player.impl.Player;
+import de.stw.phoenix.game.time.ClockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -34,10 +32,7 @@ public class DefaultResourceService implements ResourceService {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultResourceService.class);
 
     @Autowired
-    private Clock clock;
-
-    @Autowired
-    private MutablePlayerAccessor playerAccessor;
+    private ClockService clockService;
 
     @Autowired
     private GameEngine gameEngine;
@@ -45,17 +40,15 @@ public class DefaultResourceService implements ResourceService {
     @Autowired
     private EventBus eventBus;
 
-    @Autowired
-    private PlayerService playerService;
-
     @Override
-    public List<ResourceOverview> getResourceOverview(ImmutablePlayer player) {
+    @Transactional
+    public List<ResourceOverview> getResourceOverview(Player player) {
         final Context context = gameEngine.getContext(player);
         final Collection<ResourceOverview> overviews = context.findElements(ResourceProduction.class)
                 .stream()
                 .filter(p -> p.isActive(player, context.getCurrentTick()))
                 .map(production -> {
-                    final ImmutableResourceStorage storage = player.getStorage(production.getResource());
+                    final ResourceStorage storage = player.getStorage(production.getResource());
                     return new ResourceOverview(storage, production.getProductionValue());
                 }).collect(Collectors.toMap(overview -> overview.getResource(), Function.identity(), (resourceOverview, resourceOverview2) -> {
                     double productionValue = resourceOverview.getResourceProduction().getProductionPerTimeUnit() + resourceOverview2.getResourceProduction().getProductionPerTimeUnit();
@@ -65,7 +58,8 @@ public class DefaultResourceService implements ResourceService {
     }
 
     @Override
-    public EnergyOverview getEnergyOverview(ImmutablePlayer player) {
+    @Transactional
+    public EnergyOverview getEnergyOverview(Player player) {
         final Context context = gameEngine.getContext(player);
         final double energyLevel = context.findElements(EnergyProduction.class)
                 .stream()
@@ -77,35 +71,31 @@ public class DefaultResourceService implements ResourceService {
 
     // TODO MVR implement limit of things we can search
     @Override
+    @Transactional
     public void search(ResourceSearchRequest resourceSearchRequest) {
         // TODO MVR ensure user actually has resource building before searching is supported
-        final PlayerRef playerRef = resourceSearchRequest.getPlayerRef();
-        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(playerRef, resourceSearchRequest.getResource(), clock.getCurrentTick().toMoment());
-        playerAccessor.modify(playerRef, mutablePlayer -> {
-            mutablePlayer.addEvent(resourceSearchEvent);
-        });
-        eventBus.post(playerService.get(playerRef.getId()));
-        LOG.debug("{} searching for {}", playerRef.getName(), resourceSearchEvent.getResource().getName());
+        final Player player = resourceSearchRequest.getPlayer();
+        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(player, resourceSearchRequest.getResource(), clockService.getCurrentTick().toMoment());
+        player.addEvent(resourceSearchEvent);
+        eventBus.post(player);
+        LOG.debug("{} searching for {}", player.getId(), resourceSearchEvent.getResource().getName());
     }
 
     @Override
-    public void deleteResourceSite(ImmutablePlayer player, long resourceSiteId) {
+    @Transactional
+    public void deleteResourceSite(Player player, long resourceSiteId) {
         // TODO MVR add exception if resourceSiteId is not available
-        playerAccessor.modify(player, mutablePlayer -> mutablePlayer.getResourceSite(resourceSiteId)
-                .ifPresent(mutableResourceSite -> mutablePlayer.removeResourceSite(mutableResourceSite)));
+        player.getResourceSite(resourceSiteId).ifPresent(resourceSite -> player.removeResourceSite(resourceSite));
         eventBus.post(player);
     }
 
     @Override
-    public void updateDroneCount(ImmutablePlayer player, long resourceSiteId, int droneCount) {
+    @Transactional
+    public void updateDroneCount(Player player, long resourceSiteId, int droneCount) {
         // TODO MVR add exception if resourceSiteId is not available
         // TODO MVR ensure droneCount is >= 0
         // TODO MVR ensure max droneCount is not overdoing it
-        playerAccessor.modify(player, mutablePlayer -> {
-            mutablePlayer.getResourceSite(resourceSiteId).ifPresent(site -> {
-                site.setDroneCount(droneCount);
-            });
-        });
+        player.getResourceSite(resourceSiteId).ifPresent(site -> site.setDroneCount(droneCount));
         eventBus.post(player);
     }
 }

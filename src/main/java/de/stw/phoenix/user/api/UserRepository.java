@@ -1,16 +1,13 @@
 package de.stw.phoenix.user.api;
 
-import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
 import java.util.Optional;
 
-public interface UserRepository {
-    Optional<User> find(String userName);
+@Repository
+public interface UserRepository extends JpaRepository<User, Long> {
 
-    User save(User newUser);
+    Optional<User> findByUsername(String userName);
 
-    long count();
-
-    List<User> findAll();
-
-    Optional<User> lookup(String username, String password);
 }

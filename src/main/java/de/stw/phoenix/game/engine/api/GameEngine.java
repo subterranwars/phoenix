@@ -1,9 +1,9 @@
 package de.stw.phoenix.game.engine.api;
 
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
+import de.stw.phoenix.game.player.impl.Player;
 
 public interface GameEngine {
     void loop();
 
-    Context getContext(ImmutablePlayer player);
+    Context getContext(Player player);
 }

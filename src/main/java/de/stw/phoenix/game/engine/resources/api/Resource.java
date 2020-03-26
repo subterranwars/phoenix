@@ -3,6 +3,10 @@ package de.stw.phoenix.game.engine.resources.api;
 import com.fasterxml.jackson.annotation.JsonValue;
 import com.google.common.base.Preconditions;
 
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
 /**
@@ -10,13 +14,23 @@ import java.util.Objects;
  * 
  * @author mvr, cjs
  */
+@Table(name="resources")
+@Entity
 public class Resource {
-    private final int id;
+
+    @Id
+    @GeneratedValue
+    private Long id;
 
     @JsonValue
-    private final String name;
+    private String name;
 
-    private final float occurrence;
+    private float occurrence;
+
+    // Required for Hibernate
+    public Resource() {
+
+    }
 
     private Resource(Builder builder) {
         Objects.requireNonNull(builder);
@@ -25,7 +39,7 @@ public class Resource {
         this.occurrence = builder.occurrence;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
@@ -42,11 +56,11 @@ public class Resource {
     }
 
     public static final class Builder {
-        private int id;
+        private long id;
         private String name;
         private float occurrence;
 
-        public Builder id(int id) {
+        public Builder id(long id) {
             Preconditions.checkArgument(id > 0);
             this.id = id;
             return this;

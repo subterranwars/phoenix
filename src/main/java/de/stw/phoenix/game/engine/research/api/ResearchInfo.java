@@ -7,6 +7,7 @@ import de.stw.phoenix.game.time.TimeDuration;
 import java.util.Objects;
 
 public class ResearchInfo {
+
     private final Research research;
     private final int levelToResearch;
     private final TimeDuration researchTime;

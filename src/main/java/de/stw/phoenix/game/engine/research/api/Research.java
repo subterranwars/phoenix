@@ -3,13 +3,29 @@ package de.stw.phoenix.game.engine.research.api;
 import com.google.common.base.Preconditions;
 import de.stw.phoenix.game.time.TimeDuration;
 
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.Objects;
 
+@Table(name="researchs")
+@Entity
 public final class Research implements ResearchRef {
-    private final int id;
-    private final String label;
-    private final String description;
-    private final TimeDuration researchTime;
+
+    @Id
+    private int id;
+
+    private String label;
+
+    @Column(length = 1000)
+    private String description;
+
+    private TimeDuration researchTime;
+
+    public Research() {
+
+    }
 
     private Research(Builder builder) {
         Objects.requireNonNull(builder);

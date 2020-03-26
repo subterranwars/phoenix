@@ -1,13 +1,34 @@
 package de.stw.phoenix.game.time;
 
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
+import javax.persistence.Id;
+import javax.persistence.Table;
 import java.util.concurrent.TimeUnit;
 
 // TODO MVR Make threadsafe.... when invoking getTick(int, TimeUnit) the next tick may be invoked and therefore it is not threadsafe
+@Entity
+@Table(name="clock")
 public class ArtificialClock implements Clock {
 
+    @Id
+    private final String type = "artificial";
+
+    @Embedded
     private Tick tick;
-    private final long tickLength;
-    private final TimeUnit tickUnit;
+
+    @Column
+    private long tickLength;
+
+    @Enumerated(value=EnumType.STRING)
+    private TimeUnit tickUnit;
+
+    ArtificialClock() {
+
+    }
 
     public ArtificialClock(long tickLength, TimeUnit tickUnit) {
         this.tickLength = tickLength;

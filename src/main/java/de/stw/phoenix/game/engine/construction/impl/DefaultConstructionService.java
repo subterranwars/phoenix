@@ -10,12 +10,12 @@ import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionCostCa
 import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCalculator;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.MutablePlayerAccessor;
-import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.player.impl.Player;
+import de.stw.phoenix.game.time.ClockService;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -26,10 +26,7 @@ import java.util.stream.Collectors;
 public class DefaultConstructionService implements ConstructionService {
 
     @Autowired
-    private Clock clock;
-
-    @Autowired
-    private MutablePlayerAccessor playerAccessor;
+    private ClockService clockService;
 
     @Autowired
     private ConstructionTimeCalculator constructionTimeCalculator;
@@ -41,7 +38,8 @@ public class DefaultConstructionService implements ConstructionService {
     private EventBus eventBus;
 
     @Override
-    public List<ConstructionInfo> listConstructions(final ImmutablePlayer player) {
+    @Transactional
+    public List<ConstructionInfo> listConstructions(final Player player) {
         Objects.requireNonNull(player);
         return Buildings.ALL.stream()
                 .map(player::getBuilding)
@@ -55,28 +53,27 @@ public class DefaultConstructionService implements ConstructionService {
     }
 
     @Override
-    public void build(final ImmutablePlayer player, final Building building) {
+    @Transactional
+    public void build(final Player player, final Building building) {
         Objects.requireNonNull(player);
         Objects.requireNonNull(building);
         if (!player.findSingleEvent(ConstructionEvent.class).isPresent()) {
             final BuildingLevel nextLevel = player.getBuilding(building).next();
             final Map<Resource, Double> costs = constructionCostCalculator.calculateConstructionCosts(nextLevel, player);
             final TimeDuration constructionTime = constructionTimeCalculator.calculateConstructionTime(nextLevel, player);
-            final ConstructionInfo constructionInfo =  new ConstructionInfo(nextLevel, costs, constructionTime);
-            if (player.canAfford(constructionInfo.getCosts())) {
-                playerAccessor.modify(player, mutablePlayer -> {
-                    // Enqueue
-                    final ConstructionEvent constructionEvent = new ConstructionEvent(
-                            mutablePlayer,
-                            constructionInfo,
-                            0,
-                            constructionInfo.getBuildTime(),
-                            clock.getCurrentTick().toMoment());
-                    mutablePlayer.addEvent(constructionEvent);
+            if (player.canAfford(costs)) {
+                // Enqueue
+                final ConstructionEvent constructionEvent = new ConstructionEvent(
+                        player,
+                        nextLevel.getBuilding(),
+                        nextLevel.getLevel(),
+                        0,
+                        constructionTime,
+                        clockService.getCurrentTick().toMoment());
+                player.addEvent(constructionEvent);
 
-                    // Subtract resources
-                    mutablePlayer.removeResources(constructionInfo.getCosts());
-                });
+                // Subtract resources
+                player.removeResources(costs);
                 eventBus.post(player);
             } else {
                 // TODO MVR throw exception? Cannot afford?

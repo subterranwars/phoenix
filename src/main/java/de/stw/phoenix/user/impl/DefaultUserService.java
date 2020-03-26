@@ -24,11 +24,12 @@ public class DefaultUserService implements UserService {
 
     @Override
     public void create(UserCreateRequest userCreateRequest) {
+        final String encodedPassword = passwordEncoder.encode(userCreateRequest.getPassword());
         final User newUser = User.builder()
-                .id(userRepository.count() + 1)
                 .username(userCreateRequest.getUsername())
                 .email(userCreateRequest.getEmail())
-                .password(userCreateRequest.getPassword()).build();
+                .password(encodedPassword)
+                .build();
         save(newUser);
     }
 

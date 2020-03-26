@@ -1,7 +1,6 @@
 package de.stw.phoenix.game.rest.research;
 
 import de.stw.phoenix.game.engine.research.api.Research;
-import de.stw.phoenix.game.engine.research.api.ResearchInfo;
 import de.stw.phoenix.game.player.api.Progress;
 import de.stw.phoenix.game.rest.GameEventDTO;
 import de.stw.phoenix.game.rest.GameEventTypes;
@@ -12,11 +11,10 @@ public class ResearchEventDTO extends GameEventDTO {
     private Research research;
     private int level;
 
-    public ResearchEventDTO(Progress progress, ResearchInfo researchInfo) {
+    public ResearchEventDTO(Progress progress, Research research, int levelToResearch) {
         super(GameEventTypes.Research, progress);
-        Objects.requireNonNull(researchInfo);
-        this.research = Objects.requireNonNull(researchInfo.getResearch());
-        this.level = researchInfo.getLevelToResearch();
+        this.research = Objects.requireNonNull(research);
+        this.level = levelToResearch;
     }
 
     public Research getResearch() {

@@ -1,72 +1,64 @@
 package de.stw.phoenix.game.player.impl;
 
 import com.google.common.collect.ImmutableList;
-import com.google.common.collect.Lists;
-import de.stw.phoenix.game.player.api.ImmutablePlayer;
-import de.stw.phoenix.game.player.api.MutablePlayer;
+import de.stw.phoenix.game.player.PlayerRepository;
 import de.stw.phoenix.game.player.api.PlayerService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
-import java.util.stream.Collectors;
 
 @Service
+@Transactional
 public class DefaultPlayerService implements PlayerService {
 
-    private List<MutablePlayer> players = Lists.newCopyOnWriteArrayList();
+    @Autowired
+    private PlayerRepository playerRepository;
 
     @Override
-    public List<ImmutablePlayer> getPlayers() {
-        final List<ImmutablePlayer> immutablePlayers = players.stream().map(MutablePlayer::asImmutable).collect(Collectors.toList());
-        return ImmutableList.copyOf(immutablePlayers);
+    public List<Player> getPlayers() {
+        return ImmutableList.copyOf(playerRepository.readAllForUpdate());
     }
 
     @Override
-    public Optional<ImmutablePlayer> find(long playerId) {
-        return findInternal(playerId).map(MutablePlayer::asImmutable);
+    public Optional<Player> find(long playerId) {
+        return playerRepository.findById(playerId);
     }
 
     @Override
-    public ImmutablePlayer get(long playerId) {
+    public Player get(long playerId) {
         return find(playerId).orElseThrow(() -> new NoSuchElementException("Player with id '" + playerId + "' not found"));
     }
 
     @Override
-    public ImmutablePlayer get(String name) {
+    public Player get(String name) {
         return find(name).orElseThrow(() -> new NoSuchElementException("Player with name '" + name + "' not found"));
     }
 
     @Override
-    public Optional<ImmutablePlayer> find(String playerName) {
-        return findInternal(playerName).map(MutablePlayer::asImmutable);
+    public Optional<Player> find(String playerName) {
+        return playerRepository.findByName(playerName);
     }
 
     @Override
-    public void save(ImmutablePlayer player) {
+    public void save(Player player) {
         Objects.requireNonNull(player);
-        final MutablePlayerImpl mutablePlayer = new MutablePlayerImpl(player);
-        this.players.add(mutablePlayer);
+        playerRepository.save(player);
     }
 
     @Override
-    public void modify(String playerName, Consumer<MutablePlayer> consumer) {
+    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    public void modify(Player detachedPlayer, Consumer<Player> consumer) {
+        Objects.requireNonNull(detachedPlayer);
         Objects.requireNonNull(consumer);
-        Objects.requireNonNull(playerName);
-        final MutablePlayer mutablePlayer = findInternal(playerName).get();
-        synchronized (mutablePlayer) {
-            consumer.accept(mutablePlayer);
-        }
-    }
-
-    private Optional<MutablePlayer> findInternal(long playerId) {
-        return players.stream().filter(p -> p.getId() == playerId).findAny();
-    }
-
-    private Optional<MutablePlayer> findInternal(String playerName) {
-        return players.stream().filter(p -> Objects.equals(p.getName(), playerName)).findAny();
+        final Player attachedPlayer = playerRepository.readForUpdate(detachedPlayer.getId());
+        consumer.accept(attachedPlayer);
+        playerRepository.save(attachedPlayer);
     }
 }
