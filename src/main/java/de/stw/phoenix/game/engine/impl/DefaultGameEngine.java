@@ -12,6 +12,7 @@ import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.api.ResourceStorage;
 import de.stw.phoenix.game.player.impl.Player;
 import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.time.ClockService;
 import de.stw.phoenix.game.time.Tick;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +31,7 @@ public class DefaultGameEngine implements GameEngine {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultGameEngine.class);
 
     @Autowired
-    private Clock clock;
+    private ClockService clockService;
 
     @Autowired
     private PlayerService playerService;
@@ -46,7 +47,8 @@ public class DefaultGameEngine implements GameEngine {
     public void loop() {
         Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "Session must be active");
         logState();
-        final Tick tick = clock.nextTick();
+        final Clock clock = clockService.tick();
+        final Tick tick = clock.getCurrentTick();
         for (Player player : playerService.getPlayers()) {
             final List<PlayerUpdate> playerUpdateList = getContext(player)
                 .findElements(PlayerUpdate.class).stream()
@@ -66,13 +68,13 @@ public class DefaultGameEngine implements GameEngine {
     @Transactional
     public Context getContext(Player player) {
         Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "Session must be active");
-        final MutableContext context = new DefaultMutableContext(clock.getCurrentTick());
+        final MutableContext context = new DefaultMutableContext(clockService.getCurrentTick());
         elementProviderList.stream().forEach(provider -> provider.registerElements(context, player));
         return context.asImmutable();
     }
 
     private void logState() {
-        LOG.debug("Tick: {}", clock.getCurrentTick());
+        LOG.debug("Tick: {}", clockService.getCurrentTick());
         for (Player eachPlayer : playerService.getPlayers()) {
             for (ResourceStorage resource : eachPlayer.getResources()) {
                 LOG.trace("{} {}: {}", eachPlayer.getName(), resource.getResource().getName(), resource.getAmount());

@@ -35,7 +35,7 @@ public class DefaultAuthService implements AuthService {
     @Autowired
     public DefaultAuthService(final UserRepository userRepository,
                               final PasswordEncoder passwordEncoder,
-                              @Value("${de.subterranwars.auth.token.expirationInHours}") int expirationInHours) {
+                              @Value("${de.stw.auth.token.expirationInHours}") int expirationInHours) {
         this(userRepository, passwordEncoder, Duration.ofHours(expirationInHours));
     }
 

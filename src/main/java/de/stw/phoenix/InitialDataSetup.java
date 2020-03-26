@@ -10,7 +10,6 @@ import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.player.PlayerRepository;
 import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.impl.Player;
-import de.stw.phoenix.game.time.ArtificialClock;
 import de.stw.phoenix.game.time.ClockRepository;
 import de.stw.phoenix.user.api.User;
 import de.stw.phoenix.user.api.UserRepository;
@@ -19,7 +18,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionOperations;
 
 import javax.annotation.PostConstruct;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class InitialDataSetup {
@@ -80,11 +78,5 @@ public class InitialDataSetup {
                Player.builder(user.getId(), user.getUsername())
                         .withDefaults()
                         .build()));
-
-        // Create Clock
-        // TODO MVR not working properly
-        final ArtificialClock clock = new ArtificialClock(10, TimeUnit.SECONDS);
-        clockRepository.save(clock);
-
     }
 }

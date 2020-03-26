@@ -12,7 +12,7 @@ import de.stw.phoenix.game.engine.resources.api.ResourceSearchRequest;
 import de.stw.phoenix.game.engine.resources.api.ResourceService;
 import de.stw.phoenix.game.player.api.ResourceStorage;
 import de.stw.phoenix.game.player.impl.Player;
-import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.time.ClockService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,7 +32,7 @@ public class DefaultResourceService implements ResourceService {
     private static final Logger LOG = LoggerFactory.getLogger(DefaultResourceService.class);
 
     @Autowired
-    private Clock clock;
+    private ClockService clockService;
 
     @Autowired
     private GameEngine gameEngine;
@@ -75,7 +75,7 @@ public class DefaultResourceService implements ResourceService {
     public void search(ResourceSearchRequest resourceSearchRequest) {
         // TODO MVR ensure user actually has resource building before searching is supported
         final Player player = resourceSearchRequest.getPlayer();
-        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(player, resourceSearchRequest.getResource(), clock.getCurrentTick().toMoment());
+        final ResourceSearchEvent resourceSearchEvent = new ResourceSearchEvent(player, resourceSearchRequest.getResource(), clockService.getCurrentTick().toMoment());
         player.addEvent(resourceSearchEvent);
         eventBus.post(player);
         LOG.debug("{} searching for {}", player.getId(), resourceSearchEvent.getResource().getName());

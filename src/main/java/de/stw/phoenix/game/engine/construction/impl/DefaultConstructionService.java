@@ -11,7 +11,7 @@ import de.stw.phoenix.game.engine.construction.api.calculator.ConstructionTimeCa
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.player.api.BuildingLevel;
 import de.stw.phoenix.game.player.impl.Player;
-import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.time.ClockService;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 public class DefaultConstructionService implements ConstructionService {
 
     @Autowired
-    private Clock clock;
+    private ClockService clockService;
 
     @Autowired
     private ConstructionTimeCalculator constructionTimeCalculator;
@@ -69,7 +69,7 @@ public class DefaultConstructionService implements ConstructionService {
                         nextLevel.getLevel(),
                         0,
                         constructionTime,
-                        clock.getCurrentTick().toMoment());
+                        clockService.getCurrentTick().toMoment());
                 player.addEvent(constructionEvent);
 
                 // Subtract resources

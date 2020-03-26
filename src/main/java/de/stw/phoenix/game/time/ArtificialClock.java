@@ -1,5 +1,6 @@
 package de.stw.phoenix.game.time;
 
+import javax.persistence.Column;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -19,6 +20,7 @@ public class ArtificialClock implements Clock {
     @Embedded
     private Tick tick;
 
+    @Column
     private long tickLength;
 
     @Enumerated(value=EnumType.STRING)

@@ -7,10 +7,9 @@ import de.stw.phoenix.game.engine.research.api.ResearchInfo;
 import de.stw.phoenix.game.engine.research.api.ResearchService;
 import de.stw.phoenix.game.engine.research.api.Researchs;
 import de.stw.phoenix.game.engine.research.api.calculator.ResearchTimeCalculator;
-import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.api.ResearchLevel;
 import de.stw.phoenix.game.player.impl.Player;
-import de.stw.phoenix.game.time.Clock;
+import de.stw.phoenix.game.time.ClockService;
 import de.stw.phoenix.game.time.TimeDuration;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,13 +26,10 @@ public class DefaultResearchService implements ResearchService {
     private ResearchTimeCalculator researchTimeCalculator;
 
     @Autowired
-    private PlayerService playerService;
-
-    @Autowired
     private EventBus eventBus;
 
     @Autowired
-    private Clock clock;
+    private ClockService clockService;
 
     @Override
     @Transactional
@@ -66,7 +62,7 @@ public class DefaultResearchService implements ResearchService {
                     nextLevel.getLevel(),
                     0,
                     researchInfo.getResearchTime(),
-                    clock.getCurrentTick().toMoment());
+                    clockService.getCurrentTick().toMoment());
             player.addEvent(researchEvent);
             eventBus.post(player);
         } else {
