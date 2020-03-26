@@ -16,4 +16,6 @@ public interface AuthService {
         Objects.requireNonNull(authRequest);
         return this.authenticate(authRequest.getUsername(), authRequest.getPassword());
     }
+
+    Optional<Token> findToken(String username);
 }

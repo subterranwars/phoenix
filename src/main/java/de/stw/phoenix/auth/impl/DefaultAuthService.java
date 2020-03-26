@@ -87,8 +87,8 @@ public class DefaultAuthService implements AuthService {
         return user;
     }
 
-    @VisibleForTesting
-    protected Optional<Token> findToken(String username) {
+    @Override
+    public Optional<Token> findToken(String username) {
         return Optional.ofNullable(userTokenMap.get(username));
     }
 
