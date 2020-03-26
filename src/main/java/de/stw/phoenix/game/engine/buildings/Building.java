@@ -1,19 +1,26 @@
 package de.stw.phoenix.game.engine.buildings;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Maps;
+import de.stw.phoenix.game.engine.requirements.Requirement;
+import de.stw.phoenix.game.engine.requirements.RequirementEntity;
+import de.stw.phoenix.game.engine.requirements.Requirements;
 import de.stw.phoenix.game.engine.resources.api.Resource;
 import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.time.TimeDuration;
 
+import javax.persistence.CascadeType;
 import javax.persistence.CollectionTable;
 import javax.persistence.Column;
 import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.MapKeyJoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Map;
 import java.util.Objects;
@@ -39,7 +46,13 @@ public final class Building implements BuildingRef {
     private Map<Resource, Double> costs;
 
     private TimeDuration buildTime;
+
     private int energyConsumption;
+
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = RequirementEntity.class, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name="requirement_id")
+    @JsonIgnore
+    private Requirement requirement;
 
     private Building() {
 
@@ -54,6 +67,7 @@ public final class Building implements BuildingRef {
         this.buildTime = TimeDuration.ofSeconds(builder.buildTime);
         this.costs = ImmutableMap.copyOf(builder.costs);
         this.energyConsumption = builder.energyConsumption;
+        this.requirement = builder.requirement;
     }
 
     public int getId() {
@@ -84,10 +98,16 @@ public final class Building implements BuildingRef {
         return energyConsumption;
     }
 
+    public Requirement getRequirement() {
+        if (requirement == null) {
+            return player -> true;
+        }
+        return requirement;
+    }
+
     public static Builder builder(int id, String name) {
         return new Builder().id(id).name(name);
     }
-
 
     public static final class Builder {
 
@@ -98,6 +118,7 @@ public final class Building implements BuildingRef {
         private long buildTime;
         private int energyConsumption;
         private Map<Resource, Double> costs = Maps.newHashMap();
+        private Requirement requirement;
 
         public Builder id(int id) {
             Preconditions.checkArgument(id > 0);
@@ -144,6 +165,11 @@ public final class Building implements BuildingRef {
 
         public Builder buildTime(long duration, TimeUnit timeUnit) {
             this.buildTime = TimeUnit.SECONDS.convert(duration, timeUnit);
+            return this;
+        }
+
+        public Builder requirements(Requirement... requirements) {
+            this.requirement = Requirements.and(requirements);
             return this;
         }
 
