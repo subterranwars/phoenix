@@ -37,9 +37,9 @@ public class EnergyModule implements GameElementProvider {
         Preconditions.checkArgument(TransactionSynchronizationManager.isActualTransactionActive(), "No active session");
         final Player player = energyEvent.getPlayer();
         if (energyEvent.getEnergyLevel() == EnergyLevel.Critical) {
-            player.addModifier(Modifiers.CRITICAL_ENERGY_LEVEL);
+            player.addModifier(Modifiers.CRITICAL_ENERGY_LEVEL.get());
         } else {
-            player.removeModifier(Modifiers.CRITICAL_ENERGY_LEVEL);
+            player.removeModifier(Modifiers.CRITICAL_ENERGY_LEVEL.get());
         }
     }
 

@@ -13,12 +13,13 @@ public class PlayerTest {
 
     @Test
     public void verifyFindModifier() {
-        Player player = Player.builder(1, "test")
+        final ConstructionTimeModifier constructionTimeModifier = Modifiers.CRITICAL_ENERGY_LEVEL.get();
+        final Player player = Player.builder(1, "test")
                 .withDefaults()
-                .withModifier(Modifiers.CRITICAL_ENERGY_LEVEL)
+                .withModifier(constructionTimeModifier)
                 .build();
         assertThat(player.findModifier(ConstructionTimeModifier.class), hasSize(1));
-        assertThat(player.findModifier(ConstructionTimeModifier.class), hasItem(Modifiers.CRITICAL_ENERGY_LEVEL));
+        assertThat(player.findModifier(ConstructionTimeModifier.class), hasItem(constructionTimeModifier));
     }
 
 }
