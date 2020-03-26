@@ -1,11 +1,19 @@
 package de.stw.phoenix.game.engine.research.api;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.google.common.base.Preconditions;
+import de.stw.phoenix.game.engine.requirements.Requirement;
+import de.stw.phoenix.game.engine.requirements.RequirementEntity;
+import de.stw.phoenix.game.engine.requirements.Requirements;
 import de.stw.phoenix.game.time.TimeDuration;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import java.util.Objects;
 
@@ -23,6 +31,11 @@ public final class Research implements ResearchRef {
 
     private TimeDuration researchTime;
 
+    @OneToOne(cascade = CascadeType.ALL, targetEntity = RequirementEntity.class, fetch = FetchType.LAZY, orphanRemoval = true)
+    @JoinColumn(name="requirement_id")
+    @JsonIgnore
+    private Requirement requirement;
+
     public Research() {
 
     }
@@ -33,6 +46,7 @@ public final class Research implements ResearchRef {
         this.label = builder.label;
         this.description = builder.description;
         this.researchTime = builder.researchTime;
+        this.requirement = builder.requirement;
     }
 
     public int getId() {
@@ -51,6 +65,13 @@ public final class Research implements ResearchRef {
         return researchTime;
     }
 
+    public Requirement getRequirement() {
+        if (requirement == null) {
+            return player -> true;
+        }
+        return requirement;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
@@ -60,6 +81,7 @@ public final class Research implements ResearchRef {
         private String label;
         private String description;
         private TimeDuration researchTime;
+        private Requirement requirement;
 
         public Builder id(int id) {
             Preconditions.checkArgument(id > 0);
@@ -79,6 +101,11 @@ public final class Research implements ResearchRef {
 
         public Builder researchTime(TimeDuration duration) {
             this.researchTime = Objects.requireNonNull(duration);
+            return this;
+        }
+
+        public Builder requirements(Requirement...requirements) {
+            this.requirement = Requirements.and(requirements);
             return this;
         }
 

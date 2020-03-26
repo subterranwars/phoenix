@@ -8,9 +8,7 @@ import de.stw.phoenix.game.engine.research.api.Researchs;
 import de.stw.phoenix.game.engine.resources.api.ResourceRepository;
 import de.stw.phoenix.game.engine.resources.api.Resources;
 import de.stw.phoenix.game.player.PlayerRepository;
-import de.stw.phoenix.game.player.api.PlayerService;
 import de.stw.phoenix.game.player.impl.Player;
-import de.stw.phoenix.game.time.ClockRepository;
 import de.stw.phoenix.user.api.User;
 import de.stw.phoenix.user.api.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,9 +24,6 @@ public class InitialDataSetup {
     private UserRepository userRepository;
 
     @Autowired
-    private PlayerService playerService;
-
-    @Autowired
     private ResourceRepository resourceRepository;
 
     @Autowired
@@ -39,9 +34,6 @@ public class InitialDataSetup {
 
     @Autowired
     private PlayerRepository playerRepository;
-
-    @Autowired
-    private ClockRepository clockRepository;
 
     @Autowired
     private TransactionOperations transactionOperations;
@@ -59,8 +51,8 @@ public class InitialDataSetup {
 
     private void init() {
         Resources.ALL.forEach(r -> resourceRepository.save(r));
-        Buildings.ALL.forEach(b -> buildingRepository.save(b));
         Researchs.ALL.forEach(r -> researchRepository.save(r));
+        Buildings.ALL.forEach(b -> buildingRepository.save(b));
 
         userRepository.save(User.builder()
                 .username("marskuh")

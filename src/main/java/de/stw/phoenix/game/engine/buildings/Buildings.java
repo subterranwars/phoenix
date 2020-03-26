@@ -1,6 +1,8 @@
 package de.stw.phoenix.game.engine.buildings;
 
 import com.google.common.collect.ImmutableList;
+import de.stw.phoenix.game.engine.requirements.Requirements;
+import de.stw.phoenix.game.engine.research.api.Researchs;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -33,6 +35,7 @@ public interface Buildings {
             .buildTime(10, TimeUnit.SECONDS)
             .costsIron(5000)
             .costsStone(5000)
+            .requirements(Requirements.research(Researchs.Guild, 1))
             .build();
 
     Building Powerplant = Building.builder(17, "power-plant")
@@ -52,7 +55,36 @@ public interface Buildings {
             .costsStone(5000)
             .build();
 
-    List<Building> ALL = ImmutableList.of(Headquarter, Resourcefacility, Resourcedepot, Powerplant, Researchlab);
+    Building Barracks = Building.builder(22, "barracks")
+            .label("Kaserne")
+            .description("Beschreibung Kaserne")
+            .buildTime(10, TimeUnit.SECONDS)
+            .energyConsumption(25)
+            .costsIron(5500)
+            .costsStone(5500)
+            .requirements(Requirements.research(Researchs.Construction, 2))
+            .build();
+
+    Building Solarpanels = Building.builder(23, "solar-panels")
+            .label("Solaranlage")
+            .description("Beschreibung Solaranlage")
+            .buildTime(10, TimeUnit.SECONDS)
+            .costsIron(1500)
+            .costsStone(1000)
+            .requirements(Requirements.research(Researchs.Construction, 3))
+            .build();
+
+    Building Foodfactory = Building.builder(24, "food-factory")
+            .label("Nahrungsmittelfabrik")
+            .description("FOOD FOOD FOOD")
+            .buildTime(10, TimeUnit.SECONDS)
+            .energyConsumption(50)
+            .costsIron(5000)
+            .costsStone(3333)
+            .requirements(Requirements.research(Researchs.Farming, 2))
+            .build();
+
+    List<Building> ALL = ImmutableList.of(Headquarter, Resourcefacility, Resourcedepot, Powerplant, Researchlab, Barracks, Solarpanels, Foodfactory);
 
     static Building findByRef(BuildingRef building) {
         Objects.requireNonNull(building);
