@@ -64,6 +64,16 @@ public class InitialDataSetup {
                 .email("fafner@subterranwars.de")
                 .password(passwordEncoder.encode("password"))
                 .build());
+        userRepository.save(User.builder()
+            .username("tenno")
+            .email("tenno@subterranwars.de")
+            .password(passwordEncoder.encode("password"))
+            .build());
+        userRepository.save(User.builder()
+                .username("danekk")
+                .email("danekk@subterranwars.de")
+                .password(passwordEncoder.encode("password"))
+                .build());
 
         // Create player for each user
         userRepository.findAll().forEach(user -> playerRepository.save(
