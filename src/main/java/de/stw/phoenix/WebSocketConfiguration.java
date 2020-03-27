@@ -1,5 +1,6 @@
 package de.stw.phoenix;
 
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
@@ -47,7 +48,8 @@ public class WebSocketConfiguration implements WebSocketMessageBrokerConfigurer 
                             Authentication authResult = authenticationManager.authenticate(authRequest);
                             accessor.setUser(authResult);
                         } catch (AuthenticationException failed) {
-                            throw failed;
+                            LoggerFactory.getLogger(getClass()).info("Unauthorized");
+                            return null;
                         }
                     }
                 }
